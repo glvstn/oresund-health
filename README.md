@@ -12,8 +12,7 @@ Havsdata är många parametrar med komplexa värden. Sidan ska göra dem begripl
 
 ## Status
 
-- Prototyp som ögonblicksbild, 22 november 2026: https://claude.ai/artifact/NBfdH9skWg3CzdSAwW3qyE
-- Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timme av GitHub Actions i https://github.com/glvstn/oresund-health.
+Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timme av GitHub Actions i https://github.com/glvstn/oresund-health.
 
 ## Mappar
 
