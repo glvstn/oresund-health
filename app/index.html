@@ -314,6 +314,11 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   const fmt = (v, d = 1) => v == null ? '–' : v.toLocaleString('sv-SE', { minimumFractionDigits: d, maximumFractionDigits: d });
   const sthlm = (t, opts) => t.toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm', ...opts });
   const clock = (t) => sthlm(t, { hour: '2-digit', minute: '2-digit' });
+  // Klockslag med dag, så att ett dygn bakåt inte ser ut som att tiden går baklänges (i går 19:00 till i dag 18:00).
+  const dayClock = (t) => {
+    const day = (d) => sthlm(d, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    return (day(t) === day(new Date()) ? 'I dag ' : 'I går ') + clock(t);
+  };
   const ago = (t) => {
     const day = (d) => sthlm(d, { year: 'numeric', month: '2-digit', day: '2-digit' });
     const today = day(new Date());
@@ -366,7 +371,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       const today = days[days.length - 1] || {};
       return hourly.filter((h) => h[p] != null).map((h) => {
         const t = new Date(h.time);
-        return { t, value: h[p], p10: today.p10, normal: today.normal, p90: today.p90, unit: today.unit, dec: DEC[p] ?? 1, label: clock(t) };
+        return { t, value: h[p], p10: today.p10, normal: today.normal, p90: today.p90, unit: today.unit, dec: DEC[p] ?? 1, label: dayClock(t) };
       });
     }
     // Perioder räknas på hela dygn, det pågående dygnet är inte med.
@@ -641,7 +646,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     hover(el, svg, x, m, W, H, rows, (r, tip) => {
       if (!r) { rule.style('display', 'none'); return; }
       rule.attr('x1', x(r.t)).attr('x2', x(r.t)).style('display', null);
-      tip.textContent = `${clock(r.t)}: Skanör ${fmt(r.levelS)}, Viken ${fmt(r.levelV)} cm`;
+      tip.textContent = `${dayClock(r.t)}: Skanör ${fmt(r.levelS)}, Viken ${fmt(r.levelV)} cm`;
       tip.style.top = '-8px';
     });
   }
