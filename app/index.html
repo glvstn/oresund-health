@@ -157,7 +157,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 
     <section id="halsa">
       <h2>Hälsa</h2>
-      <p class="note">Det som säger något om hur havet mår. Syre bedöms mot Havs- och vattenmyndighetens gränser (6, 4 och 2 mg/l), temperatur mot vad som är normalt för årstiden. Temperaturen ger varning först när vattnet varit varmare än normalt 3 hela dygn i rad, eftersom värme minskar syret och gynnar algblomning. Kallare än normalt är väder och sänker inte betyget. Det sämsta delvärdet styr helheten.</p>
+      <p class="note">Hur havet mår. Syre bedöms mot Havs- och vattenmyndighetens gränser, temperatur mot det normala för årstiden. Värme som håller i sig minskar syret och gynnar algblomning, kyla är bara väder.</p>
       <div class="cards three">
         <div class="card" style="--tint:var(--t-heart)">
           <div class="head"><span class="cat"><svg class="ico" data-icon="heart"></svg>Helhet</span><span class="time" data-time></span></div>
@@ -193,7 +193,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 
     <section id="rorelse">
       <h2>Rörelse</h2>
-      <p class="note">Hur vattnet rör sig, inte hur det mår. Strömmen drivs mest av skillnaden i vattenstånd mellan södra och norra infarten. Står vattnet högre vid Skanör än vid Viken rinner Östersjövatten norrut mot Kattegatt, och tvärtom.</p>
+      <p class="note">Hur vattnet rör sig, inte hur det mår. Står vattnet högre i söder än i norr rinner det norrut mot Kattegatt, och tvärtom.</p>
       <div class="cards">
         <div class="card" id="strom" style="--tint:var(--t-flow)">
           <div class="head"><span class="cat"><svg class="ico" data-icon="flow"></svg>Ström</span><span class="time" data-time></span></div>
@@ -227,15 +227,14 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       <p class="note">Varifrån datat kommer, hur det normala räknas och vad sidan inte vet.</p>
       <div class="about">
       <ul>
-        <li>Temperatur och salthalt från Flinten 7 bottensystem, syre och ström från Flinten 16, vattenstånd från Klagshamn, Skanör och Viken.</li>
-        <li>Normalt för årstiden är alla dygnsmedel inom en vecka från samma datum under basåren: temperatur och salthalt 2017 till 2025, ström 2009 till 2025, vattenstånd 1996 till 2025. Normalspannet räknas om en gång per dygn.</li>
-        <li>Temperaturen bedöms på hela dygn. Varning ges när dygnsmedlet legat över det normala spannet 3 dygn i rad. En enstaka varm dag är väder. Kallare än normalt ger aldrig varning, eftersom kallt vatten håller mer syre. Gränsen 3 dygn är vår egen, inte en myndighets.</li>
-        <li>Syre mäts bara sedan 2024. Det är för kort för ett normalspann, så syre bedöms bara mot fasta gränser.</li>
-        <li>Syre räknas om från ml/l till mg/l. Gränserna 6, 4 och 2 mg/l är de som Havs- och vattenmyndigheten använder för syrebrist i kustvatten.</li>
-        <li>Hög salthalt vid botten betyder att salt Kattegattvatten trängt in under det sötare Östersjövattnet. Det är naturligt och viktigt för sundet, inte ett tecken på ohälsa.</li>
-        <li>Strömmens riktning räknas från vattenståndet, Skanör minus Viken. Farten mäts av strömmätaren i ytskiktet vid Flinten 16. Mätarens egen riktning används inte, eftersom det är oklart om SMHI anger varifrån eller vart strömmen går. Vid kraftig vind kan ytströmmen tillfälligt gå åt ett annat håll än vattenståndet säger.</li>
-        <li>Näringsämnen och klorofyll kommer från provtagning vid Klagshamn, som NIRAS gör varje månad på uppdrag av Öresunds vattenvårdsförbund. Proverna når SMHI:s havsarkiv SHARK ett till två år senare. De bedöms som treårsmedel enligt Havs- och vattenmyndighetens gränser för kusttyp 7, så som myndigheten själv gör, och påverkar inte hälsobetyget.</li>
-        <li>Tolkningen är inte granskad av någon expert. Klorofyll från satellit, alger och fisk saknas ännu.</li>
+        <li>Temperatur och salthalt mäts vid Flinten 7, syre och ström vid Flinten 16, vattenstånd i Klagshamn, Skanör och Viken.</li>
+        <li>Normalt är dygnsmedel inom en vecka från samma datum under basåren: temperatur och salthalt sedan 2017, ström sedan 2009, vattenstånd sedan 1996, till och med 2025.</li>
+        <li>Temperaturen varnar efter 3 dygn i rad över det normala. Gränsen är vår egen, inte en myndighets. Kallt vatten håller mer syre och ger aldrig varning.</li>
+        <li>Syre mäts bara sedan 2024, för kort för ett normalspann. Det bedöms mot Havs- och vattenmyndighetens gränser 6, 4 och 2 mg/l.</li>
+        <li>Hög salthalt vid botten är salt Kattegattvatten under det sötare Östersjövattnet. Det är naturligt, inte ohälsa.</li>
+        <li>Strömmens riktning räknas från vattenståndet, eftersom det är oklart hur SMHI anger mätarens riktning. Farten kommer från mätaren. Vid hård vind kan ytströmmen tillfälligt gå åt andra hållet.</li>
+        <li>Näringsämnen och klorofyll provtas varje månad vid Klagshamn och når SMHI ett till två år senare. De bedöms som treårsmedel mot Havs- och vattenmyndighetens gränser och påverkar inte hälsobetyget.</li>
+        <li>Tolkningen är inte granskad av någon expert. Alger och fisk saknas ännu.</li>
       </ul>
       </div>
     </section>
@@ -456,8 +455,8 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.period === period));
     const isDay = period === 'dygn';
     set('vitalsNote', isDay
-      ? `Stora talet är senaste mätningen. Diagrammet visar ${PERIODS[period][1]}. Det grå bandet är det normala spannet för årstiden, där 8 av 10 år hamnar. Bedömningen görs på dygnsmedel. Timvärden svänger mer än dygnsmedel, så en enskild timme utanför bandet betyder lite.`
-      : `Snitt, lägsta och högsta av ${PERIODS[period][1]}. Raden under räknar hur många dygn som låg utanför det normala för årstiden, det grå bandet där 8 av 10 år hamnar. Dagens dygn är inte klart och räknas inte.`);
+      ? `${cap(PERIODS[period][1])}. Det grå bandet är det normala för årstiden, där 8 av 10 år hamnar. Bedömningen görs på dygnsmedel, så en enskild timme utanför bandet betyder lite.`
+      : `${cap(PERIODS[period][1])}. Det grå bandet är det normala för årstiden, där 8 av 10 år hamnar. Dagens dygn är inte klart och räknas inte.`);
     const vitals = $('vitals');
     vitals.replaceChildren();
     const minis = [];
