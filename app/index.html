@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hur mår Öresund</title>
+<meta name="description" content="Hur havet utanför Malmö mår just nu, jämfört med det normala för årstiden. Data från SMHI.">
+<style>
+:root {
+  --bg: #f7f6f2; --panel: #ffffff; --fg: #1d1c1a; --muted: #6b6862; --line: #e3e0d8;
+  --ok: #2f7d4f; --warn: #a86a00; --bad: #b3362b;
+  --series: #2b6cb0; --series2: #c0583a; --band: #cfcbc0; --ref: #8d897f; --grid: #ecebe5;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161614; --panel: #1f1f1c; --fg: #ecebe6; --muted: #a29f97; --line: #34332e;
+    --ok: #5cbf83; --warn: #e0a43a; --bad: #ef7466;
+    --series: #6aa8ec; --series2: #ec8c6c; --band: #4a4842; --ref: #8d897f; --grid: #2a2a26;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 var(--sans); }
+main { max-width: 1080px; margin: 0 auto; padding: 32px 16px 64px; display: grid; gap: 40px; }
+h1 { font: 400 clamp(32px, 6vw, 48px)/1.05 var(--serif); margin: 0; }
+h2 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+.lead { font-size: 20px; margin: 12px 0 0; max-width: 62ch; text-wrap: pretty; }
+.lead b { font-weight: 600; }
+.sub, .k { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
+.k { margin: 0; }
+.note { color: var(--muted); margin: 0 0 16px; max-width: 62ch; }
+.banner { border: 1px solid var(--warn); color: var(--fg); background: color-mix(in srgb, var(--warn) 10%, var(--panel)); border-radius: 10px; padding: 12px 16px; margin: 16px 0 0; }
+.banner[hidden] { display: none; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 8px; align-content: start; position: relative; min-width: 0; }
+.verdict { font: 400 clamp(28px, 4.5vw, 36px)/1.1 var(--serif); }
+.big { font: 400 clamp(30px, 5vw, 40px)/1 var(--serif); font-variant-numeric: tabular-nums; }
+.unit { color: var(--muted); margin-left: 4px; }
+.state { font-weight: 600; }
+[data-tone="ok"] { color: var(--ok); }
+[data-tone="warn"] { color: var(--warn); }
+[data-tone="bad"] { color: var(--bad); }
+.range { position: relative; height: 26px; }
+.spark { position: relative; height: 120px; }
+.flowchart { position: relative; height: 220px; }
+svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.axis text { fill: var(--muted); font-size: 11px; }
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 16px rgb(0 0 0 / .12); border-radius: 8px; padding: 6px 8px; font-size: 13px; white-space: nowrap; z-index: 2; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14px; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.legend span { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+.arrow { font-size: 44px; line-height: 1; }
+details { color: var(--muted); max-width: 70ch; }
+summary { cursor: pointer; color: var(--fg); }
+li { margin-bottom: 4px; }
+footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Hur mår Öresund</h1>
+    <p class="lead">Öresund <b id="verdictWord">…</b>. Syret vid botten är <b id="oxyWord">…</b>, temperaturen är <b id="tempWord">…</b>, och vattnet strömmar <b id="flowWord">…</b>.</p>
+    <p class="sub">Senaste mätning <span id="lastTime">…</span>, SMHI:s stationer mitt i sundet sydväst om Malmö. Hämtas en gång i timmen.</p>
+    <p class="banner" id="stale" hidden></p>
+  </header>
+
+  <section>
+    <h2>Hälsa</h2>
+    <p class="note">Det som säger något om hur havet mår. Syre bedöms mot Havs- och vattenmyndighetens gränser (6, 4 och 2 mg/l), temperatur mot vad som är normalt för årstiden. Det sämsta delvärdet styr helheten.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="k">Helhet</p>
+        <div class="verdict" id="verdict">…</div>
+        <p class="k">Sämsta delvärdet styr</p>
+      </div>
+      <div class="card">
+        <p class="k">Andning, syre vid botten</p>
+        <div class="verdict" id="breath">…</div>
+        <p class="k"><span id="oxyNow">…</span> mg/l, god status från 6</p>
+      </div>
+      <div class="card">
+        <p class="k">Kroppstemperatur</p>
+        <div class="verdict" id="fever">…</div>
+        <p class="k"><span id="tempDiff">…</span> °C mot normalt för årstiden</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Vitala värden, senaste 90 dagarna</h2>
+    <p class="note">Dygnsmedel jämfört med det normala för samma tid på året. Det grå bandet är det normala spannet, där 8 av 10 år hamnar. Dagens värde bygger på de timmar som har mätts hittills.</p>
+    <div class="grid" id="vitals"></div>
+  </section>
+
+  <section>
+    <h2>Rörelse, åt vilket håll strömmar sundet</h2>
+    <p class="note">Strömmen i Öresund drivs mest av skillnaden i vattenstånd mellan södra och norra infarten. Står vattnet högre vid Skanör än vid Viken rinner Östersjövatten norrut mot Kattegatt, och tvärtom. Det här är rörelse, inte hälsa.</p>
+    <div class="grid">
+      <div class="card">
+        <p class="k">Just nu</p>
+        <div class="arrow" id="arrow" aria-hidden="true">…</div>
+        <div class="verdict" id="flowDir">…</div>
+        <p class="k" id="slopeText">…</p>
+      </div>
+      <div class="card">
+        <p class="k">Vattenstånd senaste 24 timmarna, cm</p>
+        <ul class="legend">
+          <li><span style="background:var(--series)"></span>Skanör, söder</li>
+          <li><span style="background:var(--series2)"></span>Viken, norr</li>
+        </ul>
+        <div class="flowchart" id="flowchart"></div>
+      </div>
+    </div>
+  </section>
+
+  <details>
+    <summary>Så räknas det</summary>
+    <ul>
+      <li>Temperatur och salthalt från Flinten 7 bottensystem, syre och ström från Flinten 16, vattenstånd från Klagshamn, Skanör och Viken.</li>
+      <li>Normalt för årstiden är alla dygnsmedel inom en vecka från samma datum under basåren: temperatur och salthalt 2017 till 2025, ström 2009 till 2025, vattenstånd 1996 till 2025. Normalspannet räknas om en gång per dygn.</li>
+      <li>Syre mäts bara sedan 2024. Det är för kort för ett normalspann, så syre bedöms bara mot fasta gränser.</li>
+      <li>Syre räknas om från ml/l till mg/l. Gränserna 6, 4 och 2 mg/l är de som Havs- och vattenmyndigheten använder för syrebrist i kustvatten.</li>
+      <li>Hög salthalt vid botten betyder att salt Kattegattvatten trängt in under det sötare Östersjövattnet. Det är naturligt och viktigt för sundet, inte ett tecken på ohälsa.</li>
+      <li>Tolkningen är inte granskad av någon expert. Klorofyll, alger, näringsämnen och fisk saknas ännu.</li>
+    </ul>
+  </details>
+
+  <footer>
+    Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer. Datat är bearbetat: dygnsmedel, normalspann och syre omräknat till mg/l. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(() => {
+  const STALE_HOURS = 3;
+  const PARAMS = [
+    ['temp', 'Temperatur vid botten, 8 m'],
+    ['oxy', 'Syrehalt vid botten, 8 m'],
+    ['salt', 'Salthalt vid botten, 8 m'],
+    ['level', 'Vattenstånd, Klagshamn'],
+    ['speed', 'Strömhastighet, ytskiktet'],
+  ];
+  const STATE = {
+    temp: { under: 'Kallare än normalt', normalt: 'Normalt för årstiden', över: 'Varmare än normalt' },
+    salt: { under: 'Sötare än normalt, Östersjövatten', normalt: 'Normalt för årstiden', över: 'Saltare än normalt, Kattegattvatten vid botten' },
+    level: { under: 'Lågvatten', normalt: 'Normalt vattenstånd', över: 'Högvatten' },
+    speed: { under: 'Lugnare än normalt', normalt: 'Normal ström', över: 'Kraftigare ström än normalt' },
+  };
+  const $ = (id) => document.getElementById(id);
+  const set = (id, text, tone) => { const el = $(id); el.textContent = text; if (tone) el.dataset.tone = tone; else delete el.dataset.tone; };
+  const fmt = (v, d = 1) => v == null ? '–' : v.toLocaleString('sv-SE', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const sthlm = (t, opts) => t.toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm', ...opts });
+
+  const oxyGrade = (v) => v >= 6 ? ['God', 0] : v >= 4 ? ['Ansträngd', 1] : v >= 2 ? ['Syrebrist', 2] : ['Akut syrebrist', 3];
+  const TONE = ['ok', 'warn', 'bad', 'bad'];
+  const lage = (r) => r.p10 == null ? null : r.value < r.p10 ? 'under' : r.value > r.p90 ? 'över' : 'normalt';
+  const flowText = (v) => Math.abs(v) < 5 ? ['↔', 'Nästan stilla', 'knappt alls'] : v > 0 ? ['↑', 'Norrut, ut mot Kattegatt', 'norrut mot Kattegatt'] : ['↓', 'Söderut, in mot Östersjön', 'söderut mot Östersjön'];
+
+  let state = null;
+
+  function render() {
+    const { meta, daily, hourly } = state;
+    const latestAt = meta.latest ? new Date(meta.latest) : null;
+    const ageH = latestAt ? (Date.now() - latestAt) / 36e5 : Infinity;
+    const stale = ageH > STALE_HOURS;
+
+    const last = {};
+    for (const r of daily) if (!last[r.param] || r.date > last[r.param].date) last[r.param] = r;
+
+    set('lastTime', latestAt ? sthlm(latestAt, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : 'saknas');
+    set('fetched', `Senast hämtat ${sthlm(new Date(meta.fetched), { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}.`);
+
+    // Hälsa. Inaktuella data betygsätts inte (SMHI:s villkor och princip 5).
+    const o = last.oxy, t = last.temp;
+    if (stale) {
+      $('stale').hidden = false;
+      $('stale').textContent = latestAt
+        ? `Senaste mätningen är ${Math.floor(ageH)} timmar gammal. Därför visas inget betyg just nu.`
+        : 'Det finns inga aktuella mätningar just nu. Därför visas inget betyg.';
+    }
+    const breath = o && !stale ? oxyGrade(o.value) : null;
+    const tl = t && !stale ? lage(t) : null;
+    const fever = tl ? (tl === 'normalt' ? ['Normal', 0] : ['Avvikande', 1]) : null;
+    const parts = [breath, fever].filter(Boolean);
+    const worst = parts.length === 2 ? Math.max(breath[1], fever[1]) : null;
+    const whole = worst == null ? null : ['Mår bra', 'Lite ansträngd', 'Mår dåligt', 'Mår mycket dåligt'][worst];
+
+    set('verdict', whole ?? 'Okänt', whole ? TONE[worst] : null);
+    set('breath', breath ? breath[0] : 'Okänt', breath ? TONE[breath[1]] : null);
+    set('fever', fever ? fever[0] : 'Okänt', fever ? TONE[fever[1]] : null);
+    set('oxyNow', o && !stale ? fmt(o.value) : '–');
+    set('tempDiff', t && t.normal != null && !stale ? (t.value - t.normal > 0 ? '+' : '') + fmt(t.value - t.normal) : '–');
+    set('verdictWord', whole ? whole.toLowerCase() : 'går inte att bedöma just nu');
+    set('oxyWord', breath ? (breath[0] === 'God' ? 'gott' : breath[0].toLowerCase()) : 'okänt');
+    set('tempWord', !tl ? 'okänd' : tl === 'normalt' ? 'normal för årstiden' : tl === 'över' ? 'varmare än normalt' : 'kallare än normalt');
+
+    // Rörelse
+    const flowRows = hourly.filter((r) => r.flow != null);
+    const f = flowRows[flowRows.length - 1];
+    if (f && !stale) {
+      const [arrow, dir, word] = flowText(f.flow);
+      set('arrow', arrow); set('flowDir', dir); set('flowWord', word);
+      set('slopeText', f.flow >= 0 ? `Skanör står ${fmt(f.flow)} cm högre än Viken` : `Viken står ${fmt(-f.flow)} cm högre än Skanör`);
+    } else {
+      set('arrow', '–'); set('flowDir', 'Okänt'); set('flowWord', 'okänt åt vilket håll'); set('slopeText', stale ? 'Inga aktuella vattenstånd.' : 'Vattenstånd saknas för Skanör eller Viken.');
+    }
+
+    // Vitala värden
+    const vitals = $('vitals');
+    vitals.replaceChildren();
+    const sparks = [];
+    for (const [p, label] of PARAMS) {
+      const r = last[p]; if (!r) continue;
+      const rows = daily.filter((x) => x.param === p);
+      const card = document.createElement('div'); card.className = 'card';
+      const k = document.createElement('p'); k.className = 'k'; k.textContent = label;
+      const valWrap = document.createElement('div');
+      const big = document.createElement('span'); big.className = 'big'; big.textContent = fmt(r.value);
+      const unit = document.createElement('span'); unit.className = 'unit'; unit.textContent = r.unit;
+      valWrap.append(big, unit);
+      const st = document.createElement('div'); st.className = 'state';
+      if (p === 'oxy') {
+        const [g, n] = oxyGrade(r.value); st.textContent = `${g} syrestatus`; st.dataset.tone = TONE[n];
+      } else {
+        const l = lage(r); st.textContent = l ? STATE[p][l] : 'Normalspann saknas';
+        if (p === 'temp' && l) st.dataset.tone = l === 'normalt' ? 'ok' : 'warn';
+      }
+      const sub = document.createElement('p'); sub.className = 'k';
+      sub.textContent = (r.partial ? `Hittills i dag, ${r.n} mätningar. ` : '') +
+        (p === 'oxy' ? 'Inget normalspann, syre mäts bara sedan 2024.' : `Normalt ${fmt(r.p10)} till ${fmt(r.p90)} ${r.unit}, basår ${r.base}.`);
+      card.append(k, valWrap, st);
+      if (r.p10 != null) { const range = document.createElement('div'); range.className = 'range'; card.append(range); drawRange(range, r); }
+      const spark = document.createElement('div'); spark.className = 'spark'; card.append(spark, sub);
+      vitals.append(card);
+      sparks.push([spark, rows, p === 'oxy' ? [6, 4] : null]);
+    }
+    // Rita först när alla kort finns, annars mäts bredden innan rutnätet är klart.
+    for (const args of sparks) drawSpark(...args);
+    drawFlow($('flowchart'), hourly.filter((r) => r.levelS != null && r.levelV != null));
+  }
+
+  function drawRange(el, r) {
+    const lo = Math.min(r.p10, r.value), hi = Math.max(r.p90, r.value), pad = (hi - lo) * 0.15 || 1;
+    const x = (v) => ((v - (lo - pad)) / ((hi + pad) - (lo - pad))) * 100;
+    const mk = (css) => { const d = document.createElement('div'); d.style.cssText = css; el.appendChild(d); };
+    mk('position:absolute;left:0;right:0;top:11px;height:4px;border-radius:2px;background:var(--grid)');
+    mk(`position:absolute;left:${x(r.p10)}%;width:${x(r.p90) - x(r.p10)}%;top:8px;height:10px;border-radius:5px;background:var(--band)`);
+    mk(`position:absolute;left:calc(${x(r.normal)}% - 1px);top:5px;width:2px;height:16px;background:var(--ref)`);
+    mk(`position:absolute;left:calc(${x(r.value)}% - 7px);top:6px;width:14px;height:14px;border-radius:50%;background:var(--series);border:2px solid var(--panel)`);
+    el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', `Värdet ${fmt(r.value)} mot normalt spann ${fmt(r.p10)} till ${fmt(r.p90)}`);
+  }
+
+  function axes(svg, x, y, W, H, m, yTicks, xTicks, xFmt) {
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`)
+      .call(d3.axisLeft(y).ticks(yTicks).tickSize(-(W - m.l - m.r)))
+      .call((g) => { g.select('.domain').remove(); g.selectAll('line').attr('stroke', 'var(--grid)'); });
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`)
+      .call(d3.axisBottom(x).ticks(xTicks).tickFormat(xFmt).tickSizeOuter(0))
+      .call((g) => { g.select('.domain').attr('stroke', 'var(--line)'); g.selectAll('line').attr('stroke', 'var(--line)'); });
+  }
+
+  function hover(el, svg, x, m, W, H, rows, onMove) {
+    const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; el.appendChild(tip);
+    const bis = d3.bisector((r) => r.t).center;
+    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', W - m.l - m.r).attr('height', H).style('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const r = rows[Math.min(rows.length - 1, bis(rows, x.invert(d3.pointer(ev)[0])))];
+        tip.hidden = false; onMove(r, tip);
+        tip.style.left = Math.min(Math.max(0, x(r.t) - tip.offsetWidth / 2), W - tip.offsetWidth) + 'px';
+      })
+      .on('pointerleave', () => { tip.hidden = true; onMove(null, tip); });
+  }
+
+  function drawSpark(el, data, limits) {
+    const rows = data.map((r) => ({ ...r, t: new Date(r.date + 'T12:00:00Z') }));
+    const W = el.clientWidth, H = el.clientHeight; if (!W || !rows.length) return;
+    const m = { t: 6, r: 6, b: 20, l: 32 };
+    const hasBand = rows.some((r) => r.p10 != null);
+    const vals = rows.flatMap((r) => [r.value, r.p10, r.p90]).concat(limits ? [limits[1]] : []).filter((v) => v != null);
+    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.t)).range([m.l, W - m.r]);
+    const y = d3.scaleLinear().domain(d3.extent(vals)).nice(3).range([H - m.b, m.t]);
+    const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', `${rows[0].name} de senaste 90 dagarna`);
+    axes(svg, x, y, W, H, m, 3, W < 360 ? 2 : 3, d3.utcFormat('%-d/%-m'));
+    if (hasBand) {
+      const b = rows.filter((r) => r.p10 != null);
+      svg.append('path').datum(b).attr('d', d3.area().x((r) => x(r.t)).y0((r) => y(r.p10)).y1((r) => y(r.p90))).style('fill', 'var(--band)').style('opacity', 0.6);
+      svg.append('path').datum(b).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r.normal))).style('fill', 'none').style('stroke', 'var(--ref)').style('stroke-dasharray', '3 3');
+    }
+    for (const v of limits || []) {
+      svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(v)).attr('y2', y(v)).style('stroke', v === 6 ? 'var(--warn)' : 'var(--bad)').style('stroke-dasharray', '4 3');
+    }
+    svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r.value))).style('fill', 'none').style('stroke', 'var(--series)').style('stroke-width', 1.8);
+    const dot = svg.append('circle').attr('r', 4).style('fill', 'var(--series)').style('display', 'none');
+    hover(el, svg, x, m, W, H, rows, (r, tip) => {
+      if (!r) { dot.style('display', 'none'); return; }
+      dot.attr('cx', x(r.t)).attr('cy', y(r.value)).style('display', null);
+      tip.textContent = `${d3.utcFormat('%-d/%-m')(r.t)}: ${fmt(r.value)} ${r.unit}` + (r.normal != null ? ` (normalt ${fmt(r.normal)})` : '') + (r.partial ? ', hittills i dag' : '');
+      tip.style.top = Math.max(0, y(r.value) - 40) + 'px';
+    });
+  }
+
+  function drawFlow(el, data) {
+    el.replaceChildren();
+    const rows = data.map((r) => ({ ...r, t: new Date(r.time) }));
+    const W = el.clientWidth, H = el.clientHeight;
+    if (!W) return;
+    if (!rows.length) { el.textContent = 'Vattenstånd saknas just nu.'; return; }
+    const m = { t: 8, r: 8, b: 22, l: 34 };
+    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.t)).range([m.l, W - m.r]);
+    const y = d3.scaleLinear().domain([d3.min(rows, (r) => Math.min(r.levelS, r.levelV)), d3.max(rows, (r) => Math.max(r.levelS, r.levelV))]).nice(4).range([H - m.b, m.t]);
+    const hf = (t) => sthlm(t, { hour: '2-digit', minute: '2-digit' });
+    const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', 'Vattenstånd i Skanör och Viken de senaste 24 timmarna');
+    axes(svg, x, y, W, H, m, 4, W < 360 ? 3 : 6, hf);
+    svg.append('path').datum(rows).attr('d', d3.area().x((r) => x(r.t)).y0((r) => y(r.levelV)).y1((r) => y(r.levelS))).style('fill', 'var(--series)').style('opacity', 0.12);
+    [['levelS', 'var(--series)'], ['levelV', 'var(--series2)']].forEach(([k, c]) =>
+      svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r[k]))).style('fill', 'none').style('stroke', c).style('stroke-width', 2));
+    const rule = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--ref)').style('display', 'none');
+    hover(el, svg, x, m, W, H, rows, (r, tip) => {
+      if (!r) { rule.style('display', 'none'); return; }
+      rule.attr('x1', x(r.t)).attr('x2', x(r.t)).style('display', null);
+      tip.textContent = `${hf(r.t)}: Skanör ${fmt(r.levelS)}, Viken ${fmt(r.levelV)} cm`;
+      tip.style.top = '0px';
+    });
+  }
+
+  function fail(msg) {
+    for (const id of ['verdict', 'breath', 'fever']) set(id, 'Okänt');
+    set('verdictWord', 'går inte att bedöma just nu');
+    $('stale').hidden = false; $('stale').textContent = msg;
+  }
+
+  fetch('data/current.json', { cache: 'no-cache' })
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((d) => { state = d; render(); })
+    .catch(() => fail('Mätningarna gick inte att läsa just nu. Försök igen om en stund.'));
+
+  let w = window.innerWidth;
+  window.addEventListener('resize', () => { if (state && window.innerWidth !== w) { w = window.innerWidth; render(); } });
+})();
+</script>
+</body>
+</html>

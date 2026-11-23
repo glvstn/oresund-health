@@ -1,0 +1,48 @@
+# Hämtar från SMHI en gång i timmen och laddar upp data/current.json till Vercel Blob.
+# Arkivet (normalspann) hämtas bara en gång per dygn och cachas mellan körningarna.
+# Hemlighet som krävs: BLOB_READ_WRITE_TOKEN (från Vercel-projektets Blob-store).
+name: Hämta från SMHI
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - id: day
+        run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: data/base.json
+          key: base-${{ steps.day.outputs.date }}-${{ hashFiles('scripts/fetch_smhi.py') }}
+
+      - name: Arkiv och normalspann (en gång per dygn)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: python3 scripts/fetch_smhi.py base
+
+      - name: Senaste dygnet
+        run: python3 scripts/fetch_smhi.py current
+
+      - name: Ladda upp till Vercel Blob
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: >
+          npx --yes vercel@64.2.0 blob put data/current.json
+          --access public --pathname oresund/current.json
+          --allow-overwrite true --cache-control-max-age 300

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "installCommand": "",
+  "outputDirectory": "app",
+  "rewrites": [
+    {
+      "source": "/data/current.json",
+      "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/current.json"
+    }
+  ]
+}
