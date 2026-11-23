@@ -4,3 +4,4 @@ __pycache__/
 .env*
 app/data
 .vercel
+node_modules/

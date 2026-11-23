@@ -42,7 +42,6 @@ jobs:
       - name: Ladda upp till Vercel Blob
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-        run: >
-          npx --yes vercel@64.2.0 blob put data/current.json
-          --access public --pathname oresund/current.json
-          --allow-overwrite true --cache-control-max-age 300
+        run: |
+          npm install --no-save --no-package-lock --silent @vercel/blob@2.9.0
+          node scripts/upload_blob.mjs

@@ -9,6 +9,7 @@ Nyast överst. Varje beslut: vad, varför, och vad det påverkar.
 - **Inget betyg på gamla data.** Är senaste mätningen äldre än 3 timmar visar sidan inget hälso- eller flödesbetyg, bara ett meddelande. SMHI:s villkor säger att inaktuella data inte ska spridas.
 - **Dagens dygn betygsätts trots att det pågår**, men märks med antal mätningar hittills.
 - **Syre får inget normalspann**, bara de fasta gränserna. Två basår räcker inte.
+- **Inget viktat index (0 till 100).** Prövat och avfärdat. Ett viktat snitt låter bra delvärden dölja syrebrist (princip 3), vikterna saknar stöd hos någon myndighet (princip 2), och förslagen gav betyg åt ström, vågor och trafik (princip 1). Helhetsbetyget förblir det sämsta delbetyget.
 
 ## 2026-11-22
 
@@ -28,6 +29,7 @@ Nyast överst. Varje beslut: vad, varför, och vad det påverkar.
 
 - Klorofyll och alger från Copernicus Marine (kräver konto, satellitdata med molnluckor, troligen veckovärde).
 - Längre syrehistorik från SHARK för ett bättre normalspann.
+- Skiktning, skillnaden mellan ytsalt och bottensalt, som beskriven parameter utan betyg. Kan förklara varför syret sjunker vid botten. Kräver en ytmätning av salthalt vid Flinten eller en närliggande station, inte kontrollerat än.
 - Danska sidan via DMI (kräver API-nyckel; deras vattentemperatur mäts i hamnar och är inte standardiserad).
 - Expertgranskning av tolkningen, till exempel SMHI:s oceanografer, DTU Aqua eller Öresundsvattensamarbetet.
 - Fisk och biologisk mångfald: årsdata, passar som långsiktig trend snarare än levande värde.
