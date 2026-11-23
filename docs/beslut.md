@@ -2,6 +2,10 @@
 
 Nyast överst. Varje beslut: vad, varför, och vad det påverkar.
 
+## 2026-11-24
+
+- **Salthalt hör till Vitala värden, inte Rörelse.** Kortet har legat under Vitala värden sedan perioderna infördes, men README och `docs/indikatorer.md` räknade den fortfarande till Rörelse. Salthalten får fortfarande inget betyg: ingen myndighet bedömer kustvatten efter salthalt, inflöden är väder (princip 1), och skiktningens effekt på botten syns redan i syret. Bara texterna är ändrade.
+
 ## 2026-11-23
 
 - **Ny del: Påverkan.** Sidan får en tredje del bredvid Hälsa och Rörelse, för det människor gör mot sundet: sjöfart, avloppsvatten från reningsverk och bräddningar. Påverkan beskrivs mot det normala eller som händelser, men betygsätts aldrig och påverkar inte helhetsbetyget. Varför: effekten på havet är troligen negativ men det finns ingen myndighetsgräns för hur mycket som är för mycket (princip 2), och ett antal fartyg eller en utsläppt volym säger inte hur sundet mår. Skillnaden mot Rörelse är att salthalt och ström är natur, medan Påverkan är mänsklig belastning (HELCOM skiljer på samma sätt mellan belastning och tillstånd). Delen ska visa att faktorerna finns, inte data för datans skull, och säga rakt ut att det saknas gräns. Sjöfart är byggd, övriga källor står under öppna frågor och i `docs/datakallor.md`.

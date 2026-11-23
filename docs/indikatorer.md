@@ -8,12 +8,18 @@
 | Temperatur | Dygnsmedel vid botten mot normalt, hela dygn | Över p90 tre dygn i rad: För varm. Annars: Normal. Kallare än normalt ger ingen varning |
 | Helhet | Sämsta delbetyget | Mår bra, Lite ansträngd, Mår dåligt, Mår mycket dåligt |
 
+## Vitala värden utan betyg (beskrivs mot normalt)
+
+| Mått | Beskrivning |
+|---|---|
+| Salthalt vid botten | Över normalt betyder att salt Kattegattvatten trängt in, under normalt Östersjövatten. Ingen myndighetsgräns, och salt inflöde är väder (princip 1) |
+| Klorofyll vid ytan, satellit | Median över en ruta kring Flinten, molnfria dygn mars till oktober. Mindre, normalt eller mer alger än normalt. Satelliten visar högre värden än vattenproven, så ingen jämförelse med HaV:s gränser |
+
 ## Rörelse (beskrivs)
 
 | Mått | Beskrivning |
 |---|---|
 | Vattenstånd Klagshamn | Lågvatten, normalt eller högvatten mot normalspannet |
-| Salthalt vid botten | Över normalt betyder att salt Kattegattvatten trängt in, under normalt Östersjövatten |
 | Strömhastighet | Lugnare, normal eller kraftigare än normalt |
 | Flöde | Skanör minus Viken. Över +5 cm norrut, under -5 cm söderut, däremellan nästan stilla |
 

@@ -7,7 +7,8 @@ En dashboard som visar hur havet utanför Malmö mår, ungefär som Apple Health
 Havsdata är många parametrar med komplexa värden. Sidan ska göra dem begripliga för någon som inte är oceanograf:
 
 - **Hälsa** får betyg: syre vid botten och temperatur mot normalt för årstiden.
-- **Rörelse** beskrivs men betygsätts inte: vattenstånd, salthalt, ström och flödesriktning.
+- **Vitala värden** visar temperatur, syre, salthalt och klorofyll över tid. Salthalt och klorofyll jämförs med det normala men betygsätts inte.
+- **Rörelse** beskrivs men betygsätts inte: vattenstånd, ström och flödesriktning.
 - **Påverkan** beskrivs men betygsätts inte: det människor gör mot sundet, i dag sjöfart.
 - Varje värde jämförs med vad som är **normalt för samma vecka** under tidigare år.
 
