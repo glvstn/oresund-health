@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hur mår Öresund</title>
+<title>Hur mår Öresund?</title>
 <meta name="description" content="Hur havet utanför Malmö mår just nu, jämfört med det normala för årstiden. Data från SMHI.">
 <style>
 :root {
@@ -149,7 +149,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <div>
           <h1>Hur mår Öresund</h1>
           <p class="lead">Öresund <b id="verdictWord">…</b>. Syret vid botten är <b id="oxyWord">…</b>, temperaturen är <b id="tempWord">…</b>, och vattnet strömmar <b id="flowWord">…</b>.</p>
-          <p class="synced">Senaste mätning <span id="lastTime">…</span>, SMHI:s stationer mitt i sundet sydväst om Malmö. Hämtas en gång i timmen.</p>
+          <p class="synced">Senaste mätning <span id="lastTime">…</span>. Hämtas en gång i timmen.</p>
         </div>
       </div>
       <p class="banner" id="stale" hidden></p>
@@ -261,7 +261,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     </section>
 
     <footer>
-      Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer. Datat är bearbetat: dygnsmedel, normalspann och syre omräknat till mg/l. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span><br>
+      Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer från stationerna Flinten 7 och Flinten 16 mitt i sundet sydväst om Malmö, och vattenstånd från Klagshamn, Skanör och Viken. Datat är bearbetat: dygnsmedel, normalspann, syre omräknat till mg/l och salthalt till procent. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span><br>
       Näringsämnen och klorofyll: <a href="https://shark.smhi.se">SMHI, SHARK</a>, insamlat av NIRAS på uppdrag av <a href="https://www.oresunds-vvf.se">Öresunds vattenvårdsförbund</a>. Licens CC0. Bearbetat till treårsmedel och bedömt enligt HVMFS 2019:25.
     </footer>
   </main>
@@ -367,14 +367,25 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       const today = days[days.length - 1] || {};
       return hourly.filter((h) => h[p] != null).map((h) => {
         const t = new Date(h.time);
-        return { t, value: h[p], p10: today.p10, normal: today.normal, p90: today.p90, unit: today.unit, label: clock(t) };
+        return { t, value: h[p], p10: today.p10, normal: today.normal, p90: today.p90, unit: today.unit, dec: DEC[p] ?? 1, label: clock(t) };
       });
     }
     // Perioder räknas på hela dygn, det pågående dygnet är inte med.
     return days.filter((r) => !r.partial).slice(-PERIODS[per][0]).map((r) => {
       const t = new Date(r.date + 'T12:00:00Z');
-      return { ...r, t, label: sthlm(t, { day: 'numeric', month: 'short', ...(per === 'ar' ? { year: 'numeric' } : {}) }) };
+      return { ...r, t, dec: DEC[p] ?? 1, label: sthlm(t, { day: 'numeric', month: 'short', ...(per === 'ar' ? { year: 'numeric' } : {}) }) };
     });
+  }
+
+  // Salthalt visas i procent. SMHI mäter i PSU, som i praktiken är promille (g salt per kg vatten), så procent = PSU / 10.
+  const DEC = { salt: 2 };
+  function toPercent(d) {
+    for (const r of d.daily) if (r.param === 'salt') {
+      for (const k of ['value', 'p10', 'normal', 'p90']) if (r[k] != null) r[k] = r[k] / 10;
+      r.unit = '%';
+    }
+    for (const h of d.hourly) if (h.salt != null) h.salt = h.salt / 10;
+    return d;
   }
 
   let state = null;
@@ -455,6 +466,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       const r = last[p]; if (!r) continue;
       const tint = `var(--t-${p})`;
       const rows = series(p, period);
+      const dp = DEC[p] ?? 1;
       const card = el('div', 'card'); card.id = `v-${p}`; card.style.setProperty('--tint', tint);
 
       const head = el('div', 'head');
@@ -469,7 +481,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       let range = null, foot;
       if (isDay) {
         const nowRow = [...hourly].reverse().find((h) => h[p] != null);
-        val.append(el('span', 'big', fmt(nowRow && !stale ? nowRow[p] : r.value)), el('span', 'unit', r.unit));
+        val.append(el('span', 'big', fmt(nowRow && !stale ? nowRow[p] : r.value, dp)), el('span', 'unit', r.unit));
         // Syre mot fasta gränser, temperatur mot normalt. Övriga beskrivs utan betyg.
         if (p === 'oxy') {
           const [g, n] = oxyGrade(r.value); setStatus(st, `${g} syrestatus`, TONES[n]);
@@ -478,13 +490,13 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         } else {
           const l = lage(r); st.textContent = l ? STATE[p][l] : 'Normalspann saknas';
         }
-        foot = `Dygnsmedel ${r.partial ? `hittills i dag ${fmt(r.value)} ${r.unit}, ${r.n} mätningar` : `${fmt(r.value)} ${r.unit}`}. ` +
-          (p === 'oxy' ? 'Inget normalspann, syre mäts bara sedan 2024.' : `Normalt ${fmt(r.p10)} till ${fmt(r.p90)} ${r.unit}, basår ${r.base}.`);
+        foot = `Dygnsmedel ${r.partial ? `hittills i dag ${fmt(r.value, dp)} ${r.unit}, ${r.n} mätningar` : `${fmt(r.value, dp)} ${r.unit}`}. ` +
+          (p === 'oxy' ? 'Inget normalspann, syre mäts bara sedan 2024.' : `Normalt ${fmt(r.p10, dp)} till ${fmt(r.p90, dp)} ${r.unit}, basår ${r.base}.`);
       } else {
         const N = rows.length, want = PERIODS[period][0];
         const v = rows.map((x) => x.value);
-        val.append(el('span', 'big', N ? fmt(d3.mean(v)) : '–'), el('span', 'unit', r.unit));
-        if (N) range = el('p', 'range', `Lägst ${fmt(d3.min(v))}, högst ${fmt(d3.max(v))} ${r.unit}`);
+        val.append(el('span', 'big', N ? fmt(d3.mean(v), dp) : '–'), el('span', 'unit', r.unit));
+        if (N) range = el('p', 'range', `Lägst ${fmt(d3.min(v), dp)}, högst ${fmt(d3.max(v), dp)} ${r.unit}`);
         if (!N) {
           st.textContent = 'Inga hela dygn med mätningar';
         } else if (p === 'oxy') {
@@ -510,6 +522,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       if (rows.length) xlab.append(el('span', null, rows[0].label), el('span', null, rows[rows.length - 1].label));
       card.append(head, el('p', 'k', `${cap(PERIODS[period][2])}, ${where.toLowerCase()}`), val);
       if (range) card.append(range);
+      if (p === 'salt') foot += ' Salthalten visas i procent, gram salt per 100 gram vatten. SMHI mäter i PSU, som i praktiken är promille, så 1,4 % motsvarar 14 PSU. Världshaven ligger kring 3,5 %.';
       card.append(chart, xlab, st, el('p', 'foot', foot));
       vitals.append(card);
       minis.push([chart, rows, p === 'oxy' ? [6, 4] : null, tint, `${name}, ${PERIODS[period][1]}`]);
@@ -601,7 +614,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     hover(el, svg, x, m, W, H, rows, (r, tip) => {
       if (!r) { dot.style('display', 'none'); return; }
       dot.attr('cx', x(r.t)).attr('cy', y(r.value)).style('display', null);
-      tip.textContent = `${r.label}: ${fmt(r.value)} ${r.unit}` + (r.normal != null ? ` (normalt ${fmt(r.normal)})` : '');
+      tip.textContent = `${r.label}: ${fmt(r.value, r.dec)} ${r.unit}` + (r.normal != null ? ` (normalt ${fmt(r.normal, r.dec)})` : '');
       tip.style.top = (H + 6) + 'px';
     });
   }
@@ -656,7 +669,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 
   fetch('data/current.json', { cache: 'no-cache' })
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then((d) => { state = d; render(); })
+    .then((d) => { state = toPercent(d); render(); })
     .catch(() => fail('Mätningarna gick inte att läsa just nu. Försök igen om en stund.'));
 
   let w = window.innerWidth;
