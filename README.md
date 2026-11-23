@@ -13,7 +13,7 @@ Havsdata är många parametrar med komplexa värden. Sidan ska göra dem begripl
 ## Status
 
 - Prototyp som ögonblicksbild, 22 november 2026: https://claude.ai/artifact/NBfdH9skWg3CzdSAwW3qyE
-- Sajten finns i `app/`. Den ska driftas på Vercel med data som GitHub Actions hämtar varje timme.
+- Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timme av GitHub Actions i https://github.com/glvstn/oresund-health.
 
 ## Mappar
 
@@ -39,7 +39,7 @@ Skriptet använder bara Pythons standardbibliotek. `base` hämtar arkivet och sk
 1. GitHub Actions kör `scripts/fetch_smhi.py` varje timme. Arkivet hämtas bara första körningen varje dygn och cachas.
 2. `data/current.json` laddas upp till Vercel Blob som `oresund/current.json`.
 3. Vercel servar `app/` och skickar `/data/current.json` vidare till Blob (se `vercel.json`).
-4. Är senaste mätningen äldre än 3 timmar visar sidan inget betyg.
+4. Är senaste mätningen äldre än 6 timmar visar sidan inget betyg.
 
 ## Källor
 

@@ -138,7 +138,7 @@ a { color: inherit; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
 (() => {
-  const STALE_HOURS = 3;
+  const STALE_HOURS = 6;  // SMHI ligger cirka 2 h efter, plus timvis hämtning och cache
   const PARAMS = [
     ['temp', 'Temperatur vid botten, 8 m'],
     ['oxy', 'Syrehalt vid botten, 8 m'],

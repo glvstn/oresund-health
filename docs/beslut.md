@@ -6,7 +6,7 @@ Nyast överst. Varje beslut: vad, varför, och vad det påverkar.
 
 - **Drift: GitHub Actions hämtar, Vercel visar.** Vercels gratisplan tillåter bara schemalagda jobb en gång per dygn. Därför kör GitHub Actions `scripts/fetch_smhi.py` varje timme och laddar upp `current.json` till Vercel Blob. Sajten i `app/` är statisk och läser bara den filen. Besökare frågar aldrig SMHI.
 - **Arkivet hämtas en gång per dygn.** Normalspann och de senaste 100 dygnens timvärden sparas i `base.json` och cachas i Actions. Varje timme hämtas bara senaste dygnet (sju små anrop). Följer SMHI:s villkor om onödiga nedladdningar.
-- **Inget betyg på gamla data.** Är senaste mätningen äldre än 3 timmar visar sidan inget hälso- eller flödesbetyg, bara ett meddelande. SMHI:s villkor säger att inaktuella data inte ska spridas.
+- **Inget betyg på gamla data.** Är senaste mätningen äldre än 6 timmar visar sidan inget hälso- eller flödesbetyg, bara ett meddelande. SMHI:s senaste värde ligger normalt cirka 2 timmar efter, och hämtning varje timme plus cache lägger till upp till 1,5 timme, så 6 timmar ger marginal utan att visa gamla data som aktuella. SMHI:s villkor säger att inaktuella data inte ska spridas.
 - **Dagens dygn betygsätts trots att det pågår**, men märks med antal mätningar hittills.
 - **Syre får inget normalspann**, bara de fasta gränserna. Två basår räcker inte.
 - **Inget viktat index (0 till 100).** Prövat och avfärdat. Ett viktat snitt låter bra delvärden dölja syrebrist (princip 3), vikterna saknar stöd hos någon myndighet (princip 2), och förslagen gav betyg åt ström, vågor och trafik (princip 1). Helhetsbetyget förblir det sämsta delbetyget.
