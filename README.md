@@ -24,14 +24,47 @@ Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timm
 - `.github/workflows/refresh.yml` hämtar varje timme och laddar upp till Vercel Blob
 - `data/` uttag (inte incheckat)
 
-## Kom igång
+## Kör sidan lokalt
 
 ```
-python3 scripts/fetch_smhi.py          # hämtar arkiv och senaste dygnet
-cd app && python3 -m http.server 8000  # öppna http://localhost:8000
+npm run dev       # öppna http://localhost:8000
+npm run data      # hämta senaste dygnet från SMHI, högst en gång i timmen
+npm run data:all  # hämta om arkivet och normalspannet
 ```
 
-Skriptet använder bara Pythons standardbibliotek. `base` hämtar arkivet och skriver `data/base.json`, `current` hämtar senaste dygnet och skriver `data/current.json`. Utan argument körs båda. `app/data` är en länk till `data/`.
+`npm run dev` skapar länken `app/data` om den saknas och hämtar data om det inte finns någon än. Den hämtar inte ny data varje gång, så starta om servern hur ofta du vill. Ingen `npm install` behövs, projektet har inga beroenden. Själva hämtningen görs av Python 3.
+
+### Samma sak för hand
+
+Det här är vad npm-skripten gör.
+
+1. Hämta data från SMHI. Första gången behövs båda stegen, det tar en stund eftersom hela arkivet hämtas:
+
+   ```
+   python3 scripts/fetch_smhi.py
+   ```
+
+   Sedan räcker det att hämta senaste dygnet. Gör det högst en gång i timmen, enligt SMHI:s villkor:
+
+   ```
+   python3 scripts/fetch_smhi.py current
+   ```
+
+2. Länka in datat i sajten. Behövs bara en gång efter kloning, länken är inte incheckad:
+
+   ```
+   ln -s ../data app/data
+   ```
+
+3. Starta en lokal server och öppna http://localhost:8000:
+
+   ```
+   cd app && python3 -m http.server 8000
+   ```
+
+   Sidan måste köras via en server. Öppnar du `index.html` direkt som fil kan webbläsaren inte läsa `data/current.json`.
+
+`base` hämtar arkivet och skriver `data/base.json` (normalspann), `current` hämtar senaste dygnet och skriver `data/current.json`. Utan argument körs båda. Är `data/current.json` äldre än 6 timmar visar sidan inget betyg, kör då `current` igen.
 
 ## Drift
 

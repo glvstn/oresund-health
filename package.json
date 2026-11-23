@@ -1,0 +1,10 @@
+{
+  "name": "oresund-health",
+  "private": true,
+  "description": "Hur mår Öresund. Statisk sida, data från SMHI via Python-skript.",
+  "scripts": {
+    "dev": "[ -e app/data ] || ln -s ../data app/data; [ -e data/current.json ] || python3 scripts/fetch_smhi.py; echo 'Öppna http://localhost:8000'; cd app && python3 -m http.server 8000",
+    "data": "python3 scripts/fetch_smhi.py current",
+    "data:all": "python3 scripts/fetch_smhi.py"
+  }
+}

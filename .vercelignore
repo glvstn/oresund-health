@@ -3,3 +3,4 @@ app/data
 scripts
 docs
 .github
+package.json
