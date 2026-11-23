@@ -2,7 +2,9 @@
 # Startas en gång i timmen (minut 17) av cron-job.org via workflow_dispatch, inte av GitHubs schema,
 # som aldrig startade. Ha inte båda igång, då kan SMHI få två anrop samma timme. Se docs/beslut.md.
 # Arkivet (normalspann) hämtas bara en gång per dygn och cachas mellan körningarna.
-# Hemlighet som krävs: BLOB_READ_WRITE_TOKEN (från Vercel-projektets Blob-store).
+# Klorofyll från Copernicus Marine hämtas också en gång per dygn (data/klorofyll.json, cachas).
+# Hemligheter som krävs: BLOB_READ_WRITE_TOKEN (från Vercel-projektets Blob-store),
+# COPERNICUSMARINE_SERVICE_USERNAME och COPERNICUSMARINE_SERVICE_PASSWORD.
 name: Hämta från SMHI
 
 on:
@@ -38,6 +40,23 @@ jobs:
 
       - name: Senaste dygnet
         run: python3 scripts/fetch_smhi.py current
+
+      - id: chl
+        uses: actions/cache@v6
+        with:
+          path: data/klorofyll.json
+          key: chl-${{ steps.day.outputs.date }}-${{ hashFiles('scripts/fetch_copernicus.py') }}
+
+      - name: Klorofyll från Copernicus (en gång per dygn)
+        if: steps.chl.outputs.cache-hit != 'true'
+        # Ett fel här ska inte stoppa SMHI-datat, sidan visar då klorofyll från förra lyckade körningen.
+        continue-on-error: true
+        env:
+          COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
+          COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
+        run: |
+          pip install --quiet copernicusmarine==2.3.0
+          python3 scripts/fetch_copernicus.py
 
       - name: Ladda upp till Vercel Blob
         env:

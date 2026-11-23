@@ -10,7 +10,7 @@
   --bg: #f2f2f7; --panel: #ffffff; --side: #f9f9fb; --fg: #000000; --muted: #747578; --note: #6d6d70; --line: #e5e5ea; --fill: #e9e9ee;
   --ok: #34c759; --warn: #ff9500; --bad: #ff3b30; --unknown: #aeaeb2;
   --accent: #007aff;
-  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759;
+  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759; --t-chl: #00c7be;
   --series2: #ff6b3d; --band: #d6d6dc; --ref: #9a9aa0; --grid: #efeff3;
   --hero: linear-gradient(180deg, #8fd3f4 0%, #a9b8f5 38%, #c9c3f0 62%, rgb(242 242 247 / 0) 100%);
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -21,7 +21,7 @@
     --bg: #000000; --panel: #1c1c1e; --side: #111113; --fg: #ffffff; --muted: #98989f; --note: #98989f; --line: #2c2c2e; --fill: #2c2c2e;
     --ok: #30d158; --warn: #ff9f0a; --bad: #ff453a; --unknown: #636366;
     --accent: #0a84ff;
-    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f; --t-naring: #30d158;
+    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f; --t-naring: #30d158; --t-chl: #63e6e2;
     --series2: #ff8a5c; --band: #3a3a3e; --ref: #7c7c82; --grid: #262628;
     --hero: linear-gradient(180deg, #0d4a6b 0%, #2a2f6e 40%, #2d2347 64%, rgb(0 0 0 / 0) 100%);
     color-scheme: dark;
@@ -77,6 +77,9 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .ntab .sep { grid-column: 1 / -1; color: var(--muted); font-size: 13px; padding: 12px 0 2px; border-bottom: 0; }
 @media (max-width: 520px) { .ntab { grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); } .ntab .lim { display: none; } }
 .cards.three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+/* Vitala värden: två kort per rad, ett på smal skärm */
+.cards.two { grid-template-columns: 1fr; }
+@media (min-width: 600px) { .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .card { background: var(--panel); border-radius: 14px; padding: 14px 16px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; position: relative; scroll-margin-top: 24px; box-shadow: 0 1px 2px rgb(0 0 0 / .04); }
 .head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
 .cat { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 17px; color: var(--tint); min-width: 0; }
@@ -114,6 +117,9 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 /* Ström: fotnoten längst ned när kortet sträcks till Vattenståndets höjd */
 #strom { grid-template-rows: auto auto auto auto 1fr; }
 #strom .foot { align-self: end; }
+/* Klorofyll: texten längst ned i kortet när kortet sträcks till grannens höjd */
+#v-chl { display: flex; flex-direction: column; }
+#v-chl .foot { margin-top: auto; }
 .about p { font-size: 17px; margin: 0; max-width: 80ch; }
 .about h3 { font-size: 17px; font-weight: 600; margin: 20px 0 4px; }
 .dir { width: 30px; height: 30px; display: inline-block; vertical-align: -3px; margin-right: 4px; color: var(--fg); transition: transform .3s; }
@@ -134,6 +140,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       <li><a href="#v-temp"><svg class="ico" style="color:var(--t-temp)" data-icon="temp"></svg>Temperatur</a></li>
       <li><a href="#v-oxy"><svg class="ico" style="color:var(--t-oxy)" data-icon="oxy"></svg>Syre</a></li>
       <li><a href="#v-salt"><svg class="ico" style="color:var(--t-salt)" data-icon="salt"></svg>Salthalt</a></li>
+      <li><a href="#v-chl"><svg class="ico" style="color:var(--t-chl)" data-icon="chl"></svg>Klorofyll</a></li>
       <li><a href="#naring"><svg class="ico" style="color:var(--t-naring)" data-icon="naring"></svg>Näringsämnen</a></li>
       <li><a href="#strom"><svg class="ico" style="color:var(--t-flow)" data-icon="flow"></svg>Ström</a></li>
       <li><a href="#vattenstand"><svg class="ico" style="color:var(--t-level)" data-icon="level"></svg>Vattenstånd</a></li>
@@ -188,7 +195,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <button type="button" data-period="manad">Månad</button>
         <button type="button" data-period="ar">År</button>
       </div>
-      <div class="cards three" id="vitals"></div>
+      <div class="cards two" id="vitals"></div>
     </section>
 
     <section id="rorelse">
@@ -234,6 +241,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <li>Hög salthalt vid botten är salt Kattegattvatten under det sötare Östersjövattnet. Det är naturligt, inte ohälsa.</li>
         <li>Strömmens riktning räknas från vattenståndet, eftersom det är oklart hur SMHI anger mätarens riktning. Farten kommer från mätaren. Vid hård vind kan ytströmmen tillfälligt gå åt andra hållet.</li>
         <li>Näringsämnen och klorofyll provtas varje månad vid Klagshamn och når SMHI ett till två år senare. De bedöms som treårsmedel mot Havs- och vattenmyndighetens gränser och påverkar inte hälsobetyget.</li>
+        <li>Klorofyll visar hur mycket växtplankton det finns i ytan. Det mäts från satellit (Sentinel-3) över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn. Från november till februari står solen för lågt för att värdena ska gå att lita på, så då saknas klorofyll. Satelliten visar högre värden än vattenproven vid Klagshamn, därför jämförs värdet bara med det normala för datumet 2017 till 2025 och får inget betyg.</li>
         <li>Tolkningen är inte granskad av någon expert. Alger och fisk saknas ännu.</li>
       </ul>
       </div>
@@ -261,7 +269,8 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 
     <footer>
       Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer från stationerna Flinten 7 och Flinten 16 mitt i sundet sydväst om Malmö, och vattenstånd från Klagshamn, Skanör och Viken. Datat är bearbetat: dygnsmedel, normalspann, syre omräknat till mg/l och salthalt till procent. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span><br>
-      Näringsämnen och klorofyll: <a href="https://shark.smhi.se">SMHI, SHARK</a>, insamlat av NIRAS på uppdrag av <a href="https://www.oresunds-vvf.se">Öresunds vattenvårdsförbund</a>. Licens CC0. Bearbetat till treårsmedel och bedömt enligt HVMFS 2019:25.
+      Näringsämnen och klorofyll: <a href="https://shark.smhi.se">SMHI, SHARK</a>, insamlat av NIRAS på uppdrag av <a href="https://www.oresunds-vvf.se">Öresunds vattenvårdsförbund</a>. Licens CC0. Bearbetat till treårsmedel och bedömt enligt HVMFS 2019:25.<br>
+      Klorofyll: Generated using E.U. Copernicus Marine Service Information, <a href="https://doi.org/10.48670/moi-00294">doi.org/10.48670/moi-00294</a> och <a href="https://doi.org/10.48670/moi-00296">doi.org/10.48670/moi-00296</a>. Bearbetat till median över en ruta kring Flinten och normalspann.
     </footer>
   </main>
   </div>
@@ -281,6 +290,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     salt: { under: 'Sötare än normalt, Östersjövatten', normalt: 'Normalt för årstiden', över: 'Saltare än normalt, Kattegattvatten vid botten' },
     level: { under: 'Lågvatten', normalt: 'Normalt vattenstånd', över: 'Högvatten' },
     speed: { under: 'Lugnare än normalt', normalt: 'Normal ström', över: 'Kraftigare ström än normalt' },
+    chl: { under: 'Mindre alger än normalt', normalt: 'Normalt för årstiden', över: 'Mer alger än normalt' },
   };
 
   // Ikoner, 24x24
@@ -289,6 +299,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     oxy: '<g fill="currentColor"><circle cx="8.5" cy="15" r="5.5"/><circle cx="17" cy="7" r="3.5"/><circle cx="18.5" cy="16.5" r="2.2"/></g>',
     temp: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M14 14.6V5a2 2 0 0 0-4 0v9.6a4 4 0 1 0 4 0z"/><circle cx="12" cy="17.8" r="1.8" fill="currentColor"/>',
     naring: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 21v-9"/><path fill="currentColor" d="M12 12c0-4.4 2.6-7 7.5-7 0 4.7-3.2 7-7.5 7zM12 14.6c0-3.4-2.1-5.6-6-5.6 0 3.8 2.5 5.6 6 5.6z"/>',
+    chl: '<g fill="currentColor"><ellipse cx="8" cy="9" rx="5.2" ry="3.4" transform="rotate(-30 8 9)"/><circle cx="16.5" cy="7" r="3"/><ellipse cx="13.5" cy="16.5" rx="5.6" ry="3.2" transform="rotate(20 13.5 16.5)"/></g>',
     salt: '<path fill="currentColor" d="M12 2.8s-6.2 6.8-6.2 11.4a6.2 6.2 0 0 0 12.4 0C18.2 9.6 12 2.8 12 2.8z"/>',
     level: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2.5 8.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 13c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 17.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0"/>',
     speed: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 8.5h10.5a3 3 0 1 0-3-3M3 12.5h15a3 3 0 1 1-3 3M3 16.5h6"/>',
@@ -358,6 +369,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   const SHORT = {
     temp: { under: 'kallare än normalt', över: 'varmare än normalt' },
     salt: { under: 'sötare än normalt', över: 'saltare än normalt' },
+    chl: { under: 'mindre alger än normalt', över: 'mer alger än normalt' },
   };
   const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
   let period = 'dygn';
@@ -394,6 +406,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 
   let state = null;
   let naring = null;
+  let chl = null;
 
   function render() {
     const { meta, daily, hourly } = state;
@@ -531,6 +544,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       vitals.append(card);
       minis.push([chart, rows, p === 'oxy' ? [6, 4] : null, tint, `${name}, ${PERIODS[period][1]}`]);
     }
+    if (chl) { const [card, mini] = chlCard(chl, el); vitals.append(card); if (mini) minis.push(mini); }
     if (naring) vitals.append(naringCard(naring, el));
     // Rita först när alla kort finns, annars mäts bredden innan rutnätet är klart.
     $('speedMini').replaceChildren();
@@ -548,6 +562,77 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     if (Math.abs(flow) < 5) { a.innerHTML = '<path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M3.5 12h17M8 7.5 3.5 12 8 16.5M16 7.5l4.5 4.5-4.5 4.5"/>'; a.style.transform = ''; return; }
     a.innerHTML = arrow;
     a.style.transform = flow > 0 ? '' : 'rotate(180deg)';
+  }
+
+  // Klorofyll vid ytan från satellit (Copernicus Marine). Bara molnfria dygn mars till oktober, inget betyg (docs/beslut.md).
+  // Dygn visar senaste molnfria dygnet och de senaste 30 dygnen. Övriga perioder räknar de molnfria dygnen i perioden.
+  const CHL_FRESH_DAYS = 14;  // äldre än så räknas inte som läget nu
+  const doyOf = (t) => {
+    const m = t.getUTCMonth(), d = m === 1 && t.getUTCDate() === 29 ? 28 : t.getUTCDate();
+    return Math.round((Date.UTC(2001, m, d) - Date.UTC(2001, 0, 1)) / 864e5);
+  };
+  function chlCard(c, el) {
+    const { meta } = c, unit = meta.unit, [s0, s1] = meta.season, isDay = period === 'dygn';
+    const span = isDay ? 30 : PERIODS[period][0];
+    const noon = (d) => new Date(d + 'T12:00:00Z');
+    const now = new Date(); now.setUTCHours(12, 0, 0, 0);
+    const from = new Date(now - span * 864e5);
+    const label = (t) => sthlm(t, { day: 'numeric', month: 'short', ...(period === 'ar' ? { year: 'numeric' } : {}) });
+    const rows = c.daily.map((r) => ({ ...r, t: noon(r.date), unit, dec: 2 })).filter((r) => r.t > from)
+      .map((r) => ({ ...r, label: label(r.t) }));
+    // Normalspannet för varje dag i perioden, så att bandet syns även dagar utan värde. Saknas på vintern.
+    const band = d3.range(span, -1, -1).map((i) => {
+      const t = new Date(now - i * 864e5), n = c.normals[doyOf(t)];
+      return { t, p10: n?.[0] ?? null, normal: n?.[1] ?? null, p90: n?.[2] ?? null };
+    });
+    const month = now.getUTCMonth() + 1, inSeason = month >= s0 && month <= s1;
+    const last = c.daily[c.daily.length - 1];
+    const lastAt = last && noon(last.date);
+    const fresh = last && (now - lastAt) / 864e5 <= CHL_FRESH_DAYS;
+    const long = (t) => sthlm(t, { day: 'numeric', month: 'long' });
+    const missing = inSeason ? 'Inga molnfria dygn' : 'Inga satellitvärden på vintern';
+
+    const card = el('div', 'card'); card.id = 'v-chl'; card.style.setProperty('--tint', 'var(--t-chl)');
+    const head = el('div', 'head');
+    const cat = el('span', 'cat');
+    cat.innerHTML = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS.chl}</svg>`;
+    cat.append('Klorofyll');
+    head.append(cat, el('span', 'time', lastAt ? sthlm(lastAt, { day: 'numeric', month: 'short' }) : ''));
+    const val = el('div', 'val'), st = el('div', 'status sm');
+    let range = null, foot;
+    if (isDay) {
+      val.append(el('span', 'big', fresh ? fmt(last.value, 2) : '–'), el('span', 'unit', unit));
+      const l = fresh && lage(last);
+      st.textContent = fresh ? (l ? STATE.chl[l] : 'Normalspann saknas') : inSeason && last ? `Inget molnfritt dygn sedan ${long(lastAt)}` : missing;
+      foot = fresh ? `Molnfritt ${long(lastAt)}. Normalt ${fmt(last.p10, 2)} till ${fmt(last.p90, 2)} ${unit} för datumet, basår ${meta.base}. `
+        : (last ? `Senaste molnfria dygnet var ${long(lastAt)}, ${fmt(last.value, 2)} ${unit}. ` : '') + (inSeason ? '' : 'Satelliten ger värden igen i mars. ');
+    } else {
+      const N = rows.length, v = rows.map((x) => x.value);
+      val.append(el('span', 'big', N ? fmt(d3.mean(v), 2) : '–'), el('span', 'unit', unit));
+      if (N) range = el('p', 'range', `Lägst ${fmt(d3.min(v), 2)}, högst ${fmt(d3.max(v), 2)} ${unit}`);
+      if (!N) st.textContent = missing;
+      else {
+        const k = { under: 0, över: 0 };
+        for (const x of rows) { const l = lage(x); if (l in k) k[l]++; }
+        const parts = ['under', 'över'].filter((l) => k[l]).map((l, i) => i ? `${SHORT.chl[l].split(' ')[0]} ${k[l]}` : `${SHORT.chl[l]} ${k[l]} av ${N} dygn`);
+        st.textContent = parts.length ? cap(parts.join(', ')) : `Normalt för årstiden alla ${N} dygn`;
+      }
+      foot = `Molnfritt ${N} av ${span} dygn. Varje dygn jämfört med det normala för sitt datum, basår ${meta.base}. `;
+    }
+    foot += 'Klorofyll visar hur mycket växtplankton det finns. Mäts från satellit i ytan över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn mars till oktober. ' +
+      'Satelliten visar högre värden än vattenproven, så värdet jämförs bara med sitt eget normala och får inget betyg.';
+
+    card.append(head, el('p', 'k', isDay ? 'Senaste molnfria dygnet, ytan' : `${cap(PERIODS[period][2])}, ytan`), val);
+    if (range) card.append(range);
+    let mini = null;
+    if (rows.length && (fresh || !isDay)) {
+      const chart = el('div', 'chart'), xlab = el('div', 'xlab');
+      xlab.append(el('span', null, label(band[0].t)), el('span', null, label(band[band.length - 1].t)));
+      card.append(chart, xlab);
+      mini = [chart, rows, null, 'var(--t-chl)', `Klorofyll, molnfria dygn de senaste ${span} dygnen`, { dots: true, band }];
+    }
+    card.append(st, el('p', 'foot', foot));
+    return [card, mini];
   }
 
   // Näringsämnen: treårsmedel från SHARK, bedömt enligt HaV. Följer inte periodväljaren och påverkar inte hälsobetyget.
@@ -596,22 +681,25 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   }
 
   // Litet diagram utan axlar, som i Apple Hälsa. Normalspannet syns som grått band.
-  function drawMini(el, rows, limits, tint, label) {
+  // opts.dots: prickar i stället för linje, för serier med luckor. opts.band: normalspann för varje dag, null där det saknas.
+  function drawMini(el, rows, limits, tint, label, opts = {}) {
     const W = el.clientWidth, H = el.clientHeight; if (!W || !rows.length) return;
     const m = { t: 4, r: 5, b: 4, l: 0 };
-    const vals = rows.flatMap((r) => [r.value, r.p10, r.p90]).concat(limits ? [limits[1]] : []).filter((v) => v != null);
-    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.t)).range([m.l, W - m.r]);
+    const b = opts.band || rows.filter((r) => r.p10 != null);
+    const vals = rows.flatMap((r) => [r.value, r.p10, r.p90]).concat(b.flatMap((r) => [r.p10, r.p90])).concat(limits ? [limits[1]] : []).filter((v) => v != null);
+    const x = d3.scaleUtc().domain(d3.extent(rows.concat(b), (r) => r.t)).range([m.l, W - m.r]);
     const y = d3.scaleLinear().domain(d3.extent(vals)).range([H - m.b, m.t]);
     const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', label);
-    const b = rows.filter((r) => r.p10 != null);
-    if (b.length) {
-      svg.append('path').datum(b).attr('d', d3.area().curve(d3.curveMonotoneX).x((r) => x(r.t)).y0((r) => y(r.p10)).y1((r) => y(r.p90))).style('fill', 'var(--band)').style('opacity', 0.7);
-      svg.append('path').datum(b).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.normal))).style('fill', 'none').style('stroke', 'var(--ref)').style('stroke-dasharray', '2 3');
+    const has = (r) => r.p10 != null;
+    if (b.some(has)) {
+      svg.append('path').datum(b).attr('d', d3.area().defined(has).curve(d3.curveMonotoneX).x((r) => x(r.t)).y0((r) => y(r.p10)).y1((r) => y(r.p90))).style('fill', 'var(--band)').style('opacity', 0.7);
+      svg.append('path').datum(b).attr('d', d3.line().defined(has).curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.normal))).style('fill', 'none').style('stroke', 'var(--ref)').style('stroke-dasharray', '2 3');
     }
     for (const v of limits || []) {
       svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(v)).attr('y2', y(v)).style('stroke', v === 6 ? 'var(--warn)' : 'var(--bad)').style('stroke-dasharray', '3 3');
     }
-    svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.value))).style('fill', 'none').style('stroke', tint).style('stroke-width', 2).style('stroke-linecap', 'round');
+    if (opts.dots) svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.t)).attr('cy', (r) => y(r.value)).attr('r', rows.length > 60 ? 1.8 : 2.6).style('fill', tint);
+    else svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.value))).style('fill', 'none').style('stroke', tint).style('stroke-width', 2).style('stroke-linecap', 'round');
     const end = rows[rows.length - 1];
     svg.append('circle').attr('cx', x(end.t)).attr('cy', y(end.value)).attr('r', 4).style('fill', tint).style('stroke', 'var(--panel)').style('stroke-width', 1.5);
     const dot = svg.append('circle').attr('r', 3.5).style('fill', tint).style('display', 'none');
@@ -669,6 +757,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     if (state) render();
   });
 
+  fetch('data/klorofyll.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { chl = d; if (state) render(); }).catch(() => {});
   fetch('naring.json').then((r) => r.ok ? r.json() : null).then((d) => { naring = d; if (state) render(); }).catch(() => {});
 
   fetch('data/current.json', { cache: 'no-cache' })

@@ -8,6 +8,10 @@
     {
       "source": "/data/current.json",
       "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/current.json"
+    },
+    {
+      "source": "/data/klorofyll.json",
+      "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/klorofyll.json"
     }
   ]
 }

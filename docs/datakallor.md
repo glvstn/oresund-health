@@ -41,8 +41,9 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 
 ### Copernicus Marine
 - Klorofyll från satellit, biogeokemiska modeller (syre, näring, pH, siktdjup) för Östersjön.
-- Fritt för alla syften, kräver konto.
+- Fritt för alla syften, även kommersiellt, kräver konto. Licensen läst 2026-11-24, se docs/beslut.md.
 - Källangivelse för egna produkter: "Generated using E.U. Copernicus Marine Service Information".
+- Används för klorofyll vid ytan (`scripts/fetch_copernicus.py`): `OCEANCOLOUR_BAL_BGC_L3_NRT_009_131` (DOI 10.48670/moi-00294) för senaste dygnen och `OCEANCOLOUR_BAL_BGC_L3_MY_009_133` (DOI 10.48670/moi-00296) för normalspannet, båda Sentinel-3 OLCI 300 m. Inloggning i GitHub Actions via `COPERNICUSMARINE_SERVICE_USERNAME` och `COPERNICUSMARINE_SERVICE_PASSWORD`.
 
 ### HELCOM, oljeutsläpp från flygövervakning
 - Undersökt 2026-11-23, inget byggt.
