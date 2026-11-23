@@ -1,11 +1,11 @@
-# Hämtar från SMHI en gång i timmen och laddar upp data/current.json till Vercel Blob.
+# Hämtar från SMHI och laddar upp data/current.json till Vercel Blob.
+# Startas en gång i timmen (minut 17) av cron-job.org via workflow_dispatch, inte av GitHubs schema,
+# som aldrig startade. Ha inte båda igång, då kan SMHI få två anrop samma timme. Se docs/beslut.md.
 # Arkivet (normalspann) hämtas bara en gång per dygn och cachas mellan körningarna.
 # Hemlighet som krävs: BLOB_READ_WRITE_TOKEN (från Vercel-projektets Blob-store).
 name: Hämta från SMHI
 
 on:
-  schedule:
-    - cron: "23 * * * *"
   workflow_dispatch:
 
 concurrency:

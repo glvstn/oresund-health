@@ -12,7 +12,7 @@ Havsdata är många parametrar med komplexa värden. Sidan ska göra dem begripl
 
 ## Status
 
-Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timme av GitHub Actions i https://github.com/glvstn/oresund-health.
+Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timme av GitHub Actions i https://github.com/glvstn/oresund-health, startat av cron-job.org.
 
 ## Mappar
 
@@ -21,7 +21,7 @@ Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timm
 - `docs/indikatorer.md` parametrar, gränser, hur normalt räknas
 - `scripts/fetch_smhi.py` hämtar från SMHI och räknar dygnsmedel och normalspann
 - `app/` sajten, en statisk sida som läser `data/current.json`
-- `.github/workflows/refresh.yml` hämtar varje timme och laddar upp till Vercel Blob
+- `.github/workflows/refresh.yml` hämtar och laddar upp till Vercel Blob, startas varje timme av cron-job.org
 - `data/` uttag (inte incheckat)
 
 ## Kör sidan lokalt
@@ -73,10 +73,11 @@ Näringsämnen och klorofyll från Klagshamn hämtas från SMHI:s havsarkiv SHAR
 
 ## Drift
 
-1. GitHub Actions kör `scripts/fetch_smhi.py` varje timme. Arkivet hämtas bara första körningen varje dygn och cachas.
-2. `data/current.json` laddas upp till Vercel Blob som `oresund/current.json`.
-3. Vercel servar `app/` och skickar `/data/current.json` vidare till Blob (se `vercel.json`).
-4. Är senaste mätningen äldre än 6 timmar visar sidan inget betyg.
+1. cron-job.org startar workflowen minut 17 varje timme via GitHubs API (`workflow_dispatch`). GitHubs eget schema startade aldrig och används inte. Token för anropet gäller till 2027-11-22 och måste förnyas innan dess.
+2. GitHub Actions kör `scripts/fetch_smhi.py`. Arkivet hämtas bara första körningen varje dygn och cachas.
+3. `data/current.json` laddas upp till Vercel Blob som `oresund/current.json`.
+4. Vercel servar `app/` och skickar `/data/current.json` vidare till Blob (se `vercel.json`).
+5. Är senaste mätningen äldre än 6 timmar visar sidan inget betyg.
 
 ## Källor
 
