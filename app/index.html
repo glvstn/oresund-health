@@ -122,6 +122,7 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 #v-chl .foot { margin-top: auto; }
 .about p { font-size: 17px; margin: 0; max-width: 80ch; }
 .about h3 { font-size: 17px; font-weight: 600; margin: 20px 0 4px; }
+.about h3:first-child { margin-top: 4px; }
 .bars { position: relative; height: 72px; margin-top: 12px; }
 .bars svg { width: 100%; height: 100%; }
 .mix { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 12px 0 6px; gap: 2px; }
@@ -265,18 +266,30 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       <h2>Om mätningarna</h2>
       <p class="note">Varifrån datat kommer, hur det normala räknas och vad sidan inte vet.</p>
       <div class="about">
-      <ul>
-        <li>Temperatur och salthalt mäts vid Flinten 7, syre och ström vid Flinten 16, vattenstånd i Klagshamn, Skanör och Viken.</li>
-        <li>Normalt är dygnsmedel inom en vecka från samma datum under basåren: temperatur och salthalt sedan 2017, ström sedan 2009, vattenstånd sedan 1996, till och med 2025.</li>
-        <li>Temperaturen varnar efter 3 dygn i rad över det normala. Gränsen är vår egen, inte en myndighets. Kallt vatten håller mer syre och ger aldrig varning.</li>
-        <li>Syre mäts bara sedan 2024, för kort för ett normalspann. Det bedöms mot Havs- och vattenmyndighetens gränser 6, 4 och 2 mg/l.</li>
-        <li>Hög salthalt vid botten är salt Kattegattvatten under det sötare Östersjövattnet. Det är naturligt, inte ohälsa.</li>
-        <li>Strömmens riktning räknas från vattenståndet, eftersom det är oklart hur SMHI anger mätarens riktning. Farten kommer från mätaren. Vid hård vind kan ytströmmen tillfälligt gå åt andra hållet.</li>
-        <li>Näringsämnen och klorofyll provtas varje månad vid Klagshamn och når SMHI ett till två år senare. De bedöms som treårsmedel mot Havs- och vattenmyndighetens gränser och påverkar inte hälsobetyget.</li>
-        <li>Klorofyll visar hur mycket växtplankton det finns i ytan. Det mäts från satellit (Sentinel-3) över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn. Från november till februari står solen för lågt för att värdena ska gå att lita på, så då saknas klorofyll. Satelliten visar högre värden än vattenproven vid Klagshamn, därför jämförs värdet bara med det normala för datumet 2017 till 2025 och får inget betyg.</li>
-        <li>Sjöfarten är en årssiffra från HELCOM, senast 2020. Den visar hur mycket trafik som passerar, inte hur mycket den påverkar.</li>
-        <li>Tolkningen är inte granskad av någon expert. Alger och fisk saknas ännu.</li>
-      </ul>
+        <h3>Stationer och det normala</h3>
+        <ul>
+          <li>Temperatur och salthalt mäts vid Flinten 7, syre och ström vid Flinten 16, vattenstånd i Klagshamn, Skanör och Viken.</li>
+          <li>Normalt är dygnsmedel inom en vecka från samma datum under basåren: temperatur och salthalt sedan 2017, ström sedan 2009, vattenstånd sedan 1996, till och med 2025.</li>
+        </ul>
+        <h3>Hälsa</h3>
+        <ul>
+          <li>Syre mäts bara sedan 2024, för kort för ett normalspann. Det bedöms mot Havs- och vattenmyndighetens gränser 6, 4 och 2 mg/l.</li>
+          <li>Temperaturen varnar efter 3 dygn i rad över det normala. Gränsen är vår egen, inte en myndighets. Kallt vatten håller mer syre och ger aldrig varning.</li>
+        </ul>
+        <h3>Vitala värden</h3>
+        <ul>
+          <li>Hög salthalt vid botten är salt Kattegattvatten under det sötare Östersjövattnet. Det är naturligt, inte ohälsa.</li>
+          <li>Klorofyll visar hur mycket växtplankton det finns i ytan. Det mäts från satellit (Sentinel-3) över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn. Från november till februari står solen för lågt för att värdena ska gå att lita på, så då saknas klorofyll. Satelliten visar högre värden än vattenproven vid Klagshamn, därför jämförs värdet bara med det normala för datumet 2017 till 2025 och får inget betyg.</li>
+          <li>Näringsämnen och klorofyll provtas varje månad vid Klagshamn och når SMHI ett till två år senare. De bedöms som treårsmedel mot Havs- och vattenmyndighetens gränser och påverkar inte hälsobetyget.</li>
+        </ul>
+        <h3>Rörelse</h3>
+        <ul>
+          <li>Strömmens riktning räknas från vattenståndet, eftersom det är oklart hur SMHI anger mätarens riktning. Farten kommer från mätaren. Vid hård vind kan ytströmmen tillfälligt gå åt andra hållet.</li>
+        </ul>
+        <h3>Påverkan</h3>
+        <ul>
+          <li>Sjöfarten är en årssiffra från HELCOM, senast 2020. Den visar hur mycket trafik som passerar, inte hur mycket den påverkar.</li>
+        </ul>
       </div>
     </section>
 
@@ -296,7 +309,6 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <h3>Det här är sidan inte</h3>
         <ul>
           <li>Ingen officiell bedömning och inget varningssystem. Sidan är ett fristående projekt och tolkningen är inte granskad av någon expert.</li>
-          <li>Ingen badvattenkontroll. Badvatten provtas av kommunerna under badsäsongen.</li>
         </ul>
       </div>
     </section>
