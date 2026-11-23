@@ -5,3 +5,4 @@ __pycache__/
 app/data
 .vercel
 node_modules/
+CLAUDE.local.md
