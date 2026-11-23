@@ -7,10 +7,10 @@
 <meta name="description" content="Hur havet utanför Malmö mår just nu, jämfört med det normala för årstiden. Data från SMHI.">
 <style>
 :root {
-  --bg: #f2f2f7; --panel: #ffffff; --side: #f9f9fb; --fg: #000000; --muted: #8a8a8e; --note: #6f6f72; --line: #e5e5ea; --fill: #e9e9ee;
+  --bg: #f2f2f7; --panel: #ffffff; --side: #f9f9fb; --fg: #000000; --muted: #747578; --note: #6d6d70; --line: #e5e5ea; --fill: #e9e9ee;
   --ok: #34c759; --warn: #ff9500; --bad: #ff3b30; --unknown: #aeaeb2;
   --accent: #007aff;
-  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93;
+  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759;
   --series2: #ff6b3d; --band: #d6d6dc; --ref: #9a9aa0; --grid: #efeff3;
   --hero: linear-gradient(180deg, #8fd3f4 0%, #a9b8f5 38%, #c9c3f0 62%, rgb(242 242 247 / 0) 100%);
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -21,7 +21,7 @@
     --bg: #000000; --panel: #1c1c1e; --side: #111113; --fg: #ffffff; --muted: #98989f; --note: #98989f; --line: #2c2c2e; --fill: #2c2c2e;
     --ok: #30d158; --warn: #ff9f0a; --bad: #ff453a; --unknown: #636366;
     --accent: #0a84ff;
-    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f;
+    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f; --t-naring: #30d158;
     --series2: #ff8a5c; --band: #3a3a3e; --ref: #7c7c82; --grid: #262628;
     --hero: linear-gradient(180deg, #0d4a6b 0%, #2a2f6e 40%, #2d2347 64%, rgb(0 0 0 / 0) 100%);
     color-scheme: dark;
@@ -69,6 +69,13 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .seg button { flex: 1; font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: none; border: 0; border-radius: 7px; padding: 6px 10px; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--panel); font-weight: 600; box-shadow: 0 1px 3px rgb(0 0 0 / .12), 0 0 0 .5px rgb(0 0 0 / .04); }
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.card.wide { grid-column: 1 / -1; }
+.ntab { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); gap: 0; margin: 10px 0 4px; font-size: 15px; font-variant-numeric: tabular-nums; }
+.ntab > * { padding: 7px 0; border-bottom: 1px solid var(--line); }
+.ntab .th { color: var(--muted); font-size: 13px; padding-top: 0; }
+.ntab .num { text-align: right; padding-left: 12px; }
+.ntab .sep { grid-column: 1 / -1; color: var(--muted); font-size: 13px; padding: 12px 0 2px; border-bottom: 0; }
+@media (max-width: 520px) { .ntab { grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); } .ntab .lim { display: none; } }
 .cards.three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
 .card { background: var(--panel); border-radius: 14px; padding: 14px 16px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; position: relative; scroll-margin-top: 24px; box-shadow: 0 1px 2px rgb(0 0 0 / .04); }
 .head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -127,6 +134,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       <li><a href="#v-temp"><svg class="ico" style="color:var(--t-temp)" data-icon="temp"></svg>Temperatur</a></li>
       <li><a href="#v-oxy"><svg class="ico" style="color:var(--t-oxy)" data-icon="oxy"></svg>Syre</a></li>
       <li><a href="#v-salt"><svg class="ico" style="color:var(--t-salt)" data-icon="salt"></svg>Salthalt</a></li>
+      <li><a href="#naring"><svg class="ico" style="color:var(--t-naring)" data-icon="naring"></svg>Näringsämnen</a></li>
       <li><a href="#strom"><svg class="ico" style="color:var(--t-flow)" data-icon="flow"></svg>Ström</a></li>
       <li><a href="#vattenstand"><svg class="ico" style="color:var(--t-level)" data-icon="level"></svg>Vattenstånd</a></li>
       <li><a href="#metod"><svg class="ico" style="color:var(--t-info)" data-icon="info"></svg>Om mätningarna</a></li>
@@ -226,7 +234,8 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <li>Syre räknas om från ml/l till mg/l. Gränserna 6, 4 och 2 mg/l är de som Havs- och vattenmyndigheten använder för syrebrist i kustvatten.</li>
         <li>Hög salthalt vid botten betyder att salt Kattegattvatten trängt in under det sötare Östersjövattnet. Det är naturligt och viktigt för sundet, inte ett tecken på ohälsa.</li>
         <li>Strömmens riktning räknas från vattenståndet, Skanör minus Viken. Farten mäts av strömmätaren i ytskiktet vid Flinten 16. Mätarens egen riktning används inte, eftersom det är oklart om SMHI anger varifrån eller vart strömmen går. Vid kraftig vind kan ytströmmen tillfälligt gå åt ett annat håll än vattenståndet säger.</li>
-        <li>Tolkningen är inte granskad av någon expert. Klorofyll, alger, näringsämnen och fisk saknas ännu.</li>
+        <li>Näringsämnen och klorofyll kommer från provtagning vid Klagshamn, som NIRAS gör varje månad på uppdrag av Öresunds vattenvårdsförbund. Proverna når SMHI:s havsarkiv SHARK ett till två år senare. De bedöms som treårsmedel enligt Havs- och vattenmyndighetens gränser för kusttyp 7, så som myndigheten själv gör, och påverkar inte hälsobetyget.</li>
+        <li>Tolkningen är inte granskad av någon expert. Klorofyll från satellit, alger och fisk saknas ännu.</li>
       </ul>
       </div>
     </section>
@@ -252,7 +261,8 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     </section>
 
     <footer>
-      Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer. Datat är bearbetat: dygnsmedel, normalspann och syre omräknat till mg/l. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span>
+      Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer. Datat är bearbetat: dygnsmedel, normalspann och syre omräknat till mg/l. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span><br>
+      Näringsämnen och klorofyll: <a href="https://shark.smhi.se">SMHI, SHARK</a>, insamlat av NIRAS på uppdrag av <a href="https://www.oresunds-vvf.se">Öresunds vattenvårdsförbund</a>. Licens CC0. Bearbetat till treårsmedel och bedömt enligt HVMFS 2019:25.
     </footer>
   </main>
   </div>
@@ -279,6 +289,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     heart: '<path fill="currentColor" d="M12 20.5s-7.6-4.6-9.5-9.3C1 7.6 3.2 4 6.8 4c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.6 0 5.8 3.6 4.3 7.2-1.9 4.7-9.5 9.3-9.5 9.3z"/>',
     oxy: '<g fill="currentColor"><circle cx="8.5" cy="15" r="5.5"/><circle cx="17" cy="7" r="3.5"/><circle cx="18.5" cy="16.5" r="2.2"/></g>',
     temp: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M14 14.6V5a2 2 0 0 0-4 0v9.6a4 4 0 1 0 4 0z"/><circle cx="12" cy="17.8" r="1.8" fill="currentColor"/>',
+    naring: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 21v-9"/><path fill="currentColor" d="M12 12c0-4.4 2.6-7 7.5-7 0 4.7-3.2 7-7.5 7zM12 14.6c0-3.4-2.1-5.6-6-5.6 0 3.8 2.5 5.6 6 5.6z"/>',
     salt: '<path fill="currentColor" d="M12 2.8s-6.2 6.8-6.2 11.4a6.2 6.2 0 0 0 12.4 0C18.2 9.6 12 2.8 12 2.8z"/>',
     level: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2.5 8.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 13c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 17.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0"/>',
     speed: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 8.5h10.5a3 3 0 1 0-3-3M3 12.5h15a3 3 0 1 1-3 3M3 16.5h6"/>',
@@ -367,6 +378,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   }
 
   let state = null;
+  let naring = null;
 
   function render() {
     const { meta, daily, hourly } = state;
@@ -501,6 +513,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       vitals.append(card);
       minis.push([chart, rows, p === 'oxy' ? [6, 4] : null, tint, `${name}, ${PERIODS[period][1]}`]);
     }
+    if (naring) vitals.append(naringCard(naring, el));
     // Rita först när alla kort finns, annars mäts bredden innan rutnätet är klart.
     $('speedMini').replaceChildren();
     if (s) minis.push([$('speedMini'), series('speed', 'manad'), null, 'var(--t-flow)', 'Strömmens fart, dygnsmedel den senaste månaden']);
@@ -517,6 +530,35 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     if (Math.abs(flow) < 5) { a.innerHTML = '<path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M3.5 12h17M8 7.5 3.5 12 8 16.5M16 7.5l4.5 4.5-4.5 4.5"/>'; a.style.transform = ''; return; }
     a.innerHTML = arrow;
     a.style.transform = flow > 0 ? '' : 'rotate(180deg)';
+  }
+
+  // Näringsämnen: treårsmedel från SHARK, bedömt enligt HaV. Följer inte periodväljaren och påverkar inte hälsobetyget.
+  const NTONE = { 'Hög': 'ok', 'God': 'ok', 'Måttlig': 'warn', 'Otillfredsställande': 'bad', 'Dålig': 'bad' };
+  function naringCard(n, el) {
+    const card = el('div', 'card wide'); card.id = 'naring'; card.style.setProperty('--tint', 'var(--t-naring)');
+    const head = el('div', 'head');
+    const cat = el('span', 'cat');
+    cat.innerHTML = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS.naring}</svg>`;
+    cat.append('Näringsämnen');
+    head.append(cat, el('span', 'time', `${n.years[0]}–${n.years[1]}`));
+    const st = el('div', 'status sm');
+    setStatus(st, `${n.nutrients_class} status`, NTONE[n.nutrients_class]);
+    const tab = el('div', 'ntab');
+    tab.append(el('span', 'th', 'Treårsmedel'), el('span', 'th num', 'Värde'), el('span', 'th num lim', 'Gräns för god'), el('span', 'th num', 'Status'));
+    const row = (x) => tab.append(
+      el('span', null, `${x.name}, ${x.season}`),
+      el('span', 'num', `${fmt(x.value, x.value < 10 ? 2 : 1)} ${x.unit}`),
+      el('span', 'num lim', fmt(x.good_moderate, x.good_moderate < 10 ? 2 : 1)),
+      el('span', 'num', x.class));
+    n.params.filter((x) => x.key !== 'chl').forEach(row);
+    const chl = n.params.find((x) => x.key === 'chl');
+    if (chl) { tab.append(el('span', 'sep', 'Växtplankton, bedöms för sig')); row(chl); }
+    const latest = sthlm(new Date(n.latest_sample + 'T12:00:00Z'), { day: 'numeric', month: 'long', year: 'numeric' });
+    card.append(head, el('p', 'k', 'Klagshamn, ytvattnet'), st, tab,
+      el('p', 'foot', `Treårsmedel ${n.years[0]} till ${n.years[1]}, bedömt enligt Havs- och vattenmyndighetens gränser för kusttyp 7. Vinter är december till februari, sommar juli till augusti. ` +
+        `Proverna når SMHI:s havsarkiv ett till två år efter provtagning, senaste prov ${latest}. ` +
+        'Påverkar inte hälsobetyget, näringsämnen verkar över år och inte dagar.'));
+    return card;
   }
 
   function showBanner(msg) {
@@ -608,6 +650,8 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     try { localStorage.setItem('period', period); } catch {}
     if (state) render();
   });
+
+  fetch('naring.json').then((r) => r.ok ? r.json() : null).then((d) => { naring = d; if (state) render(); }).catch(() => {});
 
   fetch('data/current.json', { cache: 'no-cache' })
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
