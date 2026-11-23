@@ -199,7 +199,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
           <div class="head"><span class="cat"><svg class="ico" data-icon="flow"></svg>Ström</span><span class="time" data-time></span></div>
           <div class="row">
             <div>
-              <p class="k">Riktning just nu, fart i dag</p>
+              <p class="k" id="flowWhen">Riktning och fart i dag</p>
               <div class="val"><svg class="dir" id="arrow" viewBox="0 0 24 24" aria-hidden="true"></svg><span class="big" id="speedNow">…</span><span class="unit">cm/s</span></div>
             </div>
             <div class="mini" id="speedMini"></div>
@@ -345,7 +345,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   // Perioder i Vitala värden. Dygn visar timvärden, övriga dygnsmedel.
   // [antal hela dygn, vad diagrammet visar, rubrik för snittet]
   const PERIODS = {
-    dygn: [1, 'timvärden det senaste dygnet', 'just nu'],
+    dygn: [1, 'timvärden det senaste dygnet', 'senaste mätningen'],
     vecka: [7, 'dygnsmedel de senaste 7 hela dygnen', 'snitt senaste veckan'],
     manad: [30, 'dygnsmedel de senaste 30 hela dygnen', 'snitt senaste månaden'],
     ar: [365, 'dygnsmedel de senaste 365 hela dygnen', 'snitt senaste året'],
@@ -426,6 +426,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     if (f && !stale) {
       const [, dir, word] = flowText(f.flow);
       dirIcon(f.flow); set('flowDir', dir); set('flowWord', word);
+      set('flowWhen', `Riktning kl. ${clock(new Date(f.time))}, fart i dag`);
       set('slopeText', f.flow >= 0 ? `Skanör står ${fmt(f.flow)} cm högre än Viken` : `Viken står ${fmt(-f.flow)} cm högre än Skanör`);
     } else {
       dirIcon(null); set('flowDir', 'Riktning okänd'); set('flowWord', 'okänt åt vilket håll'); set('slopeText', stale ? 'Inga aktuella vattenstånd' : 'Vattenstånd saknas för Skanör eller Viken');
@@ -506,7 +507,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 
       const chart = el('div', 'chart');
       const xlab = el('div', 'xlab');
-      if (rows.length) xlab.append(el('span', null, rows[0].label), el('span', null, isDay ? 'Nu' : rows[rows.length - 1].label));
+      if (rows.length) xlab.append(el('span', null, rows[0].label), el('span', null, rows[rows.length - 1].label));
       card.append(head, el('p', 'k', `${cap(PERIODS[period][2])}, ${where.toLowerCase()}`), val);
       if (range) card.append(range);
       card.append(chart, xlab, st, el('p', 'foot', foot));
