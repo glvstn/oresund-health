@@ -7,144 +7,265 @@
 <meta name="description" content="Hur havet utanför Malmö mår just nu, jämfört med det normala för årstiden. Data från SMHI.">
 <style>
 :root {
-  --bg: #f7f6f2; --panel: #ffffff; --fg: #1d1c1a; --muted: #6b6862; --line: #e3e0d8;
-  --ok: #2f7d4f; --warn: #a86a00; --bad: #b3362b;
-  --series: #2b6cb0; --series2: #c0583a; --band: #cfcbc0; --ref: #8d897f; --grid: #ecebe5;
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --bg: #f2f2f7; --panel: #ffffff; --side: #f9f9fb; --fg: #000000; --muted: #8a8a8e; --note: #6f6f72; --line: #e5e5ea; --fill: #e9e9ee;
+  --ok: #34c759; --warn: #ff9500; --bad: #ff3b30; --unknown: #aeaeb2;
+  --accent: #007aff;
+  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93;
+  --series2: #ff6b3d; --band: #d6d6dc; --ref: #9a9aa0; --grid: #efeff3;
+  --hero: linear-gradient(180deg, #8fd3f4 0%, #a9b8f5 38%, #c9c3f0 62%, rgb(242 242 247 / 0) 100%);
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #161614; --panel: #1f1f1c; --fg: #ecebe6; --muted: #a29f97; --line: #34332e;
-    --ok: #5cbf83; --warn: #e0a43a; --bad: #ef7466;
-    --series: #6aa8ec; --series2: #ec8c6c; --band: #4a4842; --ref: #8d897f; --grid: #2a2a26;
+    --bg: #000000; --panel: #1c1c1e; --side: #111113; --fg: #ffffff; --muted: #98989f; --note: #98989f; --line: #2c2c2e; --fill: #2c2c2e;
+    --ok: #30d158; --warn: #ff9f0a; --bad: #ff453a; --unknown: #636366;
+    --accent: #0a84ff;
+    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f;
+    --series2: #ff8a5c; --band: #3a3a3e; --ref: #7c7c82; --grid: #262628;
+    --hero: linear-gradient(180deg, #0d4a6b 0%, #2a2f6e 40%, #2d2347 64%, rgb(0 0 0 / 0) 100%);
     color-scheme: dark;
   }
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 var(--sans); }
-main { max-width: 1080px; margin: 0 auto; padding: 32px 16px 64px; display: grid; gap: 40px; }
-h1 { font: 400 clamp(32px, 6vw, 48px)/1.05 var(--serif); margin: 0; }
-h2 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
-.lead { font-size: 20px; margin: 12px 0 0; max-width: 62ch; text-wrap: pretty; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.4 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+svg { display: block; }
+
+/* Ram: sidomeny på breda skärmar */
+.app { display: grid; grid-template-columns: 1fr; min-height: 100vh; }
+.side { display: none; }
+@media (min-width: 960px) {
+  .app { grid-template-columns: 300px 1fr; }
+  .side { display: block; position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--side); border-right: 1px solid var(--line); padding: 40px 16px 24px; }
+}
+.side .brand { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin: 0 12px 20px; }
+.side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.side a { display: flex; align-items: center; gap: 14px; padding: 9px 12px; border-radius: 10px; text-decoration: none; font-size: 17px; }
+.side a:hover { background: var(--fill); }
+.side a[aria-current="true"] { background: var(--accent); color: #fff; }
+.ico, .dir { --ico-in: #fff; }
+.side a[aria-current="true"] .ico { color: #fff !important; --ico-in: var(--accent); }
+.side .group { font-size: 20px; font-weight: 700; margin: 24px 12px 8px; }
+.ico { width: 24px; height: 24px; flex: none; }
+
+/* Innehåll */
+.content { background: var(--hero) no-repeat; background-size: 100% 520px; min-width: 0; }
+main { max-width: 1040px; margin: 0 auto; padding: 40px 16px 64px; display: grid; gap: 64px; }
+@media (min-width: 640px) { main { padding: 56px 32px 72px; } }
+section { scroll-margin-top: 24px; }
+
+.hero { display: flex; gap: 20px; align-items: center; }
+h1 { font-size: clamp(30px, 5vw, 40px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+.lead { font-size: 19px; margin: 8px 0 0; max-width: 56ch; text-wrap: pretty; }
 .lead b { font-weight: 600; }
-.sub, .k { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
-.k { margin: 0; }
-.note { color: var(--muted); margin: 0 0 16px; max-width: 62ch; }
-.banner { border: 1px solid var(--warn); color: var(--fg); background: color-mix(in srgb, var(--warn) 10%, var(--panel)); border-radius: 10px; padding: 12px 16px; margin: 16px 0 0; }
-.banner[hidden] { display: none; }
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 8px; align-content: start; position: relative; min-width: 0; }
-.verdict { font: 400 clamp(28px, 4.5vw, 36px)/1.1 var(--serif); }
-.big { font: 400 clamp(30px, 5vw, 40px)/1 var(--serif); font-variant-numeric: tabular-nums; }
-.unit { color: var(--muted); margin-left: 4px; }
-.state { font-weight: 600; }
-[data-tone="ok"] { color: var(--ok); }
-[data-tone="warn"] { color: var(--warn); }
-[data-tone="bad"] { color: var(--bad); }
-.range { position: relative; height: 26px; }
-.spark { position: relative; height: 120px; }
-.flowchart { position: relative; height: 220px; }
-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.synced { color: color-mix(in srgb, var(--fg) 60%, transparent); font-size: 14px; margin: 6px 0 0; }
+
+h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+.note { color: var(--note); font-size: 15px; margin: 4px 0 24px; max-width: 70ch; }
+
+.seg { display: flex; max-width: 420px; background: var(--fill); border-radius: 9px; padding: 2px; margin: -8px 0 24px; }
+.seg button { flex: 1; font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: none; border: 0; border-radius: 7px; padding: 6px 10px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--panel); font-weight: 600; box-shadow: 0 1px 3px rgb(0 0 0 / .12), 0 0 0 .5px rgb(0 0 0 / .04); }
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.cards.three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.card { background: var(--panel); border-radius: 14px; padding: 14px 16px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; position: relative; scroll-margin-top: 24px; box-shadow: 0 1px 2px rgb(0 0 0 / .04); }
+.head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.cat { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 17px; color: var(--tint); min-width: 0; }
+.cat .ico { width: 20px; height: 20px; }
+.time { color: var(--muted); font-size: 14px; white-space: nowrap; }
+.k { color: var(--muted); font-size: 15px; margin: 0; }
+.row { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.val { white-space: nowrap; }
+.big { font-size: 34px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.unit { color: var(--muted); font-size: 17px; font-weight: 500; margin-left: 3px; }
+.status { display: flex; align-items: center; gap: 8px; font-size: 28px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
+.status.sm { font-size: 17px; font-weight: 600; letter-spacing: 0; }
+.status .dot { width: 1em; height: 1em; flex: none; }
+.status.sm .dot { width: 18px; height: 18px; }
+.foot { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+.chart { position: relative; height: 96px; margin-top: 10px; }
+.chart svg { width: 100%; height: 100%; overflow: visible; }
+.xlab { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin: 2px 0 6px; }
+.range { color: var(--muted); font-size: 14px; margin: 2px 0 0; }
+.mini { position: relative; width: 46%; max-width: 200px; height: 64px; flex: none; }
+.mini svg, .flowchart svg { width: 100%; height: 100%; overflow: visible; }
+.flowchart { position: relative; height: 180px; margin-top: 4px; }
 .axis text { fill: var(--muted); font-size: 11px; }
-.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 16px rgb(0 0 0 / .12); border-radius: 8px; padding: 6px 8px; font-size: 13px; white-space: nowrap; z-index: 2; }
+.tip { position: absolute; pointer-events: none; background: var(--panel); box-shadow: 0 6px 24px rgb(0 0 0 / .16); border-radius: 10px; padding: 6px 10px; font-size: 13px; white-space: nowrap; z-index: 3; }
 .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14px; color: var(--muted); margin: 0; padding: 0; list-style: none; }
 .legend span { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
-.arrow { font-size: 44px; line-height: 1; }
-details { color: var(--muted); max-width: 70ch; }
-summary { cursor: pointer; color: var(--fg); }
-li { margin-bottom: 4px; }
-footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
-a { color: inherit; }
+
+.banner { display: flex; gap: 10px; align-items: flex-start; background: var(--panel); border-radius: 14px; padding: 14px 16px; margin: 20px 0 0; font-size: 15px; }
+.banner[hidden] { display: none; }
+.banner .dot { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+
+.about ul { font-size: 17px; margin: 0; padding: 4px 0 0 20px; max-width: 80ch; }
+.about li { margin-bottom: 8px; }
+.about li:last-child { margin-bottom: 0; }
+/* Ström: fotnoten längst ned när kortet sträcks till Vattenståndets höjd */
+#strom { grid-template-rows: auto auto auto auto 1fr; }
+#strom .foot { align-self: end; }
+.about p { font-size: 17px; margin: 0; max-width: 80ch; }
+.about h3 { font-size: 17px; font-weight: 600; margin: 20px 0 4px; }
+.dir { width: 30px; height: 30px; display: inline-block; vertical-align: -3px; margin-right: 4px; color: var(--fg); transition: transform .3s; }
+
+footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 </style>
 </head>
 <body>
-<main>
-  <header>
-    <h1>Hur mår Öresund</h1>
-    <p class="lead">Öresund <b id="verdictWord">…</b>. Syret vid botten är <b id="oxyWord">…</b>, temperaturen är <b id="tempWord">…</b>, och vattnet strömmar <b id="flowWord">…</b>.</p>
-    <p class="sub">Senaste mätning <span id="lastTime">…</span>, SMHI:s stationer mitt i sundet sydväst om Malmö. Hämtas en gång i timmen.</p>
-    <p class="banner" id="stale" hidden></p>
-  </header>
-
-  <section>
-    <h2>Hälsa</h2>
-    <p class="note">Det som säger något om hur havet mår. Syre bedöms mot Havs- och vattenmyndighetens gränser (6, 4 och 2 mg/l), temperatur mot vad som är normalt för årstiden. Det sämsta delvärdet styr helheten.</p>
-    <div class="cards">
-      <div class="card">
-        <p class="k">Helhet</p>
-        <div class="verdict" id="verdict">…</div>
-        <p class="k">Sämsta delvärdet styr</p>
-      </div>
-      <div class="card">
-        <p class="k">Andning, syre vid botten</p>
-        <div class="verdict" id="breath">…</div>
-        <p class="k"><span id="oxyNow">…</span> mg/l, god status från 6</p>
-      </div>
-      <div class="card">
-        <p class="k">Kroppstemperatur</p>
-        <div class="verdict" id="fever">…</div>
-        <p class="k"><span id="tempDiff">…</span> °C mot normalt för årstiden</p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Vitala värden, senaste 90 dagarna</h2>
-    <p class="note">Dygnsmedel jämfört med det normala för samma tid på året. Det grå bandet är det normala spannet, där 8 av 10 år hamnar. Dagens värde bygger på de timmar som har mätts hittills.</p>
-    <div class="grid" id="vitals"></div>
-  </section>
-
-  <section>
-    <h2>Rörelse, åt vilket håll strömmar sundet</h2>
-    <p class="note">Strömmen i Öresund drivs mest av skillnaden i vattenstånd mellan södra och norra infarten. Står vattnet högre vid Skanör än vid Viken rinner Östersjövatten norrut mot Kattegatt, och tvärtom. Det här är rörelse, inte hälsa.</p>
-    <div class="grid">
-      <div class="card">
-        <p class="k">Just nu</p>
-        <div class="arrow" id="arrow" aria-hidden="true">…</div>
-        <div class="verdict" id="flowDir">…</div>
-        <p class="k" id="slopeText">…</p>
-      </div>
-      <div class="card">
-        <p class="k">Vattenstånd senaste 24 timmarna, cm</p>
-        <ul class="legend">
-          <li><span style="background:var(--series)"></span>Skanör, söder</li>
-          <li><span style="background:var(--series2)"></span>Viken, norr</li>
-        </ul>
-        <div class="flowchart" id="flowchart"></div>
-      </div>
-    </div>
-  </section>
-
-  <details>
-    <summary>Så räknas det</summary>
+<div class="app">
+  <nav class="side" aria-label="Innehåll">
+    <p class="brand">Öresund</p>
     <ul>
-      <li>Temperatur och salthalt från Flinten 7 bottensystem, syre och ström från Flinten 16, vattenstånd från Klagshamn, Skanör och Viken.</li>
-      <li>Normalt för årstiden är alla dygnsmedel inom en vecka från samma datum under basåren: temperatur och salthalt 2017 till 2025, ström 2009 till 2025, vattenstånd 1996 till 2025. Normalspannet räknas om en gång per dygn.</li>
-      <li>Syre mäts bara sedan 2024. Det är för kort för ett normalspann, så syre bedöms bara mot fasta gränser.</li>
-      <li>Syre räknas om från ml/l till mg/l. Gränserna 6, 4 och 2 mg/l är de som Havs- och vattenmyndigheten använder för syrebrist i kustvatten.</li>
-      <li>Hög salthalt vid botten betyder att salt Kattegattvatten trängt in under det sötare Östersjövattnet. Det är naturligt och viktigt för sundet, inte ett tecken på ohälsa.</li>
-      <li>Tolkningen är inte granskad av någon expert. Klorofyll, alger, näringsämnen och fisk saknas ännu.</li>
+      <li><a href="#top" aria-current="true"><svg class="ico" style="color:var(--t-heart)" data-icon="heart"></svg>Översikt</a></li>
     </ul>
-  </details>
+    <p class="group">Kategorier</p>
+    <ul>
+      <li><a href="#halsa"><svg class="ico" style="color:var(--t-heart)" data-icon="heart"></svg>Hälsa</a></li>
+      <li><a href="#v-temp"><svg class="ico" style="color:var(--t-temp)" data-icon="temp"></svg>Temperatur</a></li>
+      <li><a href="#v-oxy"><svg class="ico" style="color:var(--t-oxy)" data-icon="oxy"></svg>Syre</a></li>
+      <li><a href="#v-salt"><svg class="ico" style="color:var(--t-salt)" data-icon="salt"></svg>Salthalt</a></li>
+      <li><a href="#strom"><svg class="ico" style="color:var(--t-flow)" data-icon="flow"></svg>Ström</a></li>
+      <li><a href="#vattenstand"><svg class="ico" style="color:var(--t-level)" data-icon="level"></svg>Vattenstånd</a></li>
+      <li><a href="#metod"><svg class="ico" style="color:var(--t-info)" data-icon="info"></svg>Om mätningarna</a></li>
+      <li><a href="#syfte"><svg class="ico" style="color:var(--t-speed)" data-icon="doc"></svg>Om sidan</a></li>
+    </ul>
+  </nav>
 
-  <footer>
-    Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer. Datat är bearbetat: dygnsmedel, normalspann och syre omräknat till mg/l. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span>
-  </footer>
-</main>
+  <div class="content" id="top">
+  <main>
+    <header>
+      <div class="hero">
+        <div>
+          <h1>Hur mår Öresund</h1>
+          <p class="lead">Öresund <b id="verdictWord">…</b>. Syret vid botten är <b id="oxyWord">…</b>, temperaturen är <b id="tempWord">…</b>, och vattnet strömmar <b id="flowWord">…</b>.</p>
+          <p class="synced">Senaste mätning <span id="lastTime">…</span>, SMHI:s stationer mitt i sundet sydväst om Malmö. Hämtas en gång i timmen.</p>
+        </div>
+      </div>
+      <p class="banner" id="stale" hidden></p>
+    </header>
+
+    <section id="halsa">
+      <h2>Hälsa</h2>
+      <p class="note">Det som säger något om hur havet mår. Syre bedöms mot Havs- och vattenmyndighetens gränser (6, 4 och 2 mg/l), temperatur mot vad som är normalt för årstiden. Temperaturen ger varning först när vattnet varit varmare än normalt 3 hela dygn i rad, eftersom värme minskar syret och gynnar algblomning. Kallare än normalt är väder och sänker inte betyget. Det sämsta delvärdet styr helheten.</p>
+      <div class="cards three">
+        <div class="card" style="--tint:var(--t-heart)">
+          <div class="head"><span class="cat"><svg class="ico" data-icon="heart"></svg>Helhet</span><span class="time" data-time></span></div>
+          <p class="k">Sämsta delvärdet styr</p>
+          <div class="status" id="verdict">…</div>
+        </div>
+        <div class="card" style="--tint:var(--t-oxy)">
+          <div class="head"><span class="cat"><svg class="ico" data-icon="oxy"></svg>Andning</span><span class="time" data-time></span></div>
+          <p class="k">Syre vid botten</p>
+          <div class="status" id="breath">…</div>
+          <p class="foot"><span id="oxyNow">…</span> mg/l, god status från 6</p>
+        </div>
+        <div class="card" style="--tint:var(--t-temp)">
+          <div class="head"><span class="cat"><svg class="ico" data-icon="temp"></svg>Temperatur</span><span class="time" data-time></span></div>
+          <p class="k">Varning efter 3 varma dygn i rad</p>
+          <div class="status" id="fever">…</div>
+          <p class="foot" id="tempFoot">…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="vitala">
+      <h2>Vitala värden</h2>
+      <p class="note" id="vitalsNote">…</p>
+      <div class="seg" role="group" aria-label="Period">
+        <button type="button" data-period="dygn">Dygn</button>
+        <button type="button" data-period="vecka">Vecka</button>
+        <button type="button" data-period="manad">Månad</button>
+        <button type="button" data-period="ar">År</button>
+      </div>
+      <div class="cards three" id="vitals"></div>
+    </section>
+
+    <section id="rorelse">
+      <h2>Rörelse</h2>
+      <p class="note">Hur vattnet rör sig, inte hur det mår. Strömmen drivs mest av skillnaden i vattenstånd mellan södra och norra infarten. Står vattnet högre vid Skanör än vid Viken rinner Östersjövatten norrut mot Kattegatt, och tvärtom.</p>
+      <div class="cards">
+        <div class="card" id="strom" style="--tint:var(--t-flow)">
+          <div class="head"><span class="cat"><svg class="ico" data-icon="flow"></svg>Ström</span><span class="time" data-time></span></div>
+          <div class="row">
+            <div>
+              <p class="k">Riktning just nu, fart i dag</p>
+              <div class="val"><svg class="dir" id="arrow" viewBox="0 0 24 24" aria-hidden="true"></svg><span class="big" id="speedNow">…</span><span class="unit">cm/s</span></div>
+            </div>
+            <div class="mini" id="speedMini"></div>
+          </div>
+          <div class="status sm" id="flowDir">…</div>
+          <p class="k" id="speedState">…</p>
+          <p class="foot" id="speedFoot">…</p>
+        </div>
+        <div class="card" id="vattenstand" style="--tint:var(--t-level)">
+          <div class="head"><span class="cat"><svg class="ico" data-icon="level"></svg>Vattenstånd</span><span class="time" data-time></span></div>
+          <p class="k">Orsaken till strömmen, senaste 24 timmarna</p>
+          <div class="status sm" id="slopeText">…</div>
+          <ul class="legend">
+            <li><span style="background:var(--t-level)"></span>Skanör, söder</li>
+            <li><span style="background:var(--series2)"></span>Viken, norr</li>
+          </ul>
+          <div class="flowchart" id="flowchart"></div>
+          <p class="foot" id="levelFoot">…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="metod">
+      <h2>Om mätningarna</h2>
+      <p class="note">Varifrån datat kommer, hur det normala räknas och vad sidan inte vet.</p>
+      <div class="about">
+      <ul>
+        <li>Temperatur och salthalt från Flinten 7 bottensystem, syre och ström från Flinten 16, vattenstånd från Klagshamn, Skanör och Viken.</li>
+        <li>Normalt för årstiden är alla dygnsmedel inom en vecka från samma datum under basåren: temperatur och salthalt 2017 till 2025, ström 2009 till 2025, vattenstånd 1996 till 2025. Normalspannet räknas om en gång per dygn.</li>
+        <li>Temperaturen bedöms på hela dygn. Varning ges när dygnsmedlet legat över det normala spannet 3 dygn i rad. En enstaka varm dag är väder. Kallare än normalt ger aldrig varning, eftersom kallt vatten håller mer syre. Gränsen 3 dygn är vår egen, inte en myndighets.</li>
+        <li>Syre mäts bara sedan 2024. Det är för kort för ett normalspann, så syre bedöms bara mot fasta gränser.</li>
+        <li>Syre räknas om från ml/l till mg/l. Gränserna 6, 4 och 2 mg/l är de som Havs- och vattenmyndigheten använder för syrebrist i kustvatten.</li>
+        <li>Hög salthalt vid botten betyder att salt Kattegattvatten trängt in under det sötare Östersjövattnet. Det är naturligt och viktigt för sundet, inte ett tecken på ohälsa.</li>
+        <li>Strömmens riktning räknas från vattenståndet, Skanör minus Viken. Farten mäts av strömmätaren i ytskiktet vid Flinten 16. Mätarens egen riktning används inte, eftersom det är oklart om SMHI anger varifrån eller vart strömmen går. Vid kraftig vind kan ytströmmen tillfälligt gå åt ett annat håll än vattenståndet säger.</li>
+        <li>Tolkningen är inte granskad av någon expert. Klorofyll, alger, näringsämnen och fisk saknas ännu.</li>
+      </ul>
+      </div>
+    </section>
+
+    <section id="syfte">
+      <h2>Om sidan</h2>
+      <p class="note">Varför sidan finns och hur den tänker.</p>
+      <div class="about">
+        <p>Havsdata är många mätvärden som är svåra att tolka. Sidan försöker säga hur Öresund mår på några sekunder, för den som inte är oceanograf. Tänk på den som en hälsoapp för sundet: få tydliga lägen, jämförda med hur det brukar vara, i stället för råa tal.</p>
+        <h3>Så tänker sidan</h3>
+        <ul>
+          <li>Hälsa och rörelse hålls isär. Bara det som säger något om hur havet mår får betyg. Högvatten, salt inflöde och stark ström är väder, inte sjukdom.</li>
+          <li>Gränser lånas från myndigheter där det går. Där sådana saknas jämförs varje värde med hur det brukar vara samma tid på året.</li>
+          <li>Det sämsta delvärdet styr helheten, så att ett bra värde aldrig döljer ett dåligt.</li>
+          <li>Sidan säger när den inte vet, till exempel när mätningarna är gamla eller historiken för kort.</li>
+        </ul>
+        <h3>Det här är sidan inte</h3>
+        <ul>
+          <li>Ingen officiell bedömning och inget varningssystem. Sidan är ett fristående projekt och tolkningen är inte granskad av någon expert.</li>
+          <li>Ingen badvattenkontroll. Badvatten provtas av kommunerna under badsäsongen.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer. Datat är bearbetat: dygnsmedel, normalspann och syre omräknat till mg/l. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span>
+    </footer>
+  </main>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
 (() => {
   const STALE_HOURS = 6;  // SMHI ligger cirka 2 h efter, plus timvis hämtning och cache
   const PARAMS = [
-    ['temp', 'Temperatur vid botten, 8 m'],
-    ['oxy', 'Syrehalt vid botten, 8 m'],
-    ['salt', 'Salthalt vid botten, 8 m'],
-    ['level', 'Vattenstånd, Klagshamn'],
-    ['speed', 'Strömhastighet, ytskiktet'],
+    ['temp', 'Temperatur', 'Vid botten, 8 m'],
+    ['oxy', 'Syre', 'Vid botten, 8 m'],
+    ['salt', 'Salthalt', 'Vid botten, 8 m'],
   ];
   const STATE = {
     temp: { under: 'Kallare än normalt', normalt: 'Normalt för årstiden', över: 'Varmare än normalt' },
@@ -152,15 +273,98 @@ a { color: inherit; }
     level: { under: 'Lågvatten', normalt: 'Normalt vattenstånd', över: 'Högvatten' },
     speed: { under: 'Lugnare än normalt', normalt: 'Normal ström', över: 'Kraftigare ström än normalt' },
   };
+
+  // Ikoner, 24x24
+  const ICONS = {
+    heart: '<path fill="currentColor" d="M12 20.5s-7.6-4.6-9.5-9.3C1 7.6 3.2 4 6.8 4c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.6 0 5.8 3.6 4.3 7.2-1.9 4.7-9.5 9.3-9.5 9.3z"/>',
+    oxy: '<g fill="currentColor"><circle cx="8.5" cy="15" r="5.5"/><circle cx="17" cy="7" r="3.5"/><circle cx="18.5" cy="16.5" r="2.2"/></g>',
+    temp: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M14 14.6V5a2 2 0 0 0-4 0v9.6a4 4 0 1 0 4 0z"/><circle cx="12" cy="17.8" r="1.8" fill="currentColor"/>',
+    salt: '<path fill="currentColor" d="M12 2.8s-6.2 6.8-6.2 11.4a6.2 6.2 0 0 0 12.4 0C18.2 9.6 12 2.8 12 2.8z"/>',
+    level: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2.5 8.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 13c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 17.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0"/>',
+    speed: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 8.5h10.5a3 3 0 1 0-3-3M3 12.5h15a3 3 0 1 1-3 3M3 16.5h6"/>',
+    flow: '<circle cx="12" cy="12" r="10" fill="currentColor"/><path fill="none" stroke="var(--ico-in)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8.2 15.8l7.6-7.6M10 8.2h5.8V14"/>',
+    doc: '<path fill="currentColor" d="M6.5 2.5h7.2l4.8 4.8v12.2a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2z"/><path fill="none" stroke="var(--ico-in)" stroke-width="1.8" stroke-linecap="round" d="M8 12.5h8M8 16h5.5"/><path fill="var(--ico-in)" opacity=".55" d="M13.5 2.5v3.8a1 1 0 0 0 1 1h4z"/>',
+    info: '<circle cx="12" cy="12" r="9.5" fill="currentColor"/><path stroke="var(--ico-in)" stroke-width="2.2" stroke-linecap="round" d="M12 11v6"/><circle cx="12" cy="7.5" r="1.3" fill="var(--ico-in)"/>',
+  };
+  for (const el of document.querySelectorAll('svg[data-icon]')) {
+    el.setAttribute('viewBox', '0 0 24 24'); el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = ICONS[el.dataset.icon];
+  }
+  const TONES = ['ok', 'warn', 'bad', 'bad'];
+  const statusIcon = (tone) => {
+    const mark = tone === 'ok' ? '<path d="M6.5 10.4l2.4 2.4 4.6-5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
+      : tone ? '<path d="M10 5.2v5.6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="10" cy="14.3" r="1.3" fill="#fff"/>'
+      : '<path d="M7.6 7.6a2.4 2.4 0 1 1 3.4 2.2c-.7.3-1 .8-1 1.5v.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14.6" r="1.2" fill="#fff"/>';
+    return `<svg class="dot" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="var(--${tone || 'unknown'})"/>${mark}</svg>`;
+  };
+
   const $ = (id) => document.getElementById(id);
-  const set = (id, text, tone) => { const el = $(id); el.textContent = text; if (tone) el.dataset.tone = tone; else delete el.dataset.tone; };
+  const set = (id, text) => { $(id).textContent = text; };
+  const setStatus = (el, text, tone) => { el.innerHTML = statusIcon(tone); el.append(text); };
   const fmt = (v, d = 1) => v == null ? '–' : v.toLocaleString('sv-SE', { minimumFractionDigits: d, maximumFractionDigits: d });
   const sthlm = (t, opts) => t.toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm', ...opts });
+  const clock = (t) => sthlm(t, { hour: '2-digit', minute: '2-digit' });
+  const ago = (t) => {
+    const day = (d) => sthlm(d, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const today = day(new Date());
+    if (day(t) === today) return clock(t);
+    if (day(new Date(t.getTime() + 864e5)) === today) return 'I går';
+    return sthlm(t, { day: 'numeric', month: 'short' });
+  };
 
+  // Temperatur: bara värme som håller i sig ger varning. Kallt är väder, inte ohälsa (docs/beslut.md).
+  // Räknar hela dygn i följd, bakåt från senaste hela dygnet, som ligger över p90.
+  // null om det saknas WARM_DAYS hela dygn i följd eller om senaste hela dygnet är äldre än i förrgår.
+  const WARM_DAYS = 3;
+  function warmStreak(daily) {
+    const rows = daily.filter((r) => r.param === 'temp' && !r.partial && r.p90 != null).sort((a, b) => a.date < b.date ? -1 : 1);
+    const day = (d) => Date.parse(d + 'T00:00:00Z');
+    if (!rows.length || Date.now() - day(rows[rows.length - 1].date) > 3 * 864e5) return null;
+    let run = 1;
+    for (let i = rows.length - 1; i > 0 && day(rows[i].date) - day(rows[i - 1].date) === 864e5; i--) run++;
+    if (run < WARM_DAYS) return null;
+    let n = 0;
+    for (let i = rows.length - 1; i >= rows.length - run && rows[i].value > rows[i].p90; i--) n++;
+    return n;
+  }
   const oxyGrade = (v) => v >= 6 ? ['God', 0] : v >= 4 ? ['Ansträngd', 1] : v >= 2 ? ['Syrebrist', 2] : ['Akut syrebrist', 3];
-  const TONE = ['ok', 'warn', 'bad', 'bad'];
   const lage = (r) => r.p10 == null ? null : r.value < r.p10 ? 'under' : r.value > r.p90 ? 'över' : 'normalt';
   const flowText = (v) => Math.abs(v) < 5 ? ['↔', 'Nästan stilla', 'knappt alls'] : v > 0 ? ['↑', 'Norrut, ut mot Kattegatt', 'norrut mot Kattegatt'] : ['↓', 'Söderut, in mot Östersjön', 'söderut mot Östersjön'];
+
+  // Perioder i Vitala värden. Dygn visar timvärden, övriga dygnsmedel.
+  // [antal hela dygn, vad diagrammet visar, rubrik för snittet]
+  const PERIODS = {
+    dygn: [1, 'timvärden det senaste dygnet', 'just nu'],
+    vecka: [7, 'dygnsmedel de senaste 7 hela dygnen', 'snitt senaste veckan'],
+    manad: [30, 'dygnsmedel de senaste 30 hela dygnen', 'snitt senaste månaden'],
+    ar: [365, 'dygnsmedel de senaste 365 hela dygnen', 'snitt senaste året'],
+  };
+  // Korta lägesord för perioder, "Kallare än normalt 4 av 7 dygn".
+  const SHORT = {
+    temp: { under: 'kallare än normalt', över: 'varmare än normalt' },
+    salt: { under: 'sötare än normalt', över: 'saltare än normalt' },
+  };
+  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  let period = 'dygn';
+  try { const v = localStorage.getItem('period'); if (PERIODS[v]) period = v; } catch {}
+
+  // Rader {t, value, p10, normal, p90, label} för ett diagram. Timvärden jämförs mot dagens normalspann.
+  function series(p, per) {
+    const { daily, hourly } = state;
+    const days = daily.filter((x) => x.param === p);
+    if (per === 'dygn') {
+      const today = days[days.length - 1] || {};
+      return hourly.filter((h) => h[p] != null).map((h) => {
+        const t = new Date(h.time);
+        return { t, value: h[p], p10: today.p10, normal: today.normal, p90: today.p90, unit: today.unit, label: clock(t) };
+      });
+    }
+    // Perioder räknas på hela dygn, det pågående dygnet är inte med.
+    return days.filter((r) => !r.partial).slice(-PERIODS[per][0]).map((r) => {
+      const t = new Date(r.date + 'T12:00:00Z');
+      return { ...r, t, label: sthlm(t, { day: 'numeric', month: 'short', ...(per === 'ar' ? { year: 'numeric' } : {}) }) };
+    });
+  }
 
   let state = null;
 
@@ -172,98 +376,151 @@ a { color: inherit; }
 
     const last = {};
     for (const r of daily) if (!last[r.param] || r.date > last[r.param].date) last[r.param] = r;
+    const lastHour = (k) => { for (let i = hourly.length - 1; i >= 0; i--) if (hourly[i][k] != null) return new Date(hourly[i].time); return null; };
 
     set('lastTime', latestAt ? sthlm(latestAt, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : 'saknas');
     set('fetched', `Senast hämtat ${sthlm(new Date(meta.fetched), { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}.`);
+    for (const el of document.querySelectorAll('[data-time]')) el.textContent = latestAt ? ago(latestAt) : '';
 
     // Hälsa. Inaktuella data betygsätts inte (SMHI:s villkor och princip 5).
     const o = last.oxy, t = last.temp;
-    if (stale) {
-      $('stale').hidden = false;
-      $('stale').textContent = latestAt
-        ? `Senaste mätningen är ${Math.floor(ageH)} timmar gammal. Därför visas inget betyg just nu.`
-        : 'Det finns inga aktuella mätningar just nu. Därför visas inget betyg.';
-    }
+    if (stale) showBanner(latestAt
+      ? `Senaste mätningen är ${Math.floor(ageH)} timmar gammal. Därför visas inget betyg just nu.`
+      : 'Det finns inga aktuella mätningar just nu. Därför visas inget betyg.');
     const breath = o && !stale ? oxyGrade(o.value) : null;
     const tl = t && !stale ? lage(t) : null;
-    const fever = tl ? (tl === 'normalt' ? ['Normal', 0] : ['Avvikande', 1]) : null;
+    const warm = stale ? null : warmStreak(daily);
+    const fever = warm == null ? null : warm >= WARM_DAYS ? ['För varm', 1] : ['Normal', 0];
     const parts = [breath, fever].filter(Boolean);
     const worst = parts.length === 2 ? Math.max(breath[1], fever[1]) : null;
     const whole = worst == null ? null : ['Mår bra', 'Lite ansträngd', 'Mår dåligt', 'Mår mycket dåligt'][worst];
 
-    set('verdict', whole ?? 'Okänt', whole ? TONE[worst] : null);
-    set('breath', breath ? breath[0] : 'Okänt', breath ? TONE[breath[1]] : null);
-    set('fever', fever ? fever[0] : 'Okänt', fever ? TONE[fever[1]] : null);
+    setStatus($('verdict'), whole ?? 'Okänt', whole ? TONES[worst] : null);
+    setStatus($('breath'), breath ? breath[0] : 'Okänt', breath ? TONES[breath[1]] : null);
+    setStatus($('fever'), fever ? fever[0] : 'Okänt', fever ? TONES[fever[1]] : null);
     set('oxyNow', o && !stale ? fmt(o.value) : '–');
-    set('tempDiff', t && t.normal != null && !stale ? (t.value - t.normal > 0 ? '+' : '') + fmt(t.value - t.normal) : '–');
+    const diff = t && t.normal != null && !stale ? `${t.value - t.normal > 0 ? '+' : ''}${fmt(t.value - t.normal)} °C mot normalt i dag. ` : '';
+    set('tempFoot', warm == null ? (stale ? 'Inga aktuella mätningar.' : 'För få hela dygn med mätningar för att bedöma.')
+      : warm >= WARM_DAYS ? `Varmare än normalt ${warm} dygn i rad. ${diff}`
+      : diff + (tl === 'under' ? 'Kallare än normalt är väder, inte ohälsa.' : warm > 0 ? `Varmare än normalt ${warm} dygn i rad, varning från ${WARM_DAYS}.` : ''));
     set('verdictWord', whole ? whole.toLowerCase() : 'går inte att bedöma just nu');
     set('oxyWord', breath ? (breath[0] === 'God' ? 'gott' : breath[0].toLowerCase()) : 'okänt');
-    set('tempWord', !tl ? 'okänd' : tl === 'normalt' ? 'normal för årstiden' : tl === 'över' ? 'varmare än normalt' : 'kallare än normalt');
+    // Ingressen följer betyget, inte dagens värde.
+    set('tempWord', !fever ? 'okänd' : fever[1] ? `varmare än normalt sedan ${warm} dygn` : 'normal');
 
-    // Rörelse
+    // Rörelse. Riktningen räknas från vattenståndet, farten mäts av strömmätaren (docs/beslut.md).
     const flowRows = hourly.filter((r) => r.flow != null);
     const f = flowRows[flowRows.length - 1];
     if (f && !stale) {
-      const [arrow, dir, word] = flowText(f.flow);
-      set('arrow', arrow); set('flowDir', dir); set('flowWord', word);
+      const [, dir, word] = flowText(f.flow);
+      dirIcon(f.flow); set('flowDir', dir); set('flowWord', word);
       set('slopeText', f.flow >= 0 ? `Skanör står ${fmt(f.flow)} cm högre än Viken` : `Viken står ${fmt(-f.flow)} cm högre än Skanör`);
     } else {
-      set('arrow', '–'); set('flowDir', 'Okänt'); set('flowWord', 'okänt åt vilket håll'); set('slopeText', stale ? 'Inga aktuella vattenstånd.' : 'Vattenstånd saknas för Skanör eller Viken.');
+      dirIcon(null); set('flowDir', 'Riktning okänd'); set('flowWord', 'okänt åt vilket håll'); set('slopeText', stale ? 'Inga aktuella vattenstånd' : 'Vattenstånd saknas för Skanör eller Viken');
     }
+    const s = last.speed, sl = s && !stale ? lage(s) : null;
+    set('speedNow', s && !stale ? fmt(s.value) : '–');
+    set('speedState', sl ? STATE.speed[sl] : 'Fart okänd');
+    set('speedFoot', (s ? (s.partial ? `Farten är dygnsmedel hittills i dag, ${s.n} mätningar. ` : '') + `Normalt ${fmt(s.p10)} till ${fmt(s.p90)} cm/s, basår ${s.base}. ` : '') +
+      'Riktningen räknas från vattenståndet.');
+    const lv = last.level, ll = lv && !stale ? lage(lv) : null;
+    set('levelFoot', lv ? `Klagshamn ${fmt(lv.value)} cm i dag` + (ll ? `, ${STATE.level[ll].toLowerCase()}` : '') +
+      `. Normalt ${fmt(lv.p10)} till ${fmt(lv.p90)} cm, basår ${lv.base}.` : 'Vattenstånd i Klagshamn saknas.');
 
-    // Vitala värden
+    // Vitala värden. Dygn: senaste timvärdet, bedömt på dagens dygnsmedel.
+    // Vecka, månad, år: snitt, lägsta och högsta av hela dygn, och hur många dygn som låg utanför det normala.
+    for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.period === period));
+    const isDay = period === 'dygn';
+    set('vitalsNote', isDay
+      ? `Stora talet är senaste mätningen. Diagrammet visar ${PERIODS[period][1]}. Det grå bandet är det normala spannet för årstiden, där 8 av 10 år hamnar. Bedömningen görs på dygnsmedel. Timvärden svänger mer än dygnsmedel, så en enskild timme utanför bandet betyder lite.`
+      : `Snitt, lägsta och högsta av ${PERIODS[period][1]}. Raden under räknar hur många dygn som låg utanför det normala för årstiden, det grå bandet där 8 av 10 år hamnar. Dagens dygn är inte klart och räknas inte.`);
     const vitals = $('vitals');
     vitals.replaceChildren();
-    const sparks = [];
-    for (const [p, label] of PARAMS) {
+    const minis = [];
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    for (const [p, name, where] of PARAMS) {
       const r = last[p]; if (!r) continue;
-      const rows = daily.filter((x) => x.param === p);
-      const card = document.createElement('div'); card.className = 'card';
-      const k = document.createElement('p'); k.className = 'k'; k.textContent = label;
-      const valWrap = document.createElement('div');
-      const big = document.createElement('span'); big.className = 'big'; big.textContent = fmt(r.value);
-      const unit = document.createElement('span'); unit.className = 'unit'; unit.textContent = r.unit;
-      valWrap.append(big, unit);
-      const st = document.createElement('div'); st.className = 'state';
-      if (p === 'oxy') {
-        const [g, n] = oxyGrade(r.value); st.textContent = `${g} syrestatus`; st.dataset.tone = TONE[n];
+      const tint = `var(--t-${p})`;
+      const rows = series(p, period);
+      const card = el('div', 'card'); card.id = `v-${p}`; card.style.setProperty('--tint', tint);
+
+      const head = el('div', 'head');
+      const cat = el('span', 'cat');
+      cat.innerHTML = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[p]}</svg>`;
+      cat.append(name);
+      const at = lastHour(p);
+      head.append(cat, el('span', 'time', at ? ago(at) : ''));
+
+      const val = el('div', 'val');
+      const st = el('div', 'status sm');
+      let range = null, foot;
+      if (isDay) {
+        const nowRow = [...hourly].reverse().find((h) => h[p] != null);
+        val.append(el('span', 'big', fmt(nowRow && !stale ? nowRow[p] : r.value)), el('span', 'unit', r.unit));
+        // Syre mot fasta gränser, temperatur mot normalt. Övriga beskrivs utan betyg.
+        if (p === 'oxy') {
+          const [g, n] = oxyGrade(r.value); setStatus(st, `${g} syrestatus`, TONES[n]);
+        } else if (p === 'temp' && warm >= WARM_DAYS) {
+          setStatus(st, `Varmare än normalt ${warm} dygn i rad`, 'warn');
+        } else {
+          const l = lage(r); st.textContent = l ? STATE[p][l] : 'Normalspann saknas';
+        }
+        foot = `Dygnsmedel ${r.partial ? `hittills i dag ${fmt(r.value)} ${r.unit}, ${r.n} mätningar` : `${fmt(r.value)} ${r.unit}`}. ` +
+          (p === 'oxy' ? 'Inget normalspann, syre mäts bara sedan 2024.' : `Normalt ${fmt(r.p10)} till ${fmt(r.p90)} ${r.unit}, basår ${r.base}.`);
       } else {
-        const l = lage(r); st.textContent = l ? STATE[p][l] : 'Normalspann saknas';
-        if (p === 'temp' && l) st.dataset.tone = l === 'normalt' ? 'ok' : 'warn';
+        const N = rows.length, want = PERIODS[period][0];
+        const v = rows.map((x) => x.value);
+        val.append(el('span', 'big', N ? fmt(d3.mean(v)) : '–'), el('span', 'unit', r.unit));
+        if (N) range = el('p', 'range', `Lägst ${fmt(d3.min(v))}, högst ${fmt(d3.max(v))} ${r.unit}`);
+        if (!N) {
+          st.textContent = 'Inga hela dygn med mätningar';
+        } else if (p === 'oxy') {
+          // Sämsta syrestatus under perioden och hur många dygn den gällde.
+          const grades = rows.map((x) => oxyGrade(x.value));
+          const worst = d3.max(grades, (g) => g[1]);
+          const n = grades.filter((g) => g[1] === worst).length;
+          const g = grades.find((x) => x[1] === worst)[0];
+          setStatus(st, worst === 0 ? `God syrestatus alla ${N} dygn` : `${g} ${n} av ${N} dygn`, TONES[worst]);
+        } else {
+          const c = { under: 0, normalt: 0, över: 0 };
+          for (const x of rows) { const l = lage(x); if (l) c[l]++; }
+          // "Kallare än normalt 51 av 351 dygn, varmare 43"
+          const parts = ['under', 'över'].filter((l) => c[l]).map((l, i) => i ? `${SHORT[p][l].split(' ')[0]} ${c[l]}` : `${SHORT[p][l]} ${c[l]} av ${N} dygn`);
+          st.textContent = parts.length ? cap(parts.join(', ')) : `Normalt för årstiden alla ${N} dygn`;
+        }
+        foot = (p === 'oxy' ? 'Bedömt mot gränserna 6, 4 och 2 mg/l. Syre mäts bara sedan 2024.' : `Varje dygn jämfört med det normala för sitt datum, basår ${r.base}.`) +
+          (N && N < want ? ` Mätningar finns för ${N} av ${want} dygn.` : '');
       }
-      const sub = document.createElement('p'); sub.className = 'k';
-      sub.textContent = (r.partial ? `Hittills i dag, ${r.n} mätningar. ` : '') +
-        (p === 'oxy' ? 'Inget normalspann, syre mäts bara sedan 2024.' : `Normalt ${fmt(r.p10)} till ${fmt(r.p90)} ${r.unit}, basår ${r.base}.`);
-      card.append(k, valWrap, st);
-      if (r.p10 != null) { const range = document.createElement('div'); range.className = 'range'; card.append(range); drawRange(range, r); }
-      const spark = document.createElement('div'); spark.className = 'spark'; card.append(spark, sub);
+
+      const chart = el('div', 'chart');
+      const xlab = el('div', 'xlab');
+      if (rows.length) xlab.append(el('span', null, rows[0].label), el('span', null, isDay ? 'Nu' : rows[rows.length - 1].label));
+      card.append(head, el('p', 'k', `${cap(PERIODS[period][2])}, ${where.toLowerCase()}`), val);
+      if (range) card.append(range);
+      card.append(chart, xlab, st, el('p', 'foot', foot));
       vitals.append(card);
-      sparks.push([spark, rows, p === 'oxy' ? [6, 4] : null]);
+      minis.push([chart, rows, p === 'oxy' ? [6, 4] : null, tint, `${name}, ${PERIODS[period][1]}`]);
     }
     // Rita först när alla kort finns, annars mäts bredden innan rutnätet är klart.
-    for (const args of sparks) drawSpark(...args);
+    $('speedMini').replaceChildren();
+    if (s) minis.push([$('speedMini'), series('speed', 'manad'), null, 'var(--t-flow)', 'Strömmens fart, dygnsmedel den senaste månaden']);
+    for (const args of minis) drawMini(...args);
     drawFlow($('flowchart'), hourly.filter((r) => r.levelS != null && r.levelV != null));
   }
 
-  function drawRange(el, r) {
-    const lo = Math.min(r.p10, r.value), hi = Math.max(r.p90, r.value), pad = (hi - lo) * 0.15 || 1;
-    const x = (v) => ((v - (lo - pad)) / ((hi + pad) - (lo - pad))) * 100;
-    const mk = (css) => { const d = document.createElement('div'); d.style.cssText = css; el.appendChild(d); };
-    mk('position:absolute;left:0;right:0;top:11px;height:4px;border-radius:2px;background:var(--grid)');
-    mk(`position:absolute;left:${x(r.p10)}%;width:${x(r.p90) - x(r.p10)}%;top:8px;height:10px;border-radius:5px;background:var(--band)`);
-    mk(`position:absolute;left:calc(${x(r.normal)}% - 1px);top:5px;width:2px;height:16px;background:var(--ref)`);
-    mk(`position:absolute;left:calc(${x(r.value)}% - 7px);top:6px;width:14px;height:14px;border-radius:50%;background:var(--series);border:2px solid var(--panel)`);
-    el.setAttribute('role', 'img');
-    el.setAttribute('aria-label', `Värdet ${fmt(r.value)} mot normalt spann ${fmt(r.p10)} till ${fmt(r.p90)}`);
+  // Riktningen i Ström-kortet: bara en pil, norrut uppåt och söderut nedåt. Nästan stilla ger en dubbelpil i sidled.
+  function dirIcon(flow) {
+    const a = $('arrow');
+    const arrow = '<path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M12 20.5V3.5M5.5 10l6.5-6.5 6.5 6.5"/>';
+    a.style.display = flow == null ? 'none' : '';
+    if (flow == null) return;
+    if (Math.abs(flow) < 5) { a.innerHTML = '<path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M3.5 12h17M8 7.5 3.5 12 8 16.5M16 7.5l4.5 4.5-4.5 4.5"/>'; a.style.transform = ''; return; }
+    a.innerHTML = arrow;
+    a.style.transform = flow > 0 ? '' : 'rotate(180deg)';
   }
 
-  function axes(svg, x, y, W, H, m, yTicks, xTicks, xFmt) {
-    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`)
-      .call(d3.axisLeft(y).ticks(yTicks).tickSize(-(W - m.l - m.r)))
-      .call((g) => { g.select('.domain').remove(); g.selectAll('line').attr('stroke', 'var(--grid)'); });
-    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`)
-      .call(d3.axisBottom(x).ticks(xTicks).tickFormat(xFmt).tickSizeOuter(0))
-      .call((g) => { g.select('.domain').attr('stroke', 'var(--line)'); g.selectAll('line').attr('stroke', 'var(--line)'); });
+  function showBanner(msg) {
+    const b = $('stale'); b.hidden = false; b.innerHTML = statusIcon('warn'); b.append(msg);
   }
 
   function hover(el, svg, x, m, W, H, rows, onMove) {
@@ -278,31 +535,31 @@ a { color: inherit; }
       .on('pointerleave', () => { tip.hidden = true; onMove(null, tip); });
   }
 
-  function drawSpark(el, data, limits) {
-    const rows = data.map((r) => ({ ...r, t: new Date(r.date + 'T12:00:00Z') }));
+  // Litet diagram utan axlar, som i Apple Hälsa. Normalspannet syns som grått band.
+  function drawMini(el, rows, limits, tint, label) {
     const W = el.clientWidth, H = el.clientHeight; if (!W || !rows.length) return;
-    const m = { t: 6, r: 6, b: 20, l: 32 };
-    const hasBand = rows.some((r) => r.p10 != null);
+    const m = { t: 4, r: 5, b: 4, l: 0 };
     const vals = rows.flatMap((r) => [r.value, r.p10, r.p90]).concat(limits ? [limits[1]] : []).filter((v) => v != null);
     const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.t)).range([m.l, W - m.r]);
-    const y = d3.scaleLinear().domain(d3.extent(vals)).nice(3).range([H - m.b, m.t]);
-    const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', `${rows[0].name} de senaste 90 dagarna`);
-    axes(svg, x, y, W, H, m, 3, W < 360 ? 2 : 3, d3.utcFormat('%-d/%-m'));
-    if (hasBand) {
-      const b = rows.filter((r) => r.p10 != null);
-      svg.append('path').datum(b).attr('d', d3.area().x((r) => x(r.t)).y0((r) => y(r.p10)).y1((r) => y(r.p90))).style('fill', 'var(--band)').style('opacity', 0.6);
-      svg.append('path').datum(b).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r.normal))).style('fill', 'none').style('stroke', 'var(--ref)').style('stroke-dasharray', '3 3');
+    const y = d3.scaleLinear().domain(d3.extent(vals)).range([H - m.b, m.t]);
+    const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', label);
+    const b = rows.filter((r) => r.p10 != null);
+    if (b.length) {
+      svg.append('path').datum(b).attr('d', d3.area().curve(d3.curveMonotoneX).x((r) => x(r.t)).y0((r) => y(r.p10)).y1((r) => y(r.p90))).style('fill', 'var(--band)').style('opacity', 0.7);
+      svg.append('path').datum(b).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.normal))).style('fill', 'none').style('stroke', 'var(--ref)').style('stroke-dasharray', '2 3');
     }
     for (const v of limits || []) {
-      svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(v)).attr('y2', y(v)).style('stroke', v === 6 ? 'var(--warn)' : 'var(--bad)').style('stroke-dasharray', '4 3');
+      svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(v)).attr('y2', y(v)).style('stroke', v === 6 ? 'var(--warn)' : 'var(--bad)').style('stroke-dasharray', '3 3');
     }
-    svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r.value))).style('fill', 'none').style('stroke', 'var(--series)').style('stroke-width', 1.8);
-    const dot = svg.append('circle').attr('r', 4).style('fill', 'var(--series)').style('display', 'none');
+    svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.value))).style('fill', 'none').style('stroke', tint).style('stroke-width', 2).style('stroke-linecap', 'round');
+    const end = rows[rows.length - 1];
+    svg.append('circle').attr('cx', x(end.t)).attr('cy', y(end.value)).attr('r', 4).style('fill', tint).style('stroke', 'var(--panel)').style('stroke-width', 1.5);
+    const dot = svg.append('circle').attr('r', 3.5).style('fill', tint).style('display', 'none');
     hover(el, svg, x, m, W, H, rows, (r, tip) => {
       if (!r) { dot.style('display', 'none'); return; }
       dot.attr('cx', x(r.t)).attr('cy', y(r.value)).style('display', null);
-      tip.textContent = `${d3.utcFormat('%-d/%-m')(r.t)}: ${fmt(r.value)} ${r.unit}` + (r.normal != null ? ` (normalt ${fmt(r.normal)})` : '') + (r.partial ? ', hittills i dag' : '');
-      tip.style.top = Math.max(0, y(r.value) - 40) + 'px';
+      tip.textContent = `${r.label}: ${fmt(r.value)} ${r.unit}` + (r.normal != null ? ` (normalt ${fmt(r.normal)})` : '');
+      tip.style.top = (H + 6) + 'px';
     });
   }
 
@@ -312,29 +569,45 @@ a { color: inherit; }
     const W = el.clientWidth, H = el.clientHeight;
     if (!W) return;
     if (!rows.length) { el.textContent = 'Vattenstånd saknas just nu.'; return; }
-    const m = { t: 8, r: 8, b: 22, l: 34 };
+    const m = { t: 8, r: 4, b: 22, l: 30 };
     const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.t)).range([m.l, W - m.r]);
     const y = d3.scaleLinear().domain([d3.min(rows, (r) => Math.min(r.levelS, r.levelV)), d3.max(rows, (r) => Math.max(r.levelS, r.levelV))]).nice(4).range([H - m.b, m.t]);
-    const hf = (t) => sthlm(t, { hour: '2-digit', minute: '2-digit' });
     const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', 'Vattenstånd i Skanör och Viken de senaste 24 timmarna');
-    axes(svg, x, y, W, H, m, 4, W < 360 ? 3 : 6, hf);
-    svg.append('path').datum(rows).attr('d', d3.area().x((r) => x(r.t)).y0((r) => y(r.levelV)).y1((r) => y(r.levelS))).style('fill', 'var(--series)').style('opacity', 0.12);
-    [['levelS', 'var(--series)'], ['levelV', 'var(--series2)']].forEach(([k, c]) =>
-      svg.append('path').datum(rows).attr('d', d3.line().x((r) => x(r.t)).y((r) => y(r[k]))).style('fill', 'none').style('stroke', c).style('stroke-width', 2));
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`)
+      .call(d3.axisLeft(y).ticks(4).tickSize(-(W - m.l - m.r)))
+      .call((g) => { g.select('.domain').remove(); g.selectAll('line').attr('stroke', 'var(--grid)'); });
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`)
+      .call(d3.axisBottom(x).ticks(W < 360 ? 3 : 6).tickFormat(clock).tickSize(0).tickPadding(8))
+      .call((g) => g.select('.domain').remove());
+    svg.append('path').datum(rows).attr('d', d3.area().curve(d3.curveMonotoneX).x((r) => x(r.t)).y0((r) => y(r.levelV)).y1((r) => y(r.levelS))).style('fill', 'var(--t-level)').style('opacity', 0.12);
+    [['levelS', 'var(--t-level)'], ['levelV', 'var(--series2)']].forEach(([k, c]) =>
+      svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r[k]))).style('fill', 'none').style('stroke', c).style('stroke-width', 2.2).style('stroke-linecap', 'round'));
     const rule = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--ref)').style('display', 'none');
     hover(el, svg, x, m, W, H, rows, (r, tip) => {
       if (!r) { rule.style('display', 'none'); return; }
       rule.attr('x1', x(r.t)).attr('x2', x(r.t)).style('display', null);
-      tip.textContent = `${hf(r.t)}: Skanör ${fmt(r.levelS)}, Viken ${fmt(r.levelV)} cm`;
-      tip.style.top = '0px';
+      tip.textContent = `${clock(r.t)}: Skanör ${fmt(r.levelS)}, Viken ${fmt(r.levelV)} cm`;
+      tip.style.top = '-8px';
     });
   }
 
   function fail(msg) {
-    for (const id of ['verdict', 'breath', 'fever']) set(id, 'Okänt');
+    for (const id of ['verdict', 'breath', 'fever']) setStatus($(id), 'Okänt', null);
     set('verdictWord', 'går inte att bedöma just nu');
-    $('stale').hidden = false; $('stale').textContent = msg;
+    showBanner(msg);
   }
+
+  // Sidomenyn markerar det man klickat på.
+  for (const a of document.querySelectorAll('.side a')) a.addEventListener('click', () => {
+    for (const b of document.querySelectorAll('.side a')) b.removeAttribute('aria-current');
+    a.setAttribute('aria-current', 'true');
+  });
+
+  for (const b of document.querySelectorAll('.seg button')) b.addEventListener('click', () => {
+    period = b.dataset.period;
+    try { localStorage.setItem('period', period); } catch {}
+    if (state) render();
+  });
 
   fetch('data/current.json', { cache: 'no-cache' })
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })

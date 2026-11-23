@@ -5,7 +5,7 @@
 | Del | Mått | Bedömning |
 |---|---|---|
 | Andning | Syrehalt vid botten, mg/l (SMHI ml/l x 1,429) | 6 eller mer: God. 4 till 6: Ansträngd. 2 till 4: Syrebrist. Under 2: Akut syrebrist |
-| Kroppstemperatur | Dygnsmedel vid botten mot normalt | Inom p10 till p90: Normal. Utanför: Avvikande |
+| Temperatur | Dygnsmedel vid botten mot normalt, hela dygn | Över p90 tre dygn i rad: För varm. Annars: Normal. Kallare än normalt ger ingen varning |
 | Helhet | Sämsta delbetyget | Mår bra, Lite ansträngd, Mår dåligt, Mår mycket dåligt |
 
 ## Rörelse (beskrivs)

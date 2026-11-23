@@ -2,11 +2,11 @@
 
 Två steg, så att det stora arkivet bara hämtas en gång per dygn:
 
-    python3 scripts/fetch_smhi.py base      # arkivet -> data/base.json (normalspann och senaste 100 dygnens timvärden)
+    python3 scripts/fetch_smhi.py base      # arkivet -> data/base.json (normalspann och senaste 370 dygnens timvärden)
     python3 scripts/fetch_smhi.py current   # senaste dygnet + base.json -> data/current.json
     python3 scripts/fetch_smhi.py           # båda
 
-data/current.json innehåller meta, daily (senaste 90 dygnen mot normalt) och hourly (senaste 24 timmarna).
+data/current.json innehåller meta, daily (senaste 366 dygnen mot normalt) och hourly (senaste 24 timmarna).
 Varje dygnsrad har "n" (antal mätningar) och "partial" (dygnet pågår). Syre saknar normalspann.
 Tider är UTC i ISO-format med Z.
 
@@ -23,8 +23,8 @@ from pathlib import Path
 
 API = "https://opendata-download-ocobs.smhi.se/api/version/1.0/parameter/{p}/station/{s}/period/{period}"
 OUT = Path(__file__).resolve().parent.parent / "data"
-DAYS = 90       # dygn som visas
-KEEP = 100      # dygn med timvärden som sparas i base.json, så att senaste dygnet kan slås ihop
+DAYS = 366      # dygn som visas, ett år bakåt
+KEEP = 370      # dygn med timvärden som sparas i base.json, räcker till DAYS och att slå ihop senaste dygnet
 WINDOW = 7      # +-dygn kring samma datum för normalspannet
 
 # namn: (parameter, station, djup, basår, skala, rubrik, enhet)
