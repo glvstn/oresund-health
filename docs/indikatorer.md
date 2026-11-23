@@ -17,6 +17,15 @@
 | Strömhastighet | Lugnare, normal eller kraftigare än normalt |
 | Flöde | Skanör minus Viken. Över +5 cm norrut, under -5 cm söderut, däremellan nästan stilla |
 
+## Näringsämnen (årsstatus, påverkar inte helheten)
+
+| Mått | Bedömning |
+|---|---|
+| Totalkväve, totalfosfor, DIN, DIP vinter (dec till feb) och totalkväve, totalfosfor sommar (juli till aug), Klagshamn 0 till 10 m | Treårsmedel mot HVMFS 2019:25 bilaga 5, kusttyp 7, salthaltsberoende referens. Sammanvägt med normaliserat EK (bilaga 4, formel 1): Hög, God, Måttlig, Otillfredsställande, Dålig |
+| Klorofyll sommar (juli till aug), 0,5 m | Treårsmedel mot bilaga 4 tabell 3.4, typ 7. Bedöms för sig |
+
+Värden under rapporteringsgränsen räknas som halva gränsen.
+
 ## Hur normalt räknas
 
 1. Dygnsmedel per dag från timvärden.

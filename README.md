@@ -30,6 +30,7 @@ Live: https://oresund-health.vercel.app (Vercel, Hobby). Data hämtas varje timm
 npm run dev       # öppna http://localhost:8000
 npm run data      # hämta senaste dygnet från SMHI, högst en gång i timmen
 npm run data:all  # hämta om arkivet och normalspannet
+npm run naring    # hämta näringsämnen från SHARK, en gång per år
 ```
 
 `npm run dev` skapar länken `app/data` om den saknas och hämtar data om det inte finns någon än. Den hämtar inte ny data varje gång, så starta om servern hur ofta du vill. Ingen `npm install` behövs, projektet har inga beroenden. Själva hämtningen görs av Python 3.
@@ -65,6 +66,10 @@ Det här är vad npm-skripten gör.
    Sidan måste köras via en server. Öppnar du `index.html` direkt som fil kan webbläsaren inte läsa `data/current.json`.
 
 `base` hämtar arkivet och skriver `data/base.json` (normalspann), `current` hämtar senaste dygnet och skriver `data/current.json`. Utan argument körs båda. Är `data/current.json` äldre än 6 timmar visar sidan inget betyg, kör då `current` igen.
+
+## Näringsämnen
+
+Näringsämnen och klorofyll från Klagshamn hämtas från SMHI:s havsarkiv SHARK med `npm run naring` och sparas i `app/naring.json`, som checkas in. Proverna når SHARK ett till två år efter provtagning, så det räcker att köra skriptet när ett nytt år har publicerats, ungefär en gång per år. Kör det, kontrollera utskriften och committa filen. Ett anrop tar ungefär en minut.
 
 ## Drift
 

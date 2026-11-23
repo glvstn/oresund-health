@@ -1,0 +1,108 @@
+{
+ "station": "Klagshamn (ÖVF 5:2)",
+ "lat": 55.5133,
+ "lon": 12.8808,
+ "type": "7 - Skånes kustvatten",
+ "years": [
+  2021,
+  2023
+ ],
+ "latest_sample": "2023-12-13",
+ "nutrients_class": "Måttlig",
+ "nutrients_ek_norm": 0.44,
+ "params": [
+  {
+   "key": "totN",
+   "season": "vinter",
+   "name": "Totalkväve",
+   "unit": "µmol/l",
+   "value": 22.18,
+   "samples": 18,
+   "salinity": 11.1,
+   "reference": 16.99,
+   "good_moderate": 20.22,
+   "ek": 0.77,
+   "class": "Måttlig"
+  },
+  {
+   "key": "din",
+   "season": "vinter",
+   "name": "Löst oorganiskt kväve",
+   "unit": "µmol/l",
+   "value": 4.3,
+   "samples": 18,
+   "salinity": 11.1,
+   "reference": 2.3,
+   "good_moderate": 3.44,
+   "ek": 0.54,
+   "class": "Måttlig"
+  },
+  {
+   "key": "totP",
+   "season": "vinter",
+   "name": "Totalfosfor",
+   "unit": "µmol/l",
+   "value": 1.05,
+   "samples": 18,
+   "salinity": 11.1,
+   "reference": 0.5,
+   "good_moderate": 0.72,
+   "ek": 0.47,
+   "class": "Måttlig"
+  },
+  {
+   "key": "dip",
+   "season": "vinter",
+   "name": "Löst oorganiskt fosfor",
+   "unit": "µmol/l",
+   "value": 0.6,
+   "samples": 18,
+   "salinity": 11.1,
+   "reference": 0.27,
+   "good_moderate": 0.4,
+   "ek": 0.45,
+   "class": "Måttlig"
+  },
+  {
+   "key": "totN",
+   "season": "sommar",
+   "name": "Totalkväve",
+   "unit": "µmol/l",
+   "value": 18.87,
+   "samples": 12,
+   "salinity": 10.7,
+   "reference": 15.01,
+   "good_moderate": 19.49,
+   "ek": 0.8,
+   "class": "God"
+  },
+  {
+   "key": "totP",
+   "season": "sommar",
+   "name": "Totalfosfor",
+   "unit": "µmol/l",
+   "value": 0.81,
+   "samples": 12,
+   "salinity": 10.7,
+   "reference": 0.3,
+   "good_moderate": 0.4,
+   "ek": 0.37,
+   "class": "Otillfredsställande"
+  },
+  {
+   "key": "chl",
+   "season": "sommar",
+   "name": "Klorofyll",
+   "unit": "µg/l",
+   "value": 0.88,
+   "samples": 6,
+   "salinity": 10.2,
+   "reference": 1.3,
+   "good_moderate": 1.94,
+   "ek": 1.48,
+   "class": "Hög"
+  }
+ ],
+ "source": "SMHI, SHARK. Insamlat av NIRAS på uppdrag av Öresunds vattenvårdsförbund. CC0. Bearbetat enligt HVMFS 2019:25.",
+ "fetched": "2026-11-23T15:14Z"
+}

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "[ -e app/data ] || ln -s ../data app/data; [ -e data/current.json ] || python3 scripts/fetch_smhi.py; echo 'Öppna http://localhost:8000'; cd app && python3 -m http.server 8000",
     "data": "python3 scripts/fetch_smhi.py current",
-    "data:all": "python3 scripts/fetch_smhi.py"
+    "data:all": "python3 scripts/fetch_smhi.py",
+    "naring": "python3 scripts/fetch_shark.py"
   }
 }
