@@ -8,6 +8,7 @@ Havsdata är många parametrar med komplexa värden. Sidan ska göra dem begripl
 
 - **Hälsa** får betyg: syre vid botten och temperatur mot normalt för årstiden.
 - **Rörelse** beskrivs men betygsätts inte: vattenstånd, salthalt, ström och flödesriktning.
+- **Påverkan** beskrivs men betygsätts inte: det människor gör mot sundet, i dag sjöfart.
 - Varje värde jämförs med vad som är **normalt för samma vecka** under tidigare år.
 
 ## Status

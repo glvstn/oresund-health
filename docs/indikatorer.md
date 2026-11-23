@@ -26,6 +26,12 @@
 
 Värden under rapporteringsgränsen räknas som halva gränsen.
 
+## Påverkan (beskrivs, betygsätts aldrig)
+
+| Mått | Beskrivning |
+|---|---|
+| Sjöfart | Fartyg per år som passerar Öresunds södra infart (Stevns till Falsterbo), HELCOM 2006 till 2020. Andel per fartygstyp och ungefär antal per dag. Statiskt, ingen jämförelse mot normalt |
+
 ## Hur normalt räknas
 
 1. Dygnsmedel per dag från timvärden.

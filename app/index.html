@@ -10,7 +10,7 @@
   --bg: #f2f2f7; --panel: #ffffff; --side: #f9f9fb; --fg: #000000; --muted: #747578; --note: #6d6d70; --line: #e5e5ea; --fill: #e9e9ee;
   --ok: #34c759; --warn: #ff9500; --bad: #ff3b30; --unknown: #aeaeb2;
   --accent: #007aff;
-  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759; --t-chl: #00c7be;
+  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759; --t-ship: #5b7083; --t-chl: #00c7be;
   --series2: #ff6b3d; --band: #d6d6dc; --ref: #9a9aa0; --grid: #efeff3;
   --hero: linear-gradient(180deg, #8fd3f4 0%, #a9b8f5 38%, #c9c3f0 62%, rgb(242 242 247 / 0) 100%);
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -21,7 +21,7 @@
     --bg: #000000; --panel: #1c1c1e; --side: #111113; --fg: #ffffff; --muted: #98989f; --note: #98989f; --line: #2c2c2e; --fill: #2c2c2e;
     --ok: #30d158; --warn: #ff9f0a; --bad: #ff453a; --unknown: #636366;
     --accent: #0a84ff;
-    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f; --t-naring: #30d158; --t-chl: #63e6e2;
+    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f; --t-naring: #30d158; --t-ship: #8fa3b5; --t-chl: #63e6e2;
     --series2: #ff8a5c; --band: #3a3a3e; --ref: #7c7c82; --grid: #262628;
     --hero: linear-gradient(180deg, #0d4a6b 0%, #2a2f6e 40%, #2d2347 64%, rgb(0 0 0 / 0) 100%);
     color-scheme: dark;
@@ -122,6 +122,11 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 #v-chl .foot { margin-top: auto; }
 .about p { font-size: 17px; margin: 0; max-width: 80ch; }
 .about h3 { font-size: 17px; font-weight: 600; margin: 20px 0 4px; }
+.bars { position: relative; height: 72px; margin-top: 12px; }
+.bars svg { width: 100%; height: 100%; }
+.mix { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 12px 0 6px; gap: 2px; }
+.mix span { display: block; }
+#sjofart { --ship2: color-mix(in srgb, var(--t-ship) 68%, var(--panel)); --ship3: color-mix(in srgb, var(--t-ship) 42%, var(--panel)); --ship4: color-mix(in srgb, var(--t-ship) 20%, var(--panel)); }
 .dir { width: 30px; height: 30px; display: inline-block; vertical-align: -3px; margin-right: 4px; color: var(--fg); transition: transform .3s; }
 
 footer { color: var(--note); font-size: 13px; padding: 0 4px; }
@@ -144,6 +149,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       <li><a href="#naring"><svg class="ico" style="color:var(--t-naring)" data-icon="naring"></svg>Näringsämnen</a></li>
       <li><a href="#strom"><svg class="ico" style="color:var(--t-flow)" data-icon="flow"></svg>Ström</a></li>
       <li><a href="#vattenstand"><svg class="ico" style="color:var(--t-level)" data-icon="level"></svg>Vattenstånd</a></li>
+      <li><a href="#sjofart"><svg class="ico" style="color:var(--t-ship)" data-icon="ship"></svg>Sjöfart</a></li>
       <li><a href="#metod"><svg class="ico" style="color:var(--t-info)" data-icon="info"></svg>Om mätningarna</a></li>
       <li><a href="#syfte"><svg class="ico" style="color:var(--t-speed)" data-icon="doc"></svg>Om sidan</a></li>
     </ul>
@@ -229,6 +235,32 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       </div>
     </section>
 
+    <section id="paverkan">
+      <h2>Påverkan</h2>
+      <p class="note">Det människor gör mot sundet. Påverkan är troligen negativ men får inget betyg, eftersom det inte finns någon gräns för hur mycket som är för mycket.</p>
+      <div class="cards">
+        <div class="card" id="sjofart" style="--tint:var(--t-ship)">
+          <div class="head"><span class="cat"><svg class="ico" data-icon="ship"></svg>Sjöfart</span><span class="time">2020</span></div>
+          <p class="k">Fartyg som passerade Öresunds södra infart</p>
+          <div class="val"><span class="big">28 377</span><span class="unit">per år</span></div>
+          <div class="status sm">Ungefär 78 fartyg om dagen</div>
+          <div class="mix" role="img" aria-label="Lastfartyg 55 procent, tankfartyg 17 procent, passagerarfartyg 10 procent, övriga 19 procent">
+            <span style="flex:15502;background:var(--t-ship)"></span><span style="flex:4761;background:var(--ship2)"></span><span style="flex:2790;background:var(--ship3)"></span><span style="flex:5324;background:var(--ship4)"></span>
+          </div>
+          <ul class="legend">
+            <li><span style="background:var(--t-ship)"></span>Last 55 %</li>
+            <li><span style="background:var(--ship2)"></span>Tank 17 %</li>
+            <li><span style="background:var(--ship3)"></span>Passagerare 10 %</li>
+            <li><span style="background:var(--ship4)"></span>Övriga 19 %</li>
+          </ul>
+          <div class="bars" id="shipBars"></div>
+          <div class="xlab"><span>2006</span><span>2020</span></div>
+          <p class="k">Ungefär lika många varje år sedan 2011, mellan 25 700 och 29 400. Svackan 2009 till 2010 följer finanskrisen.</p>
+          <p class="foot">Fartyg bullrar, släpper ut avgaser och tvättvatten från skrubbrar och kan orsaka olyckor och oljeutsläpp. Hur mycket det påverkar sundet vet ingen, och ingen myndighet har satt en gräns. Därför får sjöfarten inget betyg och påverkar inte helheten. Siffran räknas av HELCOM med AIS över en linje från Stevns till Falsterbo och uppdateras inte längre, senaste året är 2020.</p>
+        </div>
+      </div>
+    </section>
+
     <section id="metod">
       <h2>Om mätningarna</h2>
       <p class="note">Varifrån datat kommer, hur det normala räknas och vad sidan inte vet.</p>
@@ -242,6 +274,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <li>Strömmens riktning räknas från vattenståndet, eftersom det är oklart hur SMHI anger mätarens riktning. Farten kommer från mätaren. Vid hård vind kan ytströmmen tillfälligt gå åt andra hållet.</li>
         <li>Näringsämnen och klorofyll provtas varje månad vid Klagshamn och når SMHI ett till två år senare. De bedöms som treårsmedel mot Havs- och vattenmyndighetens gränser och påverkar inte hälsobetyget.</li>
         <li>Klorofyll visar hur mycket växtplankton det finns i ytan. Det mäts från satellit (Sentinel-3) över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn. Från november till februari står solen för lågt för att värdena ska gå att lita på, så då saknas klorofyll. Satelliten visar högre värden än vattenproven vid Klagshamn, därför jämförs värdet bara med det normala för datumet 2017 till 2025 och får inget betyg.</li>
+        <li>Sjöfarten är en årssiffra från HELCOM, senast 2020. Den visar hur mycket trafik som passerar, inte hur mycket den påverkar.</li>
         <li>Tolkningen är inte granskad av någon expert. Alger och fisk saknas ännu.</li>
       </ul>
       </div>
@@ -255,6 +288,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <h3>Så tänker sidan</h3>
         <ul>
           <li>Hälsa och rörelse hålls isär. Bara det som säger något om hur havet mår får betyg. Högvatten, salt inflöde och stark ström är väder, inte sjukdom.</li>
+          <li>Påverkan, det människor gör mot sundet, visas för sig och får inget betyg. Den är troligen negativ, men det finns inga gränser att mäta mot.</li>
           <li>Gränser lånas från myndigheter där det går. Där sådana saknas jämförs varje värde med hur det brukar vara samma tid på året.</li>
           <li>Det sämsta delvärdet styr helheten, så att ett bra värde aldrig döljer ett dåligt.</li>
           <li>Sidan säger när den inte vet, till exempel när mätningarna är gamla eller historiken för kort.</li>
@@ -270,7 +304,8 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     <footer>
       Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer från stationerna Flinten 7 och Flinten 16 mitt i sundet sydväst om Malmö, och vattenstånd från Klagshamn, Skanör och Viken. Datat är bearbetat: dygnsmedel, normalspann, syre omräknat till mg/l och salthalt till procent. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span><br>
       Näringsämnen och klorofyll: <a href="https://shark.smhi.se">SMHI, SHARK</a>, insamlat av NIRAS på uppdrag av <a href="https://www.oresunds-vvf.se">Öresunds vattenvårdsförbund</a>. Licens CC0. Bearbetat till treårsmedel och bedömt enligt HVMFS 2019:25.<br>
-      Klorofyll: Generated using E.U. Copernicus Marine Service Information, <a href="https://doi.org/10.48670/moi-00294">doi.org/10.48670/moi-00294</a> och <a href="https://doi.org/10.48670/moi-00296">doi.org/10.48670/moi-00296</a>. Bearbetat till median över en ruta kring Flinten och normalspann.
+      Klorofyll: Generated using E.U. Copernicus Marine Service Information, <a href="https://doi.org/10.48670/moi-00294">doi.org/10.48670/moi-00294</a> och <a href="https://doi.org/10.48670/moi-00296">doi.org/10.48670/moi-00296</a>. Bearbetat till median över en ruta kring Flinten och normalspann.<br>
+      Sjöfart: AIS passage line crossings by ship type, 2020. <a href="https://maps.helcom.fi">HELCOM Map and Data Service</a>. Fri att använda med källangivelse. Bearbetat till andelar och fartyg per dag.
     </footer>
   </main>
   </div>
@@ -305,12 +340,25 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     speed: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 8.5h10.5a3 3 0 1 0-3-3M3 12.5h15a3 3 0 1 1-3 3M3 16.5h6"/>',
     flow: '<circle cx="12" cy="12" r="10" fill="currentColor"/><path fill="none" stroke="var(--ico-in)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8.2 15.8l7.6-7.6M10 8.2h5.8V14"/>',
     doc: '<path fill="currentColor" d="M6.5 2.5h7.2l4.8 4.8v12.2a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2z"/><path fill="none" stroke="var(--ico-in)" stroke-width="1.8" stroke-linecap="round" d="M8 12.5h8M8 16h5.5"/><path fill="var(--ico-in)" opacity=".55" d="M13.5 2.5v3.8a1 1 0 0 0 1 1h4z"/>',
+    ship: '<path fill="currentColor" d="M2.5 13.5h19l-2.6 5.2a1.5 1.5 0 0 1-1.3.8H6.4a1.5 1.5 0 0 1-1.3-.8z"/><path fill="currentColor" d="M7 12.2V8.5a1 1 0 0 1 1-1h5.5l2.5 4.7z"/><rect x="9.2" y="4" width="2.4" height="3.5" rx=".6" fill="currentColor"/>',
     info: '<circle cx="12" cy="12" r="9.5" fill="currentColor"/><path stroke="var(--ico-in)" stroke-width="2.2" stroke-linecap="round" d="M12 11v6"/><circle cx="12" cy="7.5" r="1.3" fill="var(--ico-in)"/>',
   };
   for (const el of document.querySelectorAll('svg[data-icon]')) {
     el.setAttribute('viewBox', '0 0 24 24'); el.setAttribute('aria-hidden', 'true');
     el.innerHTML = ICONS[el.dataset.icon];
   }
+  // Sjöfart: passager vid Öresunds södra infart per år, HELCOM (MADS/Shipping, lager 0, linjen "Drogden").
+  const SHIPS = { 2006: 33099, 2007: 32908, 2008: 31718, 2009: 26415, 2010: 23613, 2011: 26084, 2012: 28853, 2013: 29171,
+    2014: 28133, 2015: 27984, 2016: 29425, 2017: 28190, 2018: 25746, 2019: 28852, 2020: 28377 };
+  (() => {
+    const box = document.getElementById('shipBars');
+    const ys = Object.keys(SHIPS), max = Math.max(...Object.values(SHIPS)), n = ys.length, gap = 3, w = 100 / n;
+    box.innerHTML = `<svg viewBox="0 0 100 72" preserveAspectRatio="none" role="img" aria-label="Fartyg per år 2006 till 2020, mellan 23 600 och 33 100">${
+      ys.map((y, i) => { const h = SHIPS[y] / max * 70;
+        return `<rect x="${i * w + gap / 4}" y="${72 - h}" width="${w - gap / 2}" height="${h}" rx="0.8" fill="var(--t-ship)" opacity="${y === '2020' ? 1 : 0.45}"><title>${y}: ${SHIPS[y].toLocaleString('sv-SE')} fartyg</title></rect>`; }).join('')
+    }</svg>`;
+  })();
+
   const TONES = ['ok', 'warn', 'bad', 'bad'];
   const statusIcon = (tone) => {
     const mark = tone === 'ok' ? '<path d="M6.5 10.4l2.4 2.4 4.6-5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'

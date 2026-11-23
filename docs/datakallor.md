@@ -33,6 +33,12 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 - Hämtas för hand med `npm run naring` ungefär en gång per år, resultatet `app/naring.json` checkas in.
 - Förbundets månadsrapporter (oresunds-vvf.se) kommer en månad efter provtagning men innehåller bara text, inga värden, och har ingen angiven licens. Frågat om tillstånd och tabeller (utkast till mejl 2026-11-23).
 
+## HELCOM, AIS-passager (används för sjöfart)
+
+- Lager "AIS passage line crossings by ship type", `maps.helcom.fi/arcgis/rest/services/MADS/Shipping/MapServer/0`, linjen som heter "Drogden" men går Stevns till Falsterbo (södra infarten). Per år och typ (last, passagerare, tank, övrigt, totalt) 2006 till 2020. Uppdateras inte längre.
+- Licens enligt metadataposten (`metadata.helcom.fi`, post 4987669b-262e-46ef-8800-3ccfb3b93313): fri att använda med källangivelse, ingen begränsning av allmän åtkomst. Källangivelse enligt HELCOM: "[Datamängd], [år]. HELCOM Map and Data Service. https://maps.helcom.fi".
+- Siffrorna ligger statiskt i `app/index.html` (konstanten `SHIPS`). Ingen hämtning.
+
 ## Kandidater
 
 ### DMI, danska oceanografiska observationer
@@ -61,13 +67,41 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 - Data: modellerade årsvärden från 2018 (HOLAS 3) i MADS, lagren "Input of continuous anthropogenic sound" och "Potential effect of continuous noise to mobile species" under `MADS/Pressures`. Mätdata i ICES Continuous Noise Database. Danska DCE har en rapport (TR204) för danska farvatten 2019 till 2020.
 - Bedömning: inget att visa löpande och inga gränser att låna (princip 2). Avvakta HOLAS 4.
 
-### HELCOM, AIS-trafik
-- Samma tjänst har årliga täthetskartor per fartygstyp 2006 till 2024.
-- Passager över linjer (`MADS/Shipping/MapServer/0`, undersökt 2026-11-23): 14 linjer i Östersjön, en i Öresund. Den heter "Drogden" men går Stevns till Falsterbo (12,42 till 12,85 E, cirka 55,4 N), alltså södra infarten. Fångar genomfart, inte färjorna Helsingör till Helsingborg.
-  - Per år och typ (last, passagerare, tank, övrigt, totalt) 2006 till 2020. Inte uppdaterat sedan dess.
-  - Totalt 33 099 (2006), botten 23 613 (2010), sedan 26 000 till 29 400 per år. 2020: 28 377, varav 15 502 last och 4 761 tank.
-  - Svackan 2009 till 2010 följer finanskrisen. Siffran speglar ekonomin, inte havet.
-  - Bedömning: bakgrund ("cirka 28 000 fartyg passerar södra infarten per år"), inget betyg och inget levande värde.
+### HELCOM, AIS-täthet
+- Samma tjänst har årliga täthetskartor per fartygstyp 2006 till 2024. Passagerna används, se ovan.
+
+### Danska Sjöfartsstyrelsen, AIS
+- Undersökt 2026-11-23, inget byggt.
+- Historisk AIS för danska vatten, gratis som CSV-filer. En zip-fil per dygn på `http://aisdata.ais.dk/` (S3-hink `aisdata.ais.dk.s3.eu-central-1.amazonaws.com`). Kontrollerat 2026-11-23: senaste fil `aisdk-2026-11-20.zip`, publicerad 2026-11-23, alltså cirka tre dygn efter. Äldre år ligger i mappar per år från 2021 (2025-mappen slutar i februari, resten av 2025 och 2026 ligger i roten).
+- En dygnsfil är cirka 590 MB och täcker alla danska vatten, så den måste filtreras på Öresund. Hämtas en gång per dygn, inte per timme.
+- Villkor: får användas kommersiellt och icke-kommersiellt, men inte så att det ser ut som att myndigheten står bakom. Villkorssidan är inte läst i sin helhet. Kontakten för AIS-data verkar ha flyttat till danska Beredskapsstyrelsen, kontrollera ägaren.
+- Den färdiga statistiken över passager genom Öresund slutar 2023 (sidan listar 2015 till 2023) och uppdateras inte längre. Rådatan ovan är aktuell.
+- Prövat 2026-11-23: att räkna fartyg i klass A som korsar en linje Dragør till Klagshamn tog cirka 20 s nedladdning och 30 s räkning per dygn och gav 60 fartyg för 2026-11-20. Ett normalspann kräver att minst ett års dygnsfiler räknas igenom (cirka 215 GB). Valdes bort till förmån för HELCOM:s årssiffra. Skriptet togs bort, upplägget finns här om sidan senare ska visa levande trafik.
+
+### EMODnet Human Activities, fartygstäthet
+- Undersökt 2026-11-23, inget byggt.
+- Månatliga och årliga täthetskartor (GeoTIFF) per fartygstyp 2017 till 2023, plus WCS-tjänst.
+- Återanvändning fri, kommersiellt och icke-kommersiellt, om EMODnet Human Activities och CLS anges. Licensfältet i katalogposten är inte kontrollerat.
+- Bedömning: visar var trafiken går och hur den varierar över året, inte läget nu.
+
+### Naturvårdsverket, Utsläpp i siffror (Sjölunda)
+- Undersökt 2026-11-23, inget byggt.
+- Årliga utsläpp per anläggning 2007 till 2023, Sjölunda har id 2664. Nedladdning som Excel eller CSV.
+- Licens: ingen angiven för datat (kontrollerat 2026-11-23). Webbplatsens upphovsrättstext gäller bara bilder. Får inte användas förrän Naturvårdsverket bekräftat villkoren (princip 7).
+- Bedömning: årsvärde för kväve och fosfor från Malmös största reningsverk, men ligger efter (senast 2023) och licensen är oklar.
+
+### Danmarks Miljøportal, PULS (reningsverk och bräddning)
+- Undersökt 2026-11-23, inget byggt.
+- Nationell databas över punktutsläpp. Kommunerna rapporterar bräddningar per utlopp en gång per år. Volymerna har ofta varit modellerade, flödesmätare införs.
+- Spildevandsvagten.dk visar PULS-utdrag (datamängden `regnbetingede-udloeb-udledning` på arealdata.miljoeportal.dk) och anger CC0. Senaste år 2025. Det är en tredje parts uppgift. Miljøportalens egen villkorssida svarar 404 och ingen licens har hittats hos källan. Bekräfta med Danmarks Miljøportal innan användning.
+- Lynetten (BIOFOS) släpper ut i Öresund enligt tillstånd. Rapporteras i PULS.
+- Bedömning: årsdata, inte löpande.
+
+### VA SYD, bräddning i Malmö
+- Undersökt 2026-11-23. Ingen öppen data hittad.
+- Bräddningar rapporteras till Malmö stads miljöförvaltning i efterhand. Större händelser publiceras som nyheter, till exempel avloppsläckan i maj 2026.
+- Bräddpunkter bland annat Limhamns hamn och sundet vid Ön och Sege kanal. De flesta bräddningar sker juni till augusti vid kraftigt regn.
+- Bedömning: passar som händelse, inte som levande värde. Fråga VA SYD eller miljöförvaltningen om löpande data.
 
 ## Avförda
 
