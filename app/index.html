@@ -147,6 +147,8 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .chart { position: relative; height: 96px; margin-top: 10px; }
 .chart svg { width: 100%; height: 100%; overflow: visible; }
 .xlab { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin: 2px 0 6px; }
+.vfade { animation: vfade .35s ease-out; }
+@keyframes vfade { from { opacity: 0; transform: translateY(3px); } }
 .range { color: var(--muted); font-size: 14px; margin: 2px 0 0; }
 .mini { position: relative; width: 46%; max-width: 200px; height: 64px; flex: none; }
 .mini svg, .flowchart svg { width: 100%; height: 100%; overflow: visible; }
@@ -836,18 +838,33 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     const x = d3.scaleUtc().domain(d3.extent(rows.concat(b), (r) => r.t)).range([m.l, W - m.r]);
     const y = d3.scaleLinear().domain(d3.extent(vals)).range([H - m.b, m.t]);
     const svg = d3.select(el).append('svg').attr('role', 'img').attr('aria-label', label);
+    const anim = periodChanged && el.closest('#vitals');
     const has = (r) => r.p10 != null;
     if (b.some(has)) {
-      svg.append('path').datum(b).attr('d', d3.area().defined(has).curve(d3.curveMonotoneX).x((r) => x(r.t)).y0((r) => y(r.p10)).y1((r) => y(r.p90))).style('fill', 'var(--band)').style('opacity', 0.7);
-      svg.append('path').datum(b).attr('d', d3.line().defined(has).curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.normal))).style('fill', 'none').style('stroke', 'var(--ref)').style('stroke-dasharray', '2 3');
+      const g = svg.append('g');
+      g.append('path').datum(b).attr('d', d3.area().defined(has).curve(d3.curveMonotoneX).x((r) => x(r.t)).y0((r) => y(r.p10)).y1((r) => y(r.p90))).style('fill', 'var(--band)').style('opacity', 0.7);
+      g.append('path').datum(b).attr('d', d3.line().defined(has).curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.normal))).style('fill', 'none').style('stroke', 'var(--ref)').style('stroke-dasharray', '2 3');
+      if (anim) g.style('opacity', 0).transition().duration(450).style('opacity', 1);
     }
     for (const v of limits || []) {
       svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(v)).attr('y2', y(v)).style('stroke', v === 6 ? 'var(--warn)' : 'var(--bad)').style('stroke-dasharray', '3 3');
     }
-    if (opts.dots) svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.t)).attr('cy', (r) => y(r.value)).attr('r', rows.length > 60 ? 1.8 : 2.6).style('fill', tint);
-    else svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.value))).style('fill', 'none').style('stroke', tint).style('stroke-width', 2).style('stroke-linecap', 'round');
+    if (opts.dots) {
+      const dots = svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', (r) => x(r.t)).attr('cy', (r) => y(r.value)).attr('r', rows.length > 60 ? 1.8 : 2.6).style('fill', tint);
+      if (anim) dots.style('opacity', 0).transition().delay((r) => (x(r.t) - m.l) / (W - m.l - m.r) * DRAW_MS).duration(150).style('opacity', 1);
+    } else {
+      const line = svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveMonotoneX).x((r) => x(r.t)).y((r) => y(r.value))).style('fill', 'none').style('stroke', tint).style('stroke-width', 2).style('stroke-linecap', 'round');
+      // Linjen ritas fram från vänster
+      if (anim) {
+        const L = line.node().getTotalLength();
+        line.attr('stroke-dasharray', `${L} ${L}`).attr('stroke-dashoffset', L)
+          .transition().duration(DRAW_MS).ease(d3.easeCubicOut).attr('stroke-dashoffset', 0)
+          .on('end', () => line.attr('stroke-dasharray', null).attr('stroke-dashoffset', null));
+      }
+    }
     const end = rows[rows.length - 1];
-    svg.append('circle').attr('cx', x(end.t)).attr('cy', y(end.value)).attr('r', 4).style('fill', tint).style('stroke', 'var(--panel)').style('stroke-width', 1.5);
+    const endDot = svg.append('circle').attr('cx', x(end.t)).attr('cy', y(end.value)).attr('r', 4).style('fill', tint).style('stroke', 'var(--panel)').style('stroke-width', 1.5);
+    if (anim) endDot.attr('r', 0).transition().delay(DRAW_MS * .8).duration(200).attr('r', 4);
     const dot = svg.append('circle').attr('r', 3.5).style('fill', tint).style('display', 'none');
     hover(el, svg, x, m, W, H, rows, (r, tip) => {
       if (!r) { dot.style('display', 'none'); return; }
@@ -855,6 +872,23 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       tip.textContent = `${r.label}: ${fmt(r.value, r.dec)} ${r.unit}` + (r.normal != null ? ` (normalt ${fmt(r.normal, r.dec)})` : '');
       tip.style.top = (H + 6) + 'px';
     });
+  }
+
+  // Övergång när perioden i Vitala värden byts (bara då, inte vid laddning eller ny storlek).
+  const DRAW_MS = 700;
+  let periodChanged = false;
+  const parseSv = (t) => { if (!t) return null; const v = parseFloat(t.replace(/\s/g, '').replace('−', '-').replace(',', '.')); return Number.isFinite(v) ? v : null; };
+  // Räknar siffran från förra periodens värde till det nya, med samma antal decimaler.
+  function countTo(el, from) {
+    const to = parseSv(el?.textContent);
+    if (from == null || to == null || from === to) return;
+    const dec = (el.textContent.split(',')[1] || '').length, t0 = performance.now();
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / 500), e = 1 - (1 - k) ** 3;
+      el.textContent = fmt(from + (to - from) * e, dec);
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   }
 
   // Prognos för strömmens riktning från DMI:s havsmodell (docs/datakallor.md). Bara riktningen, modellens fart är för hög.
@@ -992,9 +1026,19 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   });
 
   for (const b of document.querySelectorAll('.seg button')) b.addEventListener('click', () => {
+    if (b.dataset.period === period) return;
     period = b.dataset.period;
     try { localStorage.setItem('period', period); } catch {}
-    if (state) render();
+    if (!state) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { render(); return; }
+    const before = {};
+    for (const el of document.querySelectorAll('#vitals .card')) before[el.id] = parseSv(el.querySelector('.big')?.textContent);
+    periodChanged = true;
+    try { render(); } finally { periodChanged = false; }
+    for (const el of document.querySelectorAll('#vitalsNote, #vitals .card > :is(.k, .range, .xlab, .status, .foot)')) {
+      el.classList.remove('vfade'); void el.offsetWidth; el.classList.add('vfade');
+    }
+    for (const card of document.querySelectorAll('#vitals .card')) countTo(card.querySelector('.big'), before[card.id]);
   });
 
   fetch('data/prognos.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { prognos = d; if (state) render(); }).catch(() => {});
