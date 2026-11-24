@@ -26,6 +26,7 @@
   --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759; --t-ship: #5b7083; --t-chl: #00c7be;
   --series2: #ff6b3d; --band: #d6d6dc; --ref: #9a9aa0; --grid: #efeff3;
   --hero: linear-gradient(180deg, #8fd3f4 0%, #a9b8f5 38%, #c9c3f0 62%, rgb(242 242 247 / 0) 100%);
+  --h1: clamp(30px, 5vw, 40px);
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color-scheme: light;
 }
@@ -60,9 +61,37 @@ svg { display: block; }
 .side a[aria-current="true"] .ico { color: #fff !important; --ico-in: var(--accent); }
 .side .group { font-size: 20px; font-weight: 700; margin: 24px 12px 8px; }
 .ico { width: 24px; height: 24px; flex: none; }
+/* Menyikoner rör sig en gång vid hovring, inte på vald rad och inte om besökaren stängt av rörelse */
+@media (prefers-reduced-motion: no-preference) {
+  .side a:not([aria-current="true"]):hover .ico[data-icon="heart"] { animation: ico-beat .7s ease-in-out; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="oxy"] circle { transform-box: fill-box; animation: ico-bubble .7s cubic-bezier(.45, 0, .2, 1) backwards; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="oxy"] circle:nth-child(2) { animation-delay: .08s; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="oxy"] circle:nth-child(3) { animation-delay: .16s; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="flow"] path { animation: ico-shoot .6s cubic-bezier(.45, 0, .2, 1); }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="level"] path { animation: ico-drift .8s cubic-bezier(.45, 0, .2, 1); }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="ship"] { transform-origin: 50% 85%; animation: ico-rock .9s ease-in-out; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="temp"] .hg { transform-box: fill-box; transform-origin: 50% 100%; animation: ico-rise .8s cubic-bezier(.45, 0, .2, 1); }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="naring"] path:last-child { transform-box: view-box; transform-origin: 12px 13.5px; animation: ico-grow .8s cubic-bezier(.45, 0, .2, 1); }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="salt"] { transform-origin: 50% 100%; animation: ico-drop .7s cubic-bezier(.45, 0, .2, 1); }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="chl"] :is(ellipse, circle) { transform-box: fill-box; transform-origin: center; animation: ico-sway .9s ease-in-out backwards; }
+  .ico[data-icon="chl"] > g > g:first-child ellipse { --x: -1.5px; --y: -1px; --r: -18deg; }
+  .ico[data-icon="chl"] circle { --x: 1.5px; --y: -1.5px; --r: 0deg; }
+  .ico[data-icon="chl"] > g > g:last-child ellipse { --x: 1px; --y: 1.5px; --r: 14deg; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="chl"] circle { animation-delay: .07s; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="chl"] > g > g:last-child ellipse { animation-delay: .14s; }
+  @keyframes ico-grow { 30% { transform: scale(.6); } 70% { transform: scale(1.12); } }
+  @keyframes ico-rise { 25% { transform: scaleY(.5); } 70% { transform: scaleY(1.5); stroke: var(--bad); } }
+  @keyframes ico-drop { 30% { transform: translateY(2px); } 45% { transform: translateY(2px) scale(1.12, .88); } 70% { transform: translateY(-1px); } }
+  @keyframes ico-sway { 30% { transform: translate(var(--x), var(--y)) rotate(var(--r)); } 65% { transform: translate(calc(var(--x) * -.6), calc(var(--y) * -.6)) rotate(calc(var(--r) * -.6)); } }
+  @keyframes ico-beat { 15% { transform: scale(1.15); } 30% { transform: scale(1); } 45% { transform: scale(1.1); } 60% { transform: scale(1); } }
+  @keyframes ico-bubble { 50% { transform: translateY(-3px); } }
+  @keyframes ico-shoot { 40% { transform: translate(5px, -5px); opacity: 0; } 41% { transform: translate(-5px, 5px); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  @keyframes ico-drift { 50% { transform: translateX(2.5px); } }
+  @keyframes ico-rock { 25% { transform: rotate(-6deg); } 55% { transform: rotate(5deg); } 80% { transform: rotate(-2deg); } }
+}
 
 /* Temaknapp: solen roterar ned ur knappen och månen kommer upp */
-.theme { flex: none; align-self: flex-start; margin-left: auto; width: 46px; height: 46px; padding: 6px; border: 1px solid color-mix(in srgb, var(--fg) 14%, transparent); border-radius: 50%;
+.theme { flex: none; align-self: flex-start; margin: calc((1.1 * var(--h1) - 46px) / 2) 0 0 auto; width: 46px; height: 46px; padding: 6px; border: 1px solid color-mix(in srgb, var(--fg) 14%, transparent); border-radius: 50%;
   background: color-mix(in srgb, var(--panel) 55%, transparent); box-shadow: 0 1px 2px rgb(0 0 0 / .06); color: var(--fg); cursor: pointer; overflow: hidden; }
 .theme:hover { background: var(--panel); }
 .theme:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -77,7 +106,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 40px 16px 64px; display: grid
 section { scroll-margin-top: 24px; }
 
 .hero { display: flex; gap: 20px; align-items: center; }
-h1 { font-size: clamp(30px, 5vw, 40px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+h1 { font-size: var(--h1); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
 .lead { font-size: 19px; margin: 8px 0 0; max-width: 56ch; text-wrap: pretty; }
 .lead b { font-weight: 600; }
 .synced { color: color-mix(in srgb, var(--fg) 60%, transparent); font-size: 14px; margin: 6px 0 0; }
@@ -402,9 +431,9 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   const ICONS = {
     heart: '<path fill="currentColor" d="M12 20.5s-7.6-4.6-9.5-9.3C1 7.6 3.2 4 6.8 4c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.6 0 5.8 3.6 4.3 7.2-1.9 4.7-9.5 9.3-9.5 9.3z"/>',
     oxy: '<g fill="currentColor"><circle cx="8.5" cy="15" r="5.5"/><circle cx="17" cy="7" r="3.5"/><circle cx="18.5" cy="16.5" r="2.2"/></g>',
-    temp: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M14 14.6V5a2 2 0 0 0-4 0v9.6a4 4 0 1 0 4 0z"/><circle cx="12" cy="17.8" r="1.8" fill="currentColor"/>',
+    temp: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M14 14.6V5a2 2 0 0 0-4 0v9.6a4 4 0 1 0 4 0z"/><circle cx="12" cy="17.8" r="1.8" fill="currentColor"/><path class="hg" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" d="M12 16.5v-5"/>',
     naring: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 21v-9"/><path fill="currentColor" d="M12 12c0-4.4 2.6-7 7.5-7 0 4.7-3.2 7-7.5 7zM12 14.6c0-3.4-2.1-5.6-6-5.6 0 3.8 2.5 5.6 6 5.6z"/>',
-    chl: '<g fill="currentColor"><ellipse cx="8" cy="9" rx="5.2" ry="3.4" transform="rotate(-30 8 9)"/><circle cx="16.5" cy="7" r="3"/><ellipse cx="13.5" cy="16.5" rx="5.6" ry="3.2" transform="rotate(20 13.5 16.5)"/></g>',
+    chl: '<g fill="currentColor"><g transform="rotate(-30 8 9)"><ellipse cx="8" cy="9" rx="5.2" ry="3.4"/></g><circle cx="16.5" cy="7" r="3"/><g transform="rotate(20 13.5 16.5)"><ellipse cx="13.5" cy="16.5" rx="5.6" ry="3.2"/></g></g>',
     salt: '<path fill="currentColor" d="M12 2.8s-6.2 6.8-6.2 11.4a6.2 6.2 0 0 0 12.4 0C18.2 9.6 12 2.8 12 2.8z"/>',
     level: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2.5 8.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 13c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 17.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0"/>',
     speed: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 8.5h10.5a3 3 0 1 0-3-3M3 12.5h15a3 3 0 1 1-3 3M3 16.5h6"/>',
