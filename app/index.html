@@ -423,13 +423,22 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     manad: [30, 'dygnsmedel de senaste 30 hela dygnen', 'snitt senaste månaden'],
     ar: [365, 'dygnsmedel de senaste 365 hela dygnen', 'snitt senaste året'],
   };
-  // Korta lägesord för perioder, "Kallare än normalt 4 av 7 dygn".
+  // Lägesord för perioder: hela frasen när bara ena sidan förekommer, kort ord när båda gör det.
   const SHORT = {
-    temp: { under: 'kallare än normalt', över: 'varmare än normalt' },
-    salt: { under: 'sötare än normalt', över: 'saltare än normalt' },
-    chl: { under: 'mindre alger än normalt', över: 'mer alger än normalt' },
+    temp: { under: ['kallare än normalt', 'kallare'], över: ['varmare än normalt', 'varmare'] },
+    salt: { under: ['sötare än normalt', 'sötare'], över: ['saltare än normalt', 'saltare'] },
+    chl: { under: ['mindre alger än normalt', 'med mindre alger'], över: ['mer alger än normalt', 'med mer'] },
   };
   const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  // "Kallare än normalt 4 av 30 dygn" eller "2 av 30 dygn utanför det normala, 1 kallare och 1 varmare".
+  function outsideText(p, rows) {
+    const c = { under: 0, över: 0 };
+    for (const x of rows) { const l = lage(x); if (l in c) c[l]++; }
+    const N = rows.length, w = SHORT[p];
+    if (c.under && c.över) return `${c.under + c.över} av ${N} dygn utanför det normala, ${c.under} ${w.under[1]} och ${c.över} ${w.över[1]}`;
+    const l = c.under ? 'under' : c.över ? 'över' : null;
+    return l ? `${cap(w[l][0])} ${c[l]} av ${N} dygn` : `Normalt för årstiden alla ${N} dygn`;
+  }
   let period = 'dygn';
   try { const v = localStorage.getItem('period'); if (PERIODS[v]) period = v; } catch {}
 
@@ -582,11 +591,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
           const g = grades.find((x) => x[1] === worst)[0];
           setStatus(st, worst === 0 ? `God syrestatus alla ${N} dygn` : `${g} ${n} av ${N} dygn`, TONES[worst]);
         } else {
-          const c = { under: 0, normalt: 0, över: 0 };
-          for (const x of rows) { const l = lage(x); if (l) c[l]++; }
-          // "Kallare än normalt 51 av 351 dygn, varmare 43"
-          const parts = ['under', 'över'].filter((l) => c[l]).map((l, i) => i ? `${SHORT[p][l].split(' ')[0]} ${c[l]}` : `${SHORT[p][l]} ${c[l]} av ${N} dygn`);
-          st.textContent = parts.length ? cap(parts.join(', ')) : `Normalt för årstiden alla ${N} dygn`;
+          st.textContent = outsideText(p, rows);
         }
         foot = (p === 'oxy' ? 'Bedömt mot gränserna 6, 4 och 2 mg/l. Syre mäts bara sedan 2024.' : `Varje dygn jämfört med det normala för sitt datum, basår ${r.base}.`) +
           (N && N < want ? ` Mätningar finns för ${N} av ${want} dygn.` : '');
@@ -669,12 +674,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       val.append(el('span', 'big', N ? fmt(d3.mean(v), 2) : '–'), el('span', 'unit', unit));
       if (N) range = el('p', 'range', `Lägst ${fmt(d3.min(v), 2)}, högst ${fmt(d3.max(v), 2)} ${unit}`);
       if (!N) st.textContent = missing;
-      else {
-        const k = { under: 0, över: 0 };
-        for (const x of rows) { const l = lage(x); if (l in k) k[l]++; }
-        const parts = ['under', 'över'].filter((l) => k[l]).map((l, i) => i ? `${SHORT.chl[l].split(' ')[0]} ${k[l]}` : `${SHORT.chl[l]} ${k[l]} av ${N} dygn`);
-        st.textContent = parts.length ? cap(parts.join(', ')) : `Normalt för årstiden alla ${N} dygn`;
-      }
+      else st.textContent = outsideText('chl', rows);
       foot = `Molnfritt ${N} av ${span} dygn. Varje dygn jämfört med det normala för sitt datum, basår ${meta.base}. `;
     }
     foot += 'Klorofyll visar hur mycket växtplankton det finns. Mäts från satellit i ytan över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn mars till oktober. ' +
