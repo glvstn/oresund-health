@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hur mår Öresund?</title>
 <meta name="description" content="Hur havet utanför Malmö mår, med syre mot Havs- och vattenmyndighetens gränser och temperatur mot det normala för årstiden. Data från SMHI, hämtas en gång i timmen.">
+<script>
+// Tema före första ritningen, så att sidan inte blinkar till i fel tema.
+(() => {
+  let saved = null; try { saved = localStorage.getItem('theme'); } catch {}
+  const sys = matchMedia('(prefers-color-scheme: dark)');
+  document.documentElement.dataset.theme = saved || (sys.matches ? 'dark' : 'light');
+  sys.addEventListener('change', (e) => {
+    try { if (localStorage.getItem('theme')) return; } catch {}
+    document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
+    window.dispatchEvent(new Event('themechange'));
+  });
+})();
+</script>
 <style>
 :root {
   --bg: #f2f2f7; --panel: #ffffff; --side: #f9f9fb; --fg: #000000; --muted: #747578; --note: #6d6d70; --line: #e5e5ea; --fill: #e9e9ee;
@@ -16,8 +29,8 @@
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
+/* Mörkt tema. data-theme sätts av skriptet i head: sparat val, annars systemets inställning. */
+:root[data-theme="dark"] {
     --bg: #000000; --panel: #1c1c1e; --side: #111113; --fg: #ffffff; --muted: #98989f; --note: #98989f; --line: #2c2c2e; --fill: #2c2c2e;
     --ok: #30d158; --warn: #ff9f0a; --bad: #ff453a; --unknown: #636366;
     --accent: #0a84ff;
@@ -25,7 +38,6 @@
     --series2: #ff8a5c; --band: #3a3a3e; --ref: #7c7c82; --grid: #262628;
     --hero: linear-gradient(180deg, #0d4a6b 0%, #2a2f6e 40%, #2d2347 64%, rgb(0 0 0 / 0) 100%);
     color-scheme: dark;
-  }
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -48,6 +60,15 @@ svg { display: block; }
 .side a[aria-current="true"] .ico { color: #fff !important; --ico-in: var(--accent); }
 .side .group { font-size: 20px; font-weight: 700; margin: 24px 12px 8px; }
 .ico { width: 24px; height: 24px; flex: none; }
+
+/* Temaknapp: solen roterar ned ur knappen och månen kommer upp */
+.theme { flex: none; align-self: flex-start; margin-left: auto; width: 46px; height: 46px; padding: 6px; border: 1px solid color-mix(in srgb, var(--fg) 14%, transparent); border-radius: 50%;
+  background: color-mix(in srgb, var(--panel) 55%, transparent); box-shadow: 0 1px 2px rgb(0 0 0 / .06); color: var(--fg); cursor: pointer; overflow: hidden; }
+.theme:hover { background: var(--panel); }
+.theme:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme svg { width: 32px; height: 32px; overflow: visible; }
+.theme .wheel { transform-box: view-box; transform-origin: 16px 33px; transition: transform .9s cubic-bezier(.45, 0, .2, 1); }
+@media (prefers-reduced-motion: reduce) { .theme .wheel { transition: none; } }
 
 /* Innehåll */
 .content { background: var(--hero) no-repeat; background-size: 100% 520px; min-width: 0; }
@@ -137,7 +158,7 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .mix { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 12px 0 6px; gap: 2px; }
 .mix span { display: block; }
 #sjofart { --ship2: color-mix(in srgb, var(--t-ship) 68%, var(--panel)); --ship3: color-mix(in srgb, var(--t-ship) 42%, var(--panel)); --ship4: color-mix(in srgb, var(--t-ship) 20%, var(--panel)); }
-.dir { width: 30px; height: 30px; display: inline-block; vertical-align: -3px; margin-right: 4px; color: var(--fg); transition: transform .3s; }
+.dir { width: 30px; height: 30px; display: inline-block; vertical-align: -3px; margin-right: 4px; color: var(--t-flow); }
 
 footer { color: var(--note); font-size: 13px; padding: 0 4px; }
 </style>
@@ -173,6 +194,24 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
           <p class="lead">Öresund <b id="verdictWord">…</b>. Syret vid botten är <b id="oxyWord">…</b>, temperaturen är <b id="tempWord">…</b>, och vattnet strömmar <b id="flowWord">…</b>.</p>
           <p class="synced">Senaste mätning <span id="lastTime">…</span>. Hämtas en gång i timmen.</p>
         </div>
+        <button class="theme" id="themeBtn" type="button" aria-label="Byt till mörkt tema">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <defs>
+                      <mask id="moonCut"><rect x="0" y="0" width="32" height="48" fill="#fff"/><circle cx="21.1" cy="11.8" r="7.3" fill="#000"/></mask>
+            </defs>
+            <g>
+              <g class="wheel">
+                <g style="color:var(--t-temp)">
+                  <circle cx="16" cy="16" r="5.2" fill="currentColor"/>
+                  <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 6.6v2.2M16 23.2v2.2M6.6 16h2.2M23.2 16h2.2M9.35 9.35l1.56 1.56M21.09 21.09l1.56 1.56M9.35 22.65l1.56-1.56M22.65 9.35l-1.56 1.56"/>
+                </g>
+                <g style="color:var(--t-speed)" transform="rotate(180 16 33)">
+                  <circle cx="16" cy="16" r="9" fill="currentColor" mask="url(#moonCut)"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </button>
       </div>
       <p class="banner" id="stale" hidden></p>
     </header>
@@ -639,15 +678,12 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     renderForecast();
   }
 
-  // Riktningen i Ström-kortet: bara en pil, norrut uppåt och söderut nedåt. Nästan stilla ger en dubbelpil i sidled.
+  // Riktningen i Ström-kortet, samma pilar och färg som prognosens dygn. Nästan stilla ger ett streck.
   function dirIcon(flow) {
     const a = $('arrow');
-    const arrow = '<path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M12 20.5V3.5M5.5 10l6.5-6.5 6.5 6.5"/>';
     a.style.display = flow == null ? 'none' : '';
     if (flow == null) return;
-    if (Math.abs(flow) < 5) { a.innerHTML = '<path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M3.5 12h17M8 7.5 3.5 12 8 16.5M16 7.5l4.5 4.5-4.5 4.5"/>'; a.style.transform = ''; return; }
-    a.innerHTML = arrow;
-    a.style.transform = flow > 0 ? '' : 'rotate(180deg)';
+    a.innerHTML = FC_ICON[Math.abs(flow) < 5 ? 'osaker' : flow > 0 ? 'norr' : 'soder'];
   }
 
   // Klorofyll vid ytan från satellit (Copernicus Marine). Bara molnfria dygn mars till oktober, inget betyg (docs/beslut.md).
@@ -901,6 +937,24 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     set('verdictWord', 'går inte att bedöma just nu');
     showBanner(msg);
   }
+
+  // Temaknapp. Hjulet vrids alltid ett halvt varv medurs, så solen går ned till höger och månen kommer upp från vänster.
+  const themeBtn = $('themeBtn'), wheel = themeBtn.querySelector('.wheel');
+  const isDark = () => document.documentElement.dataset.theme === 'dark';
+  let turn = isDark() ? 180 : 0;
+  const showTheme = (animate) => {
+    wheel.style.transition = animate ? '' : 'none';
+    wheel.style.transform = `rotate(${turn}deg)`;
+    themeBtn.setAttribute('aria-label', isDark() ? 'Byt till ljust tema' : 'Byt till mörkt tema');
+  };
+  showTheme(false);
+  themeBtn.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch {}
+    turn += 180; showTheme(true);
+  });
+  window.addEventListener('themechange', () => { turn += 180; showTheme(true); });
 
   // Sidomenyn markerar det man klickat på.
   for (const a of document.querySelectorAll('.side a')) a.addEventListener('click', () => {
