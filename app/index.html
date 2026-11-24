@@ -23,7 +23,7 @@
   --bg: #f2f2f7; --panel: #ffffff; --side: #f9f9fb; --fg: #000000; --muted: #747578; --note: #6d6d70; --line: #e5e5ea; --fill: #e9e9ee;
   --ok: #34c759; --warn: #ff9500; --bad: #ff3b30; --unknown: #aeaeb2;
   --accent: #007aff;
-  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759; --t-ship: #5b7083; --t-chl: #00c7be;
+  --t-heart: #ff2d55; --t-oxy: #32ade6; --t-temp: #ff9500; --t-salt: #af52de; --t-level: #007aff; --t-speed: #5856d6; --t-flow: #00a5a8; --t-info: #8e8e93; --t-naring: #34c759; --t-ship: #5b7083; --t-chl: #00c7be; --t-klar: #3a6ea5; --t-oil: #48484a;
   --series2: #ff6b3d; --band: #d6d6dc; --ref: #9a9aa0; --grid: #efeff3;
   --hero: linear-gradient(180deg, #8fd3f4 0%, #a9b8f5 38%, #c9c3f0 62%, rgb(242 242 247 / 0) 100%);
   --h1: clamp(30px, 5vw, 40px);
@@ -35,7 +35,7 @@
     --bg: #000000; --panel: #1c1c1e; --side: #111113; --fg: #ffffff; --muted: #98989f; --note: #98989f; --line: #2c2c2e; --fill: #2c2c2e;
     --ok: #30d158; --warn: #ff9f0a; --bad: #ff453a; --unknown: #636366;
     --accent: #0a84ff;
-    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f; --t-naring: #30d158; --t-ship: #8fa3b5; --t-chl: #63e6e2;
+    --t-heart: #ff375f; --t-oxy: #64d2ff; --t-temp: #ff9f0a; --t-salt: #bf5af2; --t-level: #0a84ff; --t-speed: #5e5ce6; --t-flow: #40c8e0; --t-info: #98989f; --t-naring: #30d158; --t-ship: #8fa3b5; --t-chl: #63e6e2; --t-klar: #7fb2e5; --t-oil: #aeaeb2;
     --series2: #ff8a5c; --band: #3a3a3e; --ref: #7c7c82; --grid: #262628;
     --hero: linear-gradient(180deg, #0d4a6b 0%, #2a2f6e 40%, #2d2347 64%, rgb(0 0 0 / 0) 100%);
     color-scheme: dark;
@@ -83,6 +83,18 @@ svg { display: block; }
   @keyframes ico-rise { 25% { transform: scaleY(.5); } 70% { transform: scaleY(1.5); stroke: var(--bad); } }
   @keyframes ico-drop { 30% { transform: translateY(2px); } 45% { transform: translateY(2px) scale(1.12, .88); } 70% { transform: translateY(-1px); } }
   @keyframes ico-sway { 30% { transform: translate(var(--x), var(--y)) rotate(var(--r)); } 65% { transform: translate(calc(var(--x) * -.6), calc(var(--y) * -.6)) rotate(calc(var(--r) * -.6)); } }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="klar"] { animation: ico-blink .5s ease-in-out; }
+  .side a:not([aria-current="true"]):hover .ico[data-icon="oil"] { transform-origin: 50% 85%; animation: ico-splash 1.2s cubic-bezier(.45, 0, .2, 1); }
+  /* Droppen lyfter, faller, studsar mot ytan och flyter ut platt i vattnet innan den tar form igen */
+  @keyframes ico-splash {
+    15% { transform: translateY(-3px); }
+    32% { transform: translateY(0) scale(.92, 1.1); }
+    40% { transform: scale(1.25, .75); }
+    48% { transform: translateY(-1.5px) scale(.95, 1.05); }
+    62% { transform: scale(1.9, .14); }
+    80% { transform: scale(1.9, .14); }
+  }
+  @keyframes ico-blink { 40%, 55% { transform: scaleY(.1); } }
   @keyframes ico-beat { 15% { transform: scale(1.15); } 30% { transform: scale(1); } 45% { transform: scale(1.1); } 60% { transform: scale(1); } }
   @keyframes ico-bubble { 50% { transform: translateY(-3px); } }
   @keyframes ico-shoot { 40% { transform: translate(5px, -5px); opacity: 0; } 41% { transform: translate(-5px, 5px); opacity: 0; } 100% { transform: none; opacity: 1; } }
@@ -114,7 +126,11 @@ h1 { font-size: var(--h1); font-weight: 700; letter-spacing: -0.02em; line-heigh
 h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .note { color: var(--note); font-size: 15px; margin: 4px 0 24px; max-width: 70ch; }
 
-.seg { display: flex; max-width: 420px; background: var(--fill); border-radius: 9px; padding: 2px; margin: -8px 0 24px; }
+/* Periodväljaren ligger i ett band över hela innehållets bredd, som följer med genom Vitala värden */
+.segbar { position: sticky; top: 0; z-index: 5; margin: -18px -16px 14px; padding: 10px 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+@media (min-width: 640px) { .segbar { margin-inline: -32px; padding-inline: 32px; } }
+#vitals .card { scroll-margin-top: 72px; }  /* hamnar under bandet, inte bakom det, vid klick i menyn */
+.seg { display: flex; max-width: 420px; background: var(--fill); border-radius: 9px; padding: 2px; }
 .seg button { flex: 1; font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: none; border: 0; border-radius: 7px; padding: 6px 10px; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--panel); font-weight: 600; box-shadow: 0 1px 3px rgb(0 0 0 / .12), 0 0 0 .5px rgb(0 0 0 / .04); }
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
@@ -123,6 +139,7 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .ntab > * { padding: 7px 0; border-bottom: 1px solid var(--line); }
 .ntab .th { color: var(--muted); font-size: 13px; padding-top: 0; }
 .ntab .num { text-align: right; padding-left: 12px; }
+.ntab .cls { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ntab .sep { grid-column: 1 / -1; color: var(--muted); font-size: 13px; padding: 12px 0 2px; border-bottom: 0; }
 @media (max-width: 520px) { .ntab { grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); } .ntab .lim { display: none; } }
 .cards.three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
@@ -147,6 +164,8 @@ h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
 .chart { position: relative; height: 96px; margin-top: 10px; }
 .chart svg { width: 100%; height: 100%; overflow: visible; }
 .xlab { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin: 2px 0 6px; }
+.wind { display: flex; align-items: center; gap: 6px; }
+.wind svg { width: 16px; height: 16px; flex: none; color: var(--t-flow); }
 .vfade { animation: vfade .35s ease-out; }
 @keyframes vfade { from { opacity: 0; transform: translateY(3px); } }
 .range { color: var(--muted); font-size: 14px; margin: 2px 0 0; }
@@ -207,10 +226,12 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       <li><a href="#v-oxy"><svg class="ico" style="color:var(--t-oxy)" data-icon="oxy"></svg>Syre</a></li>
       <li><a href="#v-salt"><svg class="ico" style="color:var(--t-salt)" data-icon="salt"></svg>Salthalt</a></li>
       <li><a href="#v-chl"><svg class="ico" style="color:var(--t-chl)" data-icon="chl"></svg>Klorofyll</a></li>
+      <li><a href="#v-klar"><svg class="ico" style="color:var(--t-klar)" data-icon="klar"></svg>Klarhet</a></li>
       <li><a href="#naring"><svg class="ico" style="color:var(--t-naring)" data-icon="naring"></svg>Näringsämnen</a></li>
       <li><a href="#strom"><svg class="ico" style="color:var(--t-flow)" data-icon="flow"></svg>Ström</a></li>
       <li><a href="#vattenstand"><svg class="ico" style="color:var(--t-level)" data-icon="level"></svg>Vattenstånd</a></li>
       <li><a href="#sjofart"><svg class="ico" style="color:var(--t-ship)" data-icon="ship"></svg>Sjöfart</a></li>
+      <li><a href="#olja"><svg class="ico" style="color:var(--t-oil)" data-icon="oil"></svg>Oljeutsläpp</a></li>
       <li><a href="#metod"><svg class="ico" style="color:var(--t-info)" data-icon="info"></svg>Om mätningarna</a></li>
       <li><a href="#syfte"><svg class="ico" style="color:var(--t-speed)" data-icon="doc"></svg>Om sidan</a></li>
     </ul>
@@ -274,11 +295,13 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     <section id="vitala">
       <h2>Vitala värden</h2>
       <p class="note" id="vitalsNote">…</p>
-      <div class="seg" role="group" aria-label="Period">
-        <button type="button" data-period="dygn">Dygn</button>
-        <button type="button" data-period="vecka">Vecka</button>
-        <button type="button" data-period="manad">Månad</button>
-        <button type="button" data-period="ar">År</button>
+      <div class="segbar">
+        <div class="seg" role="group" aria-label="Period">
+          <button type="button" data-period="dygn">Dygn</button>
+          <button type="button" data-period="vecka">Vecka</button>
+          <button type="button" data-period="manad">Månad</button>
+          <button type="button" data-period="ar">År</button>
+        </div>
       </div>
       <div class="cards two" id="vitals"></div>
     </section>
@@ -298,6 +321,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
           </div>
           <div class="status sm" id="flowDir">…</div>
           <p class="k" id="speedState">…</p>
+          <p class="k wind" id="windNow" hidden></p>
           <div class="fc" id="forecast" hidden>
             <p class="k">Prognos för riktningen</p>
             <div class="status sm" id="fcSummary"></div>
@@ -346,6 +370,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
           <p class="k">Ungefär lika många varje år sedan 2011, mellan 25 700 och 29 400. Svackan 2009 till 2010 följer finanskrisen.</p>
           <p class="foot">Fartyg bullrar, släpper ut avgaser och tvättvatten från skrubbrar och kan orsaka olyckor och oljeutsläpp. Hur mycket det påverkar sundet vet ingen, och ingen myndighet har satt en gräns. Därför får sjöfarten inget betyg och påverkar inte helheten. Siffran räknas av HELCOM med AIS över en linje från Stevns till Falsterbo och uppdateras inte längre, senaste året är 2020.</p>
         </div>
+        <div class="card" id="olja" style="--tint:var(--t-oil)" hidden></div>
       </div>
     </section>
 
@@ -367,15 +392,18 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
         <ul>
           <li>Hög salthalt vid botten är salt Kattegattvatten under det sötare Östersjövattnet. Det är naturligt, inte ohälsa.</li>
           <li>Klorofyll visar hur mycket växtplankton det finns i ytan. Det mäts från satellit (Sentinel-3) över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn. Från november till februari står solen för lågt för att värdena ska gå att lita på, så då saknas klorofyll. Satelliten visar högre värden än vattenproven vid Klagshamn, därför jämförs värdet bara med det normala för datumet 2017 till 2025 och får inget betyg.</li>
+          <li>Klarhet är djupet där hälften av solljuset finns kvar, räknat från samma satellit. Det följer direkt av satellitens mätning av hur fort ljuset avtar. Det är inte samma sak som siktdjup, som mäts med en vit skiva från båt. Samma begränsningar som klorofyll: bara molnfria dygn mars till oktober, och inget betyg.</li>
           <li>Näringsämnen och klorofyll provtas varje månad vid Klagshamn och når SMHI ett till två år senare. De bedöms som treårsmedel mot Havs- och vattenmyndighetens gränser och påverkar inte hälsobetyget.</li>
         </ul>
         <h3>Rörelse</h3>
         <ul>
           <li>Prognosen för strömmens riktning kommer från DMI:s havsmodell, som räknar vattenståndet fem dygn framåt. Sidan använder skillnaden mellan Skanör och Viken, på samma sätt som för den uppmätta riktningen. Modellens fart används inte, den var två till tre gånger högre än mätaren vid Flinten. Under 10 cm skillnad visas riktningen som osäker, eftersom modellen har legat några centimeter fel mot mätningarna.</li>
+          <li>Vinden mäts av DMI vid Drogden fyr mitt i sundet. Vinden bygger upp skillnaden i vattenstånd mellan Skanör och Viken, men det är skillnaden som driver strömmen genom sundet, så vinden och strömmen kan gå åt olika håll. Hård vind rör också om vattnet och för ned syre mot botten. Styrkan följer SMHI:s vindskala.</li>
           <li>Strömmens riktning räknas från vattenståndet, eftersom det är oklart hur SMHI anger mätarens riktning. Farten kommer från mätaren. Vid hård vind kan ytströmmen tillfälligt gå åt andra hållet.</li>
         </ul>
         <h3>Påverkan</h3>
         <ul>
+          <li>Oljeutsläppen är de som svenska och danska övervakningsflyg har sett i Öresund, sammanställda av HELCOM en gång per år. Hur många som hittas beror på hur mycket som flygs.</li>
           <li>Sjöfarten är en årssiffra från HELCOM, senast 2020. Den visar hur mycket trafik som passerar, inte hur mycket den påverkar.</li>
         </ul>
       </div>
@@ -404,8 +432,9 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     <footer>
       Källa: <a href="https://www.smhi.se/data/oceanografi">SMHI</a>, oceanografiska observationer från stationerna Flinten 7 och Flinten 16 mitt i sundet sydväst om Malmö, och vattenstånd från Klagshamn, Skanör och Viken. Datat är bearbetat: dygnsmedel, normalspann, syre omräknat till mg/l och salthalt till procent. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <span id="fetched"></span><br>
       Näringsämnen och klorofyll: <a href="https://shark.smhi.se">SMHI, SHARK</a>, insamlat av NIRAS på uppdrag av <a href="https://www.oresunds-vvf.se">Öresunds vattenvårdsförbund</a>. Licens CC0. Bearbetat till treårsmedel och bedömt enligt HVMFS 2019:25.<br>
-      Klorofyll: Generated using E.U. Copernicus Marine Service Information, <a href="https://doi.org/10.48670/moi-00294">doi.org/10.48670/moi-00294</a> och <a href="https://doi.org/10.48670/moi-00296">doi.org/10.48670/moi-00296</a>. Bearbetat till median över en ruta kring Flinten och normalspann.<br>
-      Strömprognos: <a href="https://www.dmi.dk/friedata">DMI</a>, havsmodellen DKSS. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. Bearbetat till skillnaden i vattenstånd mellan Skanör och Viken.<br>
+      Klorofyll och klarhet: Generated using E.U. Copernicus Marine Service Information, <a href="https://doi.org/10.48670/moi-00294">doi.org/10.48670/moi-00294</a> och <a href="https://doi.org/10.48670/moi-00296">doi.org/10.48670/moi-00296</a>. Bearbetat till median över en ruta kring Flinten och normalspann, klarhet omräknad till djupet där ljuset halverats.<br>
+      Strömprognos och vind: <a href="https://www.dmi.dk/friedata">DMI</a>, havsmodellen DKSS och väderstationen Drogden fyr. Licens <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. Bearbetat till skillnaden i vattenstånd mellan Skanör och Viken.<br>
+      Oljeutsläpp: Detected spills of mineral oil and other substances, 1998–2025. <a href="https://maps.helcom.fi">HELCOM Map and Data Service</a>. Bearbetat till antal per år inom Öresund.<br>
       Sjöfart: AIS passage line crossings by ship type, 2020. <a href="https://maps.helcom.fi">HELCOM Map and Data Service</a>. Fri att använda med källangivelse. Bearbetat till andelar och fartyg per dag.
     </footer>
   </main>
@@ -427,6 +456,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     level: { under: 'Lågvatten', normalt: 'Normalt vattenstånd', över: 'Högvatten' },
     speed: { under: 'Lugnare än normalt', normalt: 'Normal ström', över: 'Kraftigare ström än normalt' },
     chl: { under: 'Mindre alger än normalt', normalt: 'Normalt för årstiden', över: 'Mer alger än normalt' },
+    klar: { under: 'Grumligare än normalt', normalt: 'Normalt för årstiden', över: 'Klarare än normalt' },
   };
 
   // Ikoner, 24x24
@@ -436,6 +466,8 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     temp: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M14 14.6V5a2 2 0 0 0-4 0v9.6a4 4 0 1 0 4 0z"/><circle cx="12" cy="17.8" r="1.8" fill="currentColor"/><path class="hg" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" d="M12 16.5v-5"/>',
     naring: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 21v-9"/><path fill="currentColor" d="M12 12c0-4.4 2.6-7 7.5-7 0 4.7-3.2 7-7.5 7zM12 14.6c0-3.4-2.1-5.6-6-5.6 0 3.8 2.5 5.6 6 5.6z"/>',
     chl: '<g fill="currentColor"><g transform="rotate(-30 8 9)"><ellipse cx="8" cy="9" rx="5.2" ry="3.4"/></g><circle cx="16.5" cy="7" r="3"/><g transform="rotate(20 13.5 16.5)"><ellipse cx="13.5" cy="16.5" rx="5.6" ry="3.2"/></g></g>',
+    klar: '<path fill="currentColor" d="M12 5.5c-5.2 0-8.6 4.3-9.6 6.5 1 2.2 4.4 6.5 9.6 6.5s8.6-4.3 9.6-6.5c-1-2.2-4.4-6.5-9.6-6.5z"/><circle cx="12" cy="12" r="3.4" fill="var(--ico-in)"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/>',
+    oil: '<path fill="currentColor" d="M12 2.8s-6.2 6.8-6.2 11.4a6.2 6.2 0 0 0 12.4 0C18.2 9.6 12 2.8 12 2.8z"/>',
     salt: '<path fill="currentColor" d="M12 2.8s-6.2 6.8-6.2 11.4a6.2 6.2 0 0 0 12.4 0C18.2 9.6 12 2.8 12 2.8z"/>',
     level: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2.5 8.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 13c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0M2.5 17.5c2.4-1.9 4.4-1.9 6.8 0s4.4 1.9 6.8 0 4.1-1.9 5.4 0"/>',
     speed: '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 8.5h10.5a3 3 0 1 0-3-3M3 12.5h15a3 3 0 1 1-3 3M3 16.5h6"/>',
@@ -519,6 +551,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     temp: { under: ['kallare än normalt', 'kallare'], över: ['varmare än normalt', 'varmare'] },
     salt: { under: ['sötare än normalt', 'sötare'], över: ['saltare än normalt', 'saltare'] },
     chl: { under: ['mindre alger än normalt', 'med mindre alger'], över: ['mer alger än normalt', 'med mer'] },
+    klar: { under: ['grumligare än normalt', 'grumligare'], över: ['klarare än normalt', 'klarare'] },
   };
   const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
   // "Kallare än normalt 4 av 30 dygn" eller "2 av 30 dygn utanför det normala, 1 kallare och 1 varmare".
@@ -565,6 +598,9 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   let state = null;
   let naring = null;
   let chl = null;
+  let klar = null;
+  let olja = null;
+  let vind = null;
   let prognos = null;
 
   function render() {
@@ -699,14 +735,19 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       vitals.append(card);
       minis.push([chart, rows, p === 'oxy' ? [6, 4] : null, tint, `${name}, ${PERIODS[period][1]}`]);
     }
-    if (chl) { const [card, mini] = chlCard(chl, el); vitals.append(card); if (mini) minis.push(mini); }
-    if (naring) vitals.append(naringCard(naring, el));
+    for (const [d, key] of [[chl, 'chl'], [klar, 'klar']]) {
+      if (!d) continue;
+      const [card, mini] = satCard(d, key, el); vitals.append(card); if (mini) minis.push(mini);
+    }
+    // Näringsämnen fyller ut raden om korten ovanför är udda till antalet, annars får det hela bredden
+    if (naring) { const n = naringCard(naring, el); if (vitals.children.length % 2) n.classList.remove('wide'); vitals.append(n); }
     // Rita först när alla kort finns, annars mäts bredden innan rutnätet är klart.
     $('speedMini').replaceChildren();
     if (s) minis.push([$('speedMini'), series('speed', 'manad'), null, 'var(--t-flow)', 'Strömmens fart, dygnsmedel den senaste månaden']);
     for (const args of minis) drawMini(...args);
     drawFlow($('flowchart'), hourly.filter((r) => r.levelS != null && r.levelV != null));
     renderForecast();
+    renderWind();
   }
 
   // Riktningen i Ström-kortet, samma pilar och färg som prognosens dygn. Nästan stilla ger ett streck.
@@ -717,21 +758,31 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     a.innerHTML = FC_ICON[Math.abs(flow) < 5 ? 'osaker' : flow > 0 ? 'norr' : 'soder'];
   }
 
-  // Klorofyll vid ytan från satellit (Copernicus Marine). Bara molnfria dygn mars till oktober, inget betyg (docs/beslut.md).
+  // Klorofyll och klarhet vid ytan från satellit (Copernicus Marine). Bara molnfria dygn mars till oktober, inget betyg (docs/beslut.md).
   // Dygn visar senaste molnfria dygnet och de senaste 30 dygnen. Övriga perioder räknar de molnfria dygnen i perioden.
   const CHL_FRESH_DAYS = 14;  // äldre än så räknas inte som läget nu
   const doyOf = (t) => {
     const m = t.getUTCMonth(), d = m === 1 && t.getUTCDate() === 29 ? 28 : t.getUTCDate();
     return Math.round((Date.UTC(2001, m, d) - Date.UTC(2001, 0, 1)) / 864e5);
   };
-  function chlCard(c, el) {
+  // Texter per satellitvärde. Klarhet är djupet där ljuset halverats, ln 2 / KD490 (scripts/fetch_copernicus.py).
+  const SAT = {
+    chl: { name: 'Klorofyll', what: 'ytan', dec: 2,
+      about: 'Klorofyll visar hur mycket växtplankton det finns. Mäts från satellit i ytan över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn mars till oktober. ' +
+        'Satelliten visar högre värden än vattenproven, så värdet jämförs bara med sitt eget normala och får inget betyg.' },
+    klar: { name: 'Klarhet', what: 'djup där ljuset halverats', dec: 1,
+      about: 'Klarhet visar hur djupt solljuset når: på det här djupet finns hälften av ljuset kvar. Grumligt vatten kan bero på alger, slam eller humus. ' +
+        'Räknat från satellitens mätning av hur fort ljuset avtar, i ytan över samma ruta kring Flinten, bara molnfria dygn mars till oktober. Inget betyg.' },
+  };
+  function satCard(c, key, el) {
+    const cfg = SAT[key];
     const { meta } = c, unit = meta.unit, [s0, s1] = meta.season, isDay = period === 'dygn';
     const span = isDay ? 30 : PERIODS[period][0];
     const noon = (d) => new Date(d + 'T12:00:00Z');
     const now = new Date(); now.setUTCHours(12, 0, 0, 0);
     const from = new Date(now - span * 864e5);
     const label = (t) => sthlm(t, { day: 'numeric', month: 'short', ...(period === 'ar' ? { year: 'numeric' } : {}) });
-    const rows = c.daily.map((r) => ({ ...r, t: noon(r.date), unit, dec: 2 })).filter((r) => r.t > from)
+    const rows = c.daily.map((r) => ({ ...r, t: noon(r.date), unit, dec: cfg.dec })).filter((r) => r.t > from)
       .map((r) => ({ ...r, label: label(r.t) }));
     // Normalspannet för varje dag i perioden, så att bandet syns även dagar utan värde. Saknas på vintern.
     const band = d3.range(span, -1, -1).map((i) => {
@@ -745,42 +796,60 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     const long = (t) => sthlm(t, { day: 'numeric', month: 'long' });
     const missing = inSeason ? 'Inga molnfria dygn' : 'Inga satellitvärden på vintern';
 
-    const card = el('div', 'card'); card.id = 'v-chl'; card.style.setProperty('--tint', 'var(--t-chl)');
+    const card = el('div', 'card'); card.id = `v-${key}`; card.style.setProperty('--tint', `var(--t-${key})`);
     const head = el('div', 'head');
     const cat = el('span', 'cat');
-    cat.innerHTML = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS.chl}</svg>`;
-    cat.append('Klorofyll');
+    cat.innerHTML = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS[key]}</svg>`;
+    cat.append(cfg.name);
     head.append(cat, el('span', 'time', lastAt ? sthlm(lastAt, { day: 'numeric', month: 'short' }) : ''));
     const val = el('div', 'val'), st = el('div', 'status sm');
     let range = null, foot;
     if (isDay) {
-      val.append(el('span', 'big', fresh ? fmt(last.value, 2) : '–'), el('span', 'unit', unit));
+      val.append(el('span', 'big', fresh ? fmt(last.value, cfg.dec) : '–'), el('span', 'unit', unit));
       const l = fresh && lage(last);
-      st.textContent = fresh ? (l ? STATE.chl[l] : 'Normalspann saknas') : inSeason && last ? `Inget molnfritt dygn sedan ${long(lastAt)}` : missing;
-      foot = fresh ? `Molnfritt ${long(lastAt)}. Normalt ${fmt(last.p10, 2)} till ${fmt(last.p90, 2)} ${unit} för datumet, basår ${meta.base}. `
-        : (last ? `Senaste molnfria dygnet var ${long(lastAt)}, ${fmt(last.value, 2)} ${unit}. ` : '') + (inSeason ? '' : 'Satelliten ger värden igen i mars. ');
+      st.textContent = fresh ? (l ? STATE[key][l] : 'Normalspann saknas') : inSeason && last ? `Inget molnfritt dygn sedan ${long(lastAt)}` : missing;
+      foot = fresh ? `Molnfritt ${long(lastAt)}. Normalt ${fmt(last.p10, cfg.dec)} till ${fmt(last.p90, cfg.dec)} ${unit} för datumet, basår ${meta.base}. `
+        : (last ? `Senaste molnfria dygnet var ${long(lastAt)}, ${fmt(last.value, cfg.dec)} ${unit}. ` : '') + (inSeason ? '' : 'Satelliten ger värden igen i mars. ');
     } else {
       const N = rows.length, v = rows.map((x) => x.value);
-      val.append(el('span', 'big', N ? fmt(d3.mean(v), 2) : '–'), el('span', 'unit', unit));
-      if (N) range = el('p', 'range', `Lägst ${fmt(d3.min(v), 2)}, högst ${fmt(d3.max(v), 2)} ${unit}`);
+      val.append(el('span', 'big', N ? fmt(d3.mean(v), cfg.dec) : '–'), el('span', 'unit', unit));
+      if (N) range = el('p', 'range', `Lägst ${fmt(d3.min(v), cfg.dec)}, högst ${fmt(d3.max(v), cfg.dec)} ${unit}`);
       if (!N) st.textContent = missing;
-      else st.textContent = outsideText('chl', rows);
+      else st.textContent = outsideText(key, rows);
       foot = `Molnfritt ${N} av ${span} dygn. Varje dygn jämfört med det normala för sitt datum, basår ${meta.base}. `;
     }
-    foot += 'Klorofyll visar hur mycket växtplankton det finns. Mäts från satellit i ytan över en ruta på 6 x 6 km kring Flinten, bara molnfria dygn mars till oktober. ' +
-      'Satelliten visar högre värden än vattenproven, så värdet jämförs bara med sitt eget normala och får inget betyg.';
+    foot += cfg.about;
 
-    card.append(head, el('p', 'k', isDay ? 'Senaste molnfria dygnet, ytan' : `${cap(PERIODS[period][2])}, ytan`), val);
+    card.append(head, el('p', 'k', isDay ? `Senaste molnfria dygnet, ${cfg.what}` : `${cap(PERIODS[period][2])}, ${cfg.what}`), val);
     if (range) card.append(range);
     let mini = null;
     if (rows.length && (fresh || !isDay)) {
       const chart = el('div', 'chart'), xlab = el('div', 'xlab');
       xlab.append(el('span', null, label(band[0].t)), el('span', null, label(band[band.length - 1].t)));
       card.append(chart, xlab);
-      mini = [chart, rows, null, 'var(--t-chl)', `Klorofyll, molnfria dygn de senaste ${span} dygnen`, { dots: true, band }];
+      mini = [chart, rows, null, `var(--t-${key})`, `${cfg.name}, molnfria dygn de senaste ${span} dygnen`, { dots: true, band }];
     }
     card.append(st, el('p', 'foot', foot));
     return [card, mini];
+  }
+
+  // Oljeutsläpp: observerade av flygövervakningen, per år från HELCOM. Uppdateras en gång per år (scripts/fetch_helcom_oil.py).
+  function renderOil(o) {
+    const card = $('olja'), ys = o.years, last = ys[ys.length - 1];
+    const ten = ys.slice(-10).map((y) => y.count), max = d3.max(ys, (y) => y.count);
+    const se = o.countries.Sweden || 0, dk = o.countries.Denmark || 0;
+    card.innerHTML = `<div class="head"><span class="cat"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICONS.oil}</svg>Oljeutsläpp</span><span class="time">${last.year}</span></div>
+      <p class="k">Utsläpp som flygövervakningen såg i Öresund</p>
+      <div class="val"><span class="big">${last.count}</span><span class="unit">under ${last.year}</span></div>
+      <div class="status sm">${d3.min(ten)} till ${d3.max(ten)} per år de senaste tio åren</div>
+      <div class="bars"><svg viewBox="0 0 100 72" preserveAspectRatio="none" role="img" aria-label="Utsläpp per år ${ys[0].year} till ${last.year}, mellan 0 och ${max}">${
+        ys.map((y, i) => { const w = 100 / ys.length, h = y.count / max * 70;
+          return `<rect x="${i * w + w * .15}" y="${72 - h}" width="${w * .7}" height="${h}" rx="0.8" fill="var(--t-oil)" opacity="${i === ys.length - 1 ? 1 : 0.45}"><title>${y.year}: ${y.count} utsläpp</title></rect>`; }).join('')
+      }</svg></div>
+      <div class="xlab"><span>${ys[0].year}</span><span>${last.year}</span></div>
+      <p class="k">Nästan alla är små, det största var ${fmt(o.largest)} m³. Totalt ${o.total} sedan ${ys[0].year}, ${se} sedda av Sverige och ${dk} av Danmark.</p>
+      <p class="foot">Färre fynd behöver inte betyda färre utsläpp: antalet beror på hur mycket som flygs, och flygtimmarna har minskat. Olja skadar fåglar och livet vid stranden, men ingen myndighet har satt en gräns för hur många utsläpp som är för många. Därför får oljeutsläppen inget betyg. HELCOM uppdaterar siffrorna en gång per år.</p>`;
+    card.hidden = false;
   }
 
   // Näringsämnen: treårsmedel från SHARK, bedömt enligt HaV. Följer inte periodväljaren och påverkar inte hälsobetyget.
@@ -800,7 +869,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       el('span', null, `${x.name}, ${x.season}`),
       el('span', 'num', `${fmt(x.value, x.value < 10 ? 2 : 1)} ${x.unit}`),
       el('span', 'num lim', fmt(x.good_moderate, x.good_moderate < 10 ? 2 : 1)),
-      el('span', 'num', x.class));
+      Object.assign(el('span', 'num cls', x.class), { title: x.class }));
     n.params.filter((x) => x.key !== 'chl').forEach(row);
     const chl = n.params.find((x) => x.key === 'chl');
     if (chl) { tab.append(el('span', 'sep', 'Växtplankton, bedöms för sig')); row(chl); }
@@ -889,6 +958,24 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
       if (k < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
+  }
+
+  // Vind vid Drogden fyr (DMI). Förklarar strömmen men får inget betyg. Styrka enligt SMHI:s vindskala, riktning varifrån det blåser.
+  const WIND_MAX_AGE_H = 3;
+  const WIND_FROM = ['nordlig', 'nordostlig', 'ostlig', 'sydostlig', 'sydlig', 'sydvästlig', 'västlig', 'nordvästlig'];
+  const windStrength = (v) => v < 0.3 ? null : v < 3.4 ? 'svag' : v < 8 ? 'måttlig' : v < 13.9 ? 'frisk' : v < 24.5 ? 'hård' : v < 32.7 ? 'storm' : 'orkan';
+  function renderWind() {
+    const p = $('windNow');
+    const w = vind?.hourly?.[vind.hourly.length - 1];
+    p.hidden = !w || (Date.now() - new Date(w.time)) / 36e5 > WIND_MAX_AGE_H;
+    if (p.hidden) return;
+    const str = windStrength(w.speed);
+    // Pilen visar vart det blåser, alltså motsatt riktningen vinden kommer från
+    p.innerHTML = str && w.dir != null ? `<svg viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(${w.dir + 180}deg)">${FC_ICON.norr}</svg>` : '';
+    const from = w.dir != null ? WIND_FROM[Math.round(w.dir / 45) % 8] : '';
+    p.append(!str ? `Lugnt vid Drogden fyr, kl. ${clock(new Date(w.time))}`
+      : str === 'storm' || str === 'orkan' ? `${cap(str)}, ${from} vind ${fmt(w.speed)} m/s vid Drogden fyr`
+      : `${cap(str)} ${from} vind, ${fmt(w.speed)} m/s vid Drogden fyr`);
   }
 
   // Prognos för strömmens riktning från DMI:s havsmodell (docs/datakallor.md). Bara riktningen, modellens fart är för hög.
@@ -1042,6 +1129,9 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
   });
 
   fetch('data/prognos.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { prognos = d; if (state) render(); }).catch(() => {});
+  fetch('data/klarhet.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { klar = d; if (state) render(); }).catch(() => {});
+  fetch('data/vind.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { vind = d; if (state) render(); }).catch(() => {});
+  fetch('olja.json').then((r) => r.ok ? r.json() : null).then((d) => { if (d) renderOil(d); }).catch(() => {});
   fetch('data/klorofyll.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { chl = d; if (state) render(); }).catch(() => {});
   fetch('naring.json').then((r) => r.ok ? r.json() : null).then((d) => { naring = d; if (state) render(); }).catch(() => {});
 

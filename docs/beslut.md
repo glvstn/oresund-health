@@ -4,6 +4,10 @@ Nyast överst. Varje beslut: vad, varför, och vad det påverkar.
 
 ## 2026-11-24
 
+- **Klarhet under Vitala värden, inte siktdjup.** Copernicus KD490 (hur fort ljuset avtar) visas som djupet där hälften av ljuset finns kvar, ln 2 / KD490. Omräkningen följer av definitionen. En omräkning till siktdjup vore en empirisk tumregel (princip 2) och görs inte. Samma ruta, molnkrav och säsong som klorofyll: siktdjupet i SHARK-proven ligger kring 6 m hela året, men KD490 är 2 till 5 gånger högre november till februari. Inget betyg.
+- **Vind vid Drogden fyr i Ström-kortet.** Förklarar varför strömmen kan gå mot vinden och varför syret ändras, men är väder och får inget betyg (princip 1). Styrkeorden lånas från SMHI:s vindskala. Döljs om mätningen är äldre än 3 timmar.
+- **Oljeutsläpp under Påverkan.** Antal per år från HELCOM:s flygövervakning, inom en ruta som bara täcker sundet. Inget betyg och ingen jämförelse mot normalt, eftersom antalet beror på hur mycket som flygs. Kortet säger det.
+- **Näringsämnen fyller ut raden i Vitala värden** när korten ovanför är udda till antalet, annars får kortet hela bredden.
 - **Prognos för strömmens riktning från DMI.** Ström-kortet visar en prognos per dygn (norrut, söderut, växlar, osäkert) och ett diagram över lutningen Skanör minus Viken fem dygn framåt, från DMI:s havsmodell DKSS. SMHI:s motsvarande prognos kostar en leveransavgift. Bara riktningen används: modellens lutning var cirka 8 cm lägre än uppmätt men åt samma håll, medan dess fart vid Flinten var 2 till 3 gånger för hög. Under 10 cm visas riktningen som osäker. Gränsen är vår egen, satt efter modellens avvikelse. Prognosen är beskrivning under Rörelse och får inget betyg. Den döljs om den är äldre än ett dygn.
 - **Salthalt hör till Vitala värden, inte Rörelse.** Kortet har legat under Vitala värden sedan perioderna infördes, men README och `docs/indikatorer.md` räknade den fortfarande till Rörelse. Salthalten får fortfarande inget betyg: ingen myndighet bedömer kustvatten efter salthalt, inflöden är väder (princip 1), och skiktningens effekt på botten syns redan i syret. Bara texterna är ändrade.
 
@@ -69,4 +73,4 @@ Nyast överst. Varje beslut: vad, varför, och vad det påverkar.
 - Skiktning, skillnaden mellan ytsalt och bottensalt, som beskriven parameter utan betyg. Kan förklara varför syret sjunker vid botten. Kräver en ytmätning av salthalt vid Flinten eller en närliggande station, inte kontrollerat än.
 - Danska sidan via DMI (kräver API-nyckel; deras vattentemperatur mäts i hamnar och är inte standardiserad).
 - Expertgranskning av tolkningen, till exempel SMHI:s oceanografer, DTU Aqua eller Öresundsvattensamarbetet.
-- Fisk och biologisk mångfald: årsdata, passar som långsiktig trend snarare än levande värde. Källor: SLU:s kustfiskövervakning vid Barsebäck (sedan 1999), DTU Aqua för danska sidan.
+- Fisk och biologisk mångfald: årsdata, passar som långsiktig trend snarare än levande värde. Källor: SLU:s kustfiskövervakning vid Barsebäck (sedan 1999), DTU Aqua för danska sidan. KUL, Fiskbarometern och ICES undersökta 2026-11-24, detaljer i `docs/datakallor.md`.

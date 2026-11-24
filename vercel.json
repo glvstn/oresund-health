@@ -16,6 +16,14 @@
     {
       "source": "/data/prognos.json",
       "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/prognos.json"
+    },
+    {
+      "source": "/data/klarhet.json",
+      "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/klarhet.json"
+    },
+    {
+      "source": "/data/vind.json",
+      "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/vind.json"
     }
   ]
 }

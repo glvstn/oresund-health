@@ -42,7 +42,8 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 ## Kandidater
 
 ### DMI, danska oceanografiska observationer
-- Vattenstånd och vattentemperatur var 10:e minut. OGC API, kräver gratis API-nyckel.
+- Vattenstånd och vattentemperatur var 10:e minut. OGC API, ingen nyckel sedan 2 december 2025.
+- Vind används sedan 2026-11-24 (`scripts/fetch_dmi.py vind`): väderstationen 06183 Drogden fyr, `opendataapi.dmi.dk/v2/metObs`, parametrarna `wind_speed` och `wind_dir` (tiominutersmedel, riktning varifrån det blåser). Hämtas varje timme, en mätning per hel timme sparas.
 - Licens: CC BY 4.0, kommersiellt tillåtet. Källa: DMI.
 
 ### DMI, prognos från havsmodellen DKSS
@@ -60,16 +61,18 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 - Klorofyll från satellit, biogeokemiska modeller (syre, näring, pH, siktdjup) för Östersjön.
 - Fritt för alla syften, även kommersiellt, kräver konto. Licensen läst 2026-11-24, se docs/beslut.md.
 - Källangivelse för egna produkter: "Generated using E.U. Copernicus Marine Service Information".
+- Används för klarhet (KD490) sedan 2026-11-24, samma produkter, dataset `cmems_obs-oc_bal_bgc-transp_my_l3-olci-300m_P1D` och `cmems_obs-oc_bal_bgc-transp_nrt_l3-olci-300m_P1D`. Visas som djupet där ljuset halverats, ln 2 / KD490.
 - Används för klorofyll vid ytan (`scripts/fetch_copernicus.py`): `OCEANCOLOUR_BAL_BGC_L3_NRT_009_131` (DOI 10.48670/moi-00294) för senaste dygnen och `OCEANCOLOUR_BAL_BGC_L3_MY_009_133` (DOI 10.48670/moi-00296) för normalspannet, båda Sentinel-3 OLCI 300 m. Inloggning i GitHub Actions via `COPERNICUSMARINE_SERVICE_USERNAME` och `COPERNICUSMARINE_SERVICE_PASSWORD`.
 
 ### HELCOM, oljeutsläpp från flygövervakning
-- Undersökt 2026-11-23, inget byggt.
+- Undersökt 2026-11-23. Används sedan 2026-11-24 för kortet Oljeutsläpp (`scripts/fetch_helcom_oil.py`, körs för hand en gång per år, resultatet `app/olja.json` checkas in).
+- Kortet använder rutan 12,5 till 13,0 E, 55,35 till 56,1 N, alltså sundet utan Köge bukt och större delen av Kattegatt: 120 utsläpp 1998 till 2025 (88 svenska, 32 danska observationer), 0 till 15 per år, största 6,9 m³, 112 olja och 8 okänt.
 - HELCOM Map and Data Service, lager "Detected spills of mineral oil and other substances": `maps.helcom.fi/arcgis/rest/services/MADS/Shipping/MapServer/323`. ArcGIS REST, ingen nyckel, frågbart på yta.
 - Fält: datum, land, position, kategori (olja och annat), uppskattad volym, utsträckning, vind.
 - Inom 12,4 till 13,1 E, 55,3 till 56,2 N: 162 utsläpp 1998 till 2025 (122 svenska, 40 danska observationer). 1 till 15 per år, de senaste åren 1 till 8. Nästan alla under 1 m³. Rutan tar med lite av Köge bukt och Kattegatt.
 - Uppdateras årsvis, 2025 finns redan. Inte läget nu.
 - Antalet beror på hur mycket som flygs, flygtimmarna har minskat enligt HELCOM. Färre fynd behöver inte betyda färre utsläpp.
-- Licens: HELCOM anger CC BY för MADS men varnar för att vissa lager kommer från andra källor. Lagrets eget metadata är inte läst. Källangivelse enligt HELCOM: "[Datamängd], [år]. HELCOM Map and Data Service. https://maps.helcom.fi".
+- Licens: HELCOM anger CC BY för MADS men varnar för att vissa lager kommer från andra källor. Lagrets metadata (läst 2026-11-24) saknar licenstext. Datat sammanställs av HELCOM själva från ländernas flygövervakning, så MADS-licensen bedöms gälla. Bekräfta med HELCOM om det blir viktigt. Källangivelse enligt HELCOM: "[Datamängd], [år]. HELCOM Map and Data Service. https://maps.helcom.fi".
 - Bedömning: tryck, inte tillstånd. Passar som årsvis bakgrund ("X observerade utsläpp i fjol"), utan betyg.
 
 ### HELCOM, undervattensbuller
@@ -113,6 +116,25 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 - Bräddningar rapporteras till Malmö stads miljöförvaltning i efterhand. Större händelser publiceras som nyheter, till exempel avloppsläckan i maj 2026.
 - Bräddpunkter bland annat Limhamns hamn och sundet vid Ön och Sege kanal. De flesta bräddningar sker juni till augusti vid kraftigt regn.
 - Bedömning: passar som händelse, inte som levande värde. Fråga VA SYD eller miljöförvaltningen om löpande data.
+
+### SLU, KUL (kustfiskdatabasen)
+- Undersökt 2026-11-24, inget byggt.
+- SLU Aqua är datavärd för kustprovfisken på uppdrag av HaV. Data hämtas via webbrapporter på `aquarapport.slu.se` (fångstdata `default.aspx?ID=5`, individdata `ID=11`), en karttjänst och API:er hos SBDI (biodiversitydata.se). Rapporterna och SBDI är inte prövade, så det är okontrollerat om antal fiskar per redskap och natt (CPUE) per station och år går att få ut direkt.
+- Kopia på GBIF (datasetet `1b7e83a0-0c61-11dd-84ce-b8a03c50a862`, CC0): bara förekomster utan antal, ändrad senast 2024 och slutar 2018 i sundet. Inom 12,5 till 13,1 E, 55,3 till 56,1 N finns 21 531 poster 1988 till 2018, bland annat Barsebäck (Barsebäckshamn, Barsebäcksverket, Lundåkrabukten, Tjuvakroken, Sjöbobadet) och Öresund (Lillgrund, SO Bredgrund, Sjollen). Duger inte för trend.
+- Licens hos SLU: ingen angiven på KUL-sidan (läst 2026-11-24). Källangivelse enligt SLU: "[yyyy]. Databasen för kustprovfisken – KUL. Uppsala: Institutionen för akvatiska resurser, Sveriges lantbruksuniversitet (SLU). [slu.se/kul]. [yyyy-mm-dd]." Bekräfta villkoren med SLU innan användning, GBIF-kopians CC0 bör gälla även källan men det står inte hos SLU.
+- Barsebäck provfiskas med ryssjor i augusti varje år sedan 1999. Sammanfattat i Aqua notes 2023:11, som inte är läst.
+- Bedömning: bästa källan för en lokal årstrend för fisk, jämförd mot historiken (princip 2). Nästa steg: pröva fångstrapporten för Barsebäck och fråga SLU (kontakt för KUL: Peter Ljungberg) om licens och om CPUE per år.
+
+### Fiskbarometern (SLU på uppdrag av HaV)
+- Undersökt 2026-11-24, inget byggt.
+- Årlig resursöversikt över svenska fisk- och skaldjursbestånd, 2025 års bedömningar publicerade i januari till mars 2026. Webbsidor per art och område på fiskbarometern.se, PDF per art. Ingen dokumenterad nedladdning av data eller öppet API. Sidan hämtar data från ett internt API som inte är avsett för andra.
+- Licens: "Upphovsrätt av Fiskbarometern. Alla rättigheter förbehållna." Rekommenderad källangivelse: "SLU Fiskbarometern (publiceringsår). Resursöversikt 'årtal för analys'. [https://fiskbarometern.se] [åtkomstdatum]."
+- Öresund bedöms inte för sig. Torsken i sundet räknas till västra Östersjöbeståndet (Ices-delområden 22 till 24), där Ices råd för 2026 och 2027 är noll ton. Inget kustfiskbestånd för Öresund hittades i översikten.
+- Bedömning: myndighetens klassning finns (princip 2), men den gäller större områden än sundet och får inte återpubliceras fritt. Kan nämnas med länk som sammanhang, inte som betyg för Öresund.
+
+### ICES, fångster och beståndsanalyser
+- Undersökt 2026-11-24 bara i förbigående, inget byggt.
+- Fångster per delområde (Öresund är 27.3.b.23) är tryck, alltså Påverkan utan betyg (princip 1). Beståndsanalyserna gäller större områden, se Fiskbarometern ovan. Trålfiske är förbjudet i större delen av sundet sedan 1932, vilket gör fångstsiffrorna svårtolkade.
 
 ## Avförda
 

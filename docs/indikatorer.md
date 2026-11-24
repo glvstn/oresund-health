@@ -13,6 +13,7 @@
 | Mått | Beskrivning |
 |---|---|
 | Salthalt vid botten | Över normalt betyder att salt Kattegattvatten trängt in, under normalt Östersjövatten. Ingen myndighetsgräns, och salt inflöde är väder (princip 1) |
+| Klarhet vid ytan, satellit | Djupet där ljuset halverats, ln 2 / KD490, median över samma ruta som klorofyll, molnfria dygn mars till oktober. Grumligare, normalt eller klarare än normalt. Inte siktdjup |
 | Klorofyll vid ytan, satellit | Median över en ruta kring Flinten, molnfria dygn mars till oktober. Mindre, normalt eller mer alger än normalt. Satelliten visar högre värden än vattenproven, så ingen jämförelse med HaV:s gränser |
 
 ## Rörelse (beskrivs)
@@ -22,6 +23,7 @@
 | Vattenstånd Klagshamn | Lågvatten, normalt eller högvatten mot normalspannet |
 | Strömhastighet | Lugnare, normal eller kraftigare än normalt |
 | Flöde | Skanör minus Viken. Över +5 cm norrut, under -5 cm söderut, däremellan nästan stilla |
+| Vind vid Drogden fyr | Styrka enligt SMHI:s vindskala (svag, måttlig, frisk, hård, storm, orkan) och riktning varifrån det blåser. Förklarar strömmen, inget betyg |
 | Prognos för flödet | DMI:s havsmodell, Skanör minus Viken per timme fem dygn framåt. Per dygn: norrut eller söderut efter medianen, osäkert under 10 cm, växlar om minst en fjärdedel av timmarna går åt vardera hållet |
 
 ## Näringsämnen (årsstatus, påverkar inte helheten)
@@ -37,6 +39,7 @@ Värden under rapporteringsgränsen räknas som halva gränsen.
 
 | Mått | Beskrivning |
 |---|---|
+| Oljeutsläpp | Observerade av flygövervakningen inom Öresund per år, HELCOM 1998 till senaste år. Senaste årets antal och spannet de senaste tio åren. Ingen jämförelse mot normalt |
 | Sjöfart | Fartyg per år som passerar Öresunds södra infart (Stevns till Falsterbo), HELCOM 2006 till 2020. Andel per fartygstyp och ungefär antal per dag. Statiskt, ingen jämförelse mot normalt |
 
 ## Hur normalt räknas

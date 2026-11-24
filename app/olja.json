@@ -1,0 +1,186 @@
+{
+ "source": "Detected spills of mineral oil and other substances, HELCOM Map and Data Service, bearbetat till antal och volym per år inom Öresund.",
+ "fetched": "2026-11-24",
+ "box": [
+  12.5,
+  55.35,
+  13.0,
+  56.1
+ ],
+ "total": 120,
+ "countries": {
+  "Sweden": 88,
+  "Denmark": 32
+ },
+ "largest": 6.9,
+ "years": [
+  {
+   "year": 1998,
+   "count": 5,
+   "oil": 5,
+   "volume": 0.74
+  },
+  {
+   "year": 1999,
+   "count": 15,
+   "oil": 15,
+   "volume": 4.0
+  },
+  {
+   "year": 2000,
+   "count": 12,
+   "oil": 12,
+   "volume": 10.27
+  },
+  {
+   "year": 2001,
+   "count": 7,
+   "oil": 7,
+   "volume": 1.0
+  },
+  {
+   "year": 2002,
+   "count": 2,
+   "oil": 2,
+   "volume": 0.0
+  },
+  {
+   "year": 2003,
+   "count": 4,
+   "oil": 4,
+   "volume": 4.53
+  },
+  {
+   "year": 2004,
+   "count": 3,
+   "oil": 3,
+   "volume": 6.95
+  },
+  {
+   "year": 2005,
+   "count": 1,
+   "oil": 1,
+   "volume": 0.0
+  },
+  {
+   "year": 2006,
+   "count": 1,
+   "oil": 1,
+   "volume": 0.01
+  },
+  {
+   "year": 2007,
+   "count": 2,
+   "oil": 2,
+   "volume": 0.16
+  },
+  {
+   "year": 2008,
+   "count": 1,
+   "oil": 1,
+   "volume": 0.01
+  },
+  {
+   "year": 2009,
+   "count": 8,
+   "oil": 8,
+   "volume": 0.36
+  },
+  {
+   "year": 2010,
+   "count": 0,
+   "oil": 0,
+   "volume": 0.0
+  },
+  {
+   "year": 2011,
+   "count": 2,
+   "oil": 2,
+   "volume": 0.0
+  },
+  {
+   "year": 2012,
+   "count": 4,
+   "oil": 4,
+   "volume": 0.01
+  },
+  {
+   "year": 2013,
+   "count": 5,
+   "oil": 5,
+   "volume": 0.1
+  },
+  {
+   "year": 2014,
+   "count": 11,
+   "oil": 10,
+   "volume": 0.04
+  },
+  {
+   "year": 2015,
+   "count": 5,
+   "oil": 4,
+   "volume": 0.02
+  },
+  {
+   "year": 2016,
+   "count": 3,
+   "oil": 1,
+   "volume": 0.01
+  },
+  {
+   "year": 2017,
+   "count": 4,
+   "oil": 3,
+   "volume": 0.03
+  },
+  {
+   "year": 2018,
+   "count": 6,
+   "oil": 6,
+   "volume": 0.0
+  },
+  {
+   "year": 2019,
+   "count": 1,
+   "oil": 1,
+   "volume": 0.0
+  },
+  {
+   "year": 2020,
+   "count": 5,
+   "oil": 5,
+   "volume": 0.13
+  },
+  {
+   "year": 2021,
+   "count": 3,
+   "oil": 3,
+   "volume": 0.01
+  },
+  {
+   "year": 2022,
+   "count": 5,
+   "oil": 2,
+   "volume": 0.0
+  },
+  {
+   "year": 2023,
+   "count": 0,
+   "oil": 0,
+   "volume": 0.0
+  },
+  {
+   "year": 2024,
+   "count": 2,
+   "oil": 2,
+   "volume": 0.02
+  },
+  {
+   "year": 2025,
+   "count": 3,
+   "oil": 3,
+   "volume": 0.39
+  }
+ ]
+}
