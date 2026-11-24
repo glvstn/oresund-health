@@ -105,4 +105,5 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 
 ## Avförda
 
+- **SMHI strömprognos, NEMO-Nordic 60 timmar** (2026-11-24): prognos var sjätte timme, skulle kunna säga åt vilket håll vattnet väntas rinna. Realtidsfilerna nås bara via en webbtjänst mot leveransavgift och beställs via kundtjanst@smhi.se (enligt datasetsidan, läst 2026-11-24). Avförd eftersom sidan bara använder fria källor. Kan tas upp igen om SMHI släpper prognosen fritt.
 - **HaV badvatten:** säsongsdata med en veckas fördröjning. Licensen för själva datat är dessutom oklar (API-avtalet hänvisar till villkor på HaV:s webbplats).
