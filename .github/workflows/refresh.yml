@@ -3,6 +3,7 @@
 # som aldrig startade. Ha inte båda igång, då kan SMHI få två anrop samma timme. Se docs/beslut.md.
 # Arkivet (normalspann) hämtas bara en gång per dygn och cachas mellan körningarna.
 # Klorofyll från Copernicus Marine hämtas också en gång per dygn (data/klorofyll.json, cachas).
+# Strömprognos från DMI hämtas en gång per modellkörning (fyra per dygn, klar cirka 3 h 20 min efter start).
 # Hemligheter som krävs: BLOB_READ_WRITE_TOKEN (från Vercel-projektets Blob-store),
 # COPERNICUSMARINE_SERVICE_USERNAME och COPERNICUSMARINE_SERVICE_PASSWORD.
 name: Hämta från SMHI
@@ -57,6 +58,24 @@ jobs:
         run: |
           pip install --quiet copernicusmarine==2.3.0
           python3 scripts/fetch_copernicus.py
+
+      # Senaste modellkörning som bör vara klar: 00, 06, 12 eller 18 UTC, minst 3 h 20 min sedan.
+      - id: run
+        run: |
+          t=$(date -u -d '-200 minutes' +'%F %H')
+          echo "id=${t% *}-$(( 10#${t#* } / 6 ))" >> "$GITHUB_OUTPUT"
+
+      - id: fc
+        uses: actions/cache@v6
+        with:
+          path: data/prognos.json
+          key: prognos-${{ steps.run.outputs.id }}-${{ hashFiles('scripts/fetch_dmi.py') }}
+
+      - name: Strömprognos från DMI (en gång per modellkörning)
+        if: steps.fc.outputs.cache-hit != 'true'
+        # Ett fel här ska inte stoppa SMHI-datat. Sidan döljer prognosen när den är äldre än ett dygn.
+        continue-on-error: true
+        run: python3 scripts/fetch_dmi.py
 
       - name: Ladda upp till Vercel Blob
         env:

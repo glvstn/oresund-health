@@ -1,4 +1,4 @@
-// Laddar upp data/current.json och, om den finns, data/klorofyll.json till Vercel Blob. Kräver BLOB_READ_WRITE_TOKEN.
+// Laddar upp data/current.json och, om de finns, data/klorofyll.json och data/prognos.json till Vercel Blob. Kräver BLOB_READ_WRITE_TOKEN.
 // Används av .github/workflows/refresh.yml. Token ger bara åtkomst till Blob-storen.
 import { access, readFile } from 'node:fs/promises';
 import { put } from '@vercel/blob';
@@ -23,3 +23,4 @@ async function upload(name, required) {
 
 await upload('current.json', true);
 await upload('klorofyll.json', false);
+await upload('prognos.json', false);

@@ -12,6 +12,10 @@
     {
       "source": "/data/klorofyll.json",
       "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/klorofyll.json"
+    },
+    {
+      "source": "/data/prognos.json",
+      "destination": "https://qxtjo5ouutomqllw.public.blob.vercel-storage.com/oresund/prognos.json"
     }
   ]
 }

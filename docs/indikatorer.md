@@ -22,6 +22,7 @@
 | Vattenstånd Klagshamn | Lågvatten, normalt eller högvatten mot normalspannet |
 | Strömhastighet | Lugnare, normal eller kraftigare än normalt |
 | Flöde | Skanör minus Viken. Över +5 cm norrut, under -5 cm söderut, däremellan nästan stilla |
+| Prognos för flödet | DMI:s havsmodell, Skanör minus Viken per timme fem dygn framåt. Per dygn: norrut eller söderut efter medianen, osäkert under 10 cm, växlar om minst en fjärdedel av timmarna går åt vardera hållet |
 
 ## Näringsämnen (årsstatus, påverkar inte helheten)
 

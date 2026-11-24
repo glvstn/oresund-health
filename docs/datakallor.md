@@ -45,6 +45,17 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 - Vattenstånd och vattentemperatur var 10:e minut. OGC API, kräver gratis API-nyckel.
 - Licens: CC BY 4.0, kommersiellt tillåtet. Källa: DMI.
 
+### DMI, prognos från havsmodellen DKSS
+- Undersökt 2026-11-24, används för prognosen i Ström-kortet (`scripts/fetch_dmi.py`).
+- `opendataapi.dmi.dk/v1/forecastedr`, OGC EDR. Svarade utan API-nyckel 2026-11-24. Samlingen `dkss_idw` (inre danska farvatten) täcker Öresund. Fråga per punkt: `/collections/dkss_idw/position?coords=POINT(lon lat)&parameter-name=...&crs=crs84&f=GeoJSON`.
+- Timvärden cirka fem dygn framåt: vattenstånd (`sea-mean-deviation`, m), ström (`current-u`, `current-v` i m/s, öst och nord, plus per djup), salthalt, vattentemperatur per djup, vind (`wind-u`, `wind-v`).
+- Modellens punkt vid Viken (12,5792 E) ligger på land, 12,56 E 56,14 N fungerar.
+- Jämfört med SMHI 2026-11-24 00 till 06 UTC: lutningen Skanör minus Viken var 49 till 62 cm i modellen mot 61 till 71 cm uppmätt, alltså samma riktning och cirka 8 cm lägre. Skanör ligger cirka 10 cm lägre i modellen, troligen delvis olika nollnivå. Strömmen vid Flinten 16 gick mot nordost (51 grader) i modellen men var 80 till 98 cm/s mot 22 till 41 cm/s uppmätt, så modellens fart går inte att visa som Flintens.
+- Licens: CC BY 4.0 enligt DMI:s villkor (läst 2026-11-24), som gäller data från DMI:s API:er. Prognoser nämns inte uttryckligen men levereras via samma API. Ange källa, länk till licensen och att datat är bearbetat, utan att antyda att DMI står bakom sidan.
+- Ingen API-nyckel sedan 2 december 2025. DMI kan strypa vid missbruk och ber om cache och att följa modellens uppdateringstakt. Svarade 429 efter ett tiotal anrop på några minuter vid testerna 2026-11-24.
+- Modellen körs 00, 06, 12 och 18 UTC, klar cirka 3 timmar 20 minuter efter start. Workflowen hämtar en gång per körning.
+- Bedömning: passar som prognos för strömmens riktning (lutningens tecken och storlek), inte för fart. Ingen betygsättning.
+
 ### Copernicus Marine
 - Klorofyll från satellit, biogeokemiska modeller (syre, näring, pH, siktdjup) för Östersjön.
 - Fritt för alla syften, även kommersiellt, kräver konto. Licensen läst 2026-11-24, se docs/beslut.md.

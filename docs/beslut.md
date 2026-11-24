@@ -4,6 +4,7 @@ Nyast överst. Varje beslut: vad, varför, och vad det påverkar.
 
 ## 2026-11-24
 
+- **Prognos för strömmens riktning från DMI.** Ström-kortet visar en prognos per dygn (norrut, söderut, växlar, osäkert) och ett diagram över lutningen Skanör minus Viken fem dygn framåt, från DMI:s havsmodell DKSS. SMHI:s motsvarande prognos kostar en leveransavgift. Bara riktningen används: modellens lutning var cirka 8 cm lägre än uppmätt men åt samma håll, medan dess fart vid Flinten var 2 till 3 gånger för hög. Under 10 cm visas riktningen som osäker. Gränsen är vår egen, satt efter modellens avvikelse. Prognosen är beskrivning under Rörelse och får inget betyg. Den döljs om den är äldre än ett dygn.
 - **Salthalt hör till Vitala värden, inte Rörelse.** Kortet har legat under Vitala värden sedan perioderna infördes, men README och `docs/indikatorer.md` räknade den fortfarande till Rörelse. Salthalten får fortfarande inget betyg: ingen myndighet bedömer kustvatten efter salthalt, inflöden är väder (princip 1), och skiktningens effekt på botten syns redan i syret. Bara texterna är ändrade.
 
 ## 2026-11-23
