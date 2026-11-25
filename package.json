@@ -8,5 +8,8 @@
     "data:all": "python3 scripts/fetch_smhi.py",
     "naring": "python3 scripts/fetch_shark.py",
     "olja": "python3 scripts/fetch_helcom_oil.py"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
