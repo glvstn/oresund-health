@@ -623,6 +623,7 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     if (stale) showBanner(latestAt
       ? `Senaste mätningen är ${Math.floor(ageH)} timmar gammal. Därför visas inget betyg just nu.`
       : 'Det finns inga aktuella mätningar just nu. Därför visas inget betyg.');
+    else $('stale').hidden = true;
     const breath = o && !stale ? oxyGrade(o.value) : null;
     const tl = t && !stale ? lage(t) : null;
     const warm = stale ? null : warmStreak(daily);
@@ -1129,17 +1130,43 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     for (const card of document.querySelectorAll('#vitals .card')) countTo(card.querySelector('.big'), before[card.id]);
   });
 
-  fetch('data/prognos.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { prognos = d; if (state) render(); }).catch(() => {});
-  fetch('data/klarhet.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { klar = d; if (state) render(); }).catch(() => {});
-  fetch('data/vind.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { vind = d; if (state) render(); }).catch(() => {});
+  const getJson = (url) => fetch(url, { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).catch(() => null);
+  function loadSide() {
+    getJson('data/prognos.json').then((d) => { if (d) prognos = d; if (state) render(); });
+    getJson('data/klarhet.json').then((d) => { if (d) klar = d; if (state) render(); });
+    getJson('data/vind.json').then((d) => { if (d) vind = d; if (state) render(); });
+    getJson('data/klorofyll.json').then((d) => { if (d) chl = d; if (state) render(); });
+  }
+  loadSide();
   fetch('olja.json').then((r) => r.ok ? r.json() : null).then((d) => { if (d) renderOil(d); }).catch(() => {});
-  fetch('data/klorofyll.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((d) => { chl = d; if (state) render(); }).catch(() => {});
   fetch('naring.json').then((r) => r.ok ? r.json() : null).then((d) => { naring = d; if (state) render(); }).catch(() => {});
 
   fetch('data/current.json', { cache: 'no-cache' })
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then((d) => { state = toPercent(d); render(); })
     .catch(() => fail('Mätningarna gick inte att läsa just nu. Försök igen om en stund.'));
+
+  // En öppen flik frågar vår egen cache (Vercel Blob, aldrig SMHI) efter ny data. Uppladdningen startar xx:17
+  // (se refresh.yml), så fliken frågar xx:25 och, om körningen var sen, xx:45. Dessutom när fliken blir synlig igen.
+  // Bara om hämtningen är nyare än den som visas ritas sidan om med nytt data, annars uppdateras bara åldern.
+  const CHECK_MINUTES = [25, 45];
+  let lastCheck = Date.now();
+  async function recheck() {
+    if (document.hidden || Date.now() - lastCheck < 60e3) return;
+    lastCheck = Date.now();
+    const d = await getJson('data/current.json');
+    if (d && (!state || d.meta.fetched !== state.meta.fetched)) { state = toPercent(d); loadSide(); }
+    if (state) render();
+  }
+  function scheduleCheck() {
+    const now = new Date(), next = new Date(now);
+    next.setUTCSeconds(0, 0);
+    const m = CHECK_MINUTES.find((x) => x > now.getUTCMinutes());
+    if (m == null) next.setUTCHours(next.getUTCHours() + 1, CHECK_MINUTES[0]); else next.setUTCMinutes(m);
+    setTimeout(() => { recheck(); scheduleCheck(); }, next - now);
+  }
+  scheduleCheck();
+  document.addEventListener('visibilitychange', recheck);
 
   let w = window.innerWidth;
   window.addEventListener('resize', () => { if (state && window.innerWidth !== w) { w = window.innerWidth; render(); } });
