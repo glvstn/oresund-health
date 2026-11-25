@@ -119,11 +119,12 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 
 ### SLU, KUL (kustfiskdatabasen)
 - Undersökt 2026-11-24, inget byggt.
-- SLU Aqua är datavärd för kustprovfisken på uppdrag av HaV. Data hämtas via webbrapporter på `aquarapport.slu.se` (fångstdata `default.aspx?ID=5`, individdata `ID=11`), en karttjänst och API:er hos SBDI (biodiversitydata.se). Rapporterna och SBDI är inte prövade, så det är okontrollerat om antal fiskar per redskap och natt (CPUE) per station och år går att få ut direkt.
+- SLU Aqua är datavärd för kustprovfisken på uppdrag av HaV. Data hämtas via webbrapporter på `aquarapport.slu.se` (fångstdata `default.aspx?ID=5`, individdata `ID=11`), en karttjänst och API:er hos SBDI (biodiversitydata.se). Rapporterna är inte prövade, så det är okontrollerat om antal fiskar per redskap och natt (CPUE) per station och år går att få ut direkt.
 - Kopia på GBIF (datasetet `1b7e83a0-0c61-11dd-84ce-b8a03c50a862`, CC0): bara förekomster utan antal, ändrad senast 2024 och slutar 2018 i sundet. Inom 12,5 till 13,1 E, 55,3 till 56,1 N finns 21 531 poster 1988 till 2018, bland annat Barsebäck (Barsebäckshamn, Barsebäcksverket, Lundåkrabukten, Tjuvakroken, Sjöbobadet) och Öresund (Lillgrund, SO Bredgrund, Sjollen). Duger inte för trend.
-- Licens hos SLU: ingen angiven på KUL-sidan (läst 2026-11-24). Källangivelse enligt SLU: "[yyyy]. Databasen för kustprovfisken – KUL. Uppsala: Institutionen för akvatiska resurser, Sveriges lantbruksuniversitet (SLU). [slu.se/kul]. [yyyy-mm-dd]." Bekräfta villkoren med SLU innan användning, GBIF-kopians CC0 bör gälla även källan men det står inte hos SLU.
+- Licens: CC0 1.0. Står i SLU:s egen datasetpost hos SBDI (`dr8`, collections.biodiversitydata.se, läst 2026-11-25), samma dataset som på GBIF. KUL-sidan hos SLU anger bara källangivelse, inte licens. Källangivelse enligt SLU: "[yyyy]. Databasen för kustprovfisken – KUL. Uppsala: Institutionen för akvatiska resurser, Sveriges lantbruksuniversitet (SLU). [slu.se/kul]. [yyyy-mm-dd]."
+- SBDI (beta.biodiversitydata.se, API records.biodiversitydata.se) prövad 2026-11-25: samma 21 531 förekomster som GBIF-kopian, 1988 till 2018 i sundet, utan antal. Ger alltså ingen trend, licensen löser inte datafrågan.
 - Barsebäck provfiskas med ryssjor i augusti varje år sedan 1999. Sammanfattat i Aqua notes 2023:11, som inte är läst.
-- Bedömning: bästa källan för en lokal årstrend för fisk, jämförd mot historiken (princip 2). Nästa steg: pröva fångstrapporten för Barsebäck och fråga SLU (kontakt för KUL: Peter Ljungberg) om licens och om CPUE per år.
+- Bedömning: bästa källan för en lokal årstrend för fisk, jämförd mot historiken (princip 2). Nästa steg: pröva fångstrapporten för Barsebäck och fråga SLU (kontakt för KUL: Peter Ljungberg) om CPUE per år och om data efter 2018.
 
 ### Fiskbarometern (SLU på uppdrag av HaV)
 - Undersökt 2026-11-24, inget byggt.
@@ -136,7 +137,26 @@ Andra aktiva stationer i sundet: Malmö Hamn, Barsebäck, Landskrona Hamn, Helsi
 - Undersökt 2026-11-24 bara i förbigående, inget byggt.
 - Fångster per delområde (Öresund är 27.3.b.23) är tryck, alltså Påverkan utan betyg (princip 1). Beståndsanalyserna gäller större områden, se Fiskbarometern ovan. Trålfiske är förbjudet i större delen av sundet sedan 1932, vilket gör fångstsiffrorna svårtolkade.
 
+### HaV, statistiska meddelanden om fiske (JO 50, 55, 56, 57)
+- Undersökt 2026-11-25, inget byggt.
+- PDF:er på havochvatten.se (Officiell statistik, fiske). JO 50 är yrkesfiskets landningar per månad, preliminärt. JO 55 och 56 är årsstatistik för hav och sötvatten. JO 57 är fritidsfisket per år, en enkät.
+- JO 50 SM 2611 (september 2026) läst: landningar per art i bara tre kuststräckor, väst-, syd- och ostkusten, efter landningshamnens län. Inget havsområde, ingen uppdelning på Öresund eller ICES-delområde 23. Var fisken fångades syns inte.
+- Bedömning: fångst är Påverkan (princip 1) och för grovt för sundet. Ger inget för fisk.
+
+### SHARK, bottenfauna (Zoobenthos)
+- Undersökt 2026-11-25, inget byggt. Samma API som för näringsämnen (`shark.smhi.se/api/sample/table`, vyn `sharkweb_overview`, datatyp `Zoobenthos`), licens som övriga SHARK.
+- Indexet BQIm finns färdigräknat som parameter. I havsbassängen 15 Öresund finns 46 värden, alla från 2018 till 2023, från Öresundsvattensamarbetet (stationer ÖVF och Mellersta/Södra Öresund, typ 6) och en engångsinventering 2022 i norra sundet (typ 5).
+- Bara fyra stationer har tre år (ÖVF 2:3_1, 2:3_2, 2:3_5 vid Helsingborg och ÖVF 3:7_5 i Lundåkrabukten, 2021 till 2023). Mellersta Öresund 3 och 4 provtas vartannat år (2018, 2020, 2022). Inget i södra sundet nära Flinten, inget efter 2023.
+- De långa serierna med artlistor (BY2 Arkona 1979 till 2006, I:2 1989 till 2023, DM 107 2007 till 2023) ligger i Arkonahavet, inte i sundet.
+- HaV:s klassgränser för BQIm i typ 5 och 6 är inte lästa än (HVMFS 2019:25).
+- Bedömning: för kort och glest för ett eget kort. Kan möjligen bli en rad om senaste kända status vid Helsingborg och Lundåkrabukten, om gränserna läses. Fråga Öresundsvattensamarbetet om äldre data och om provtagningen fortsätter efter 2023.
+
+### SHARK, tumlare (Harbour Porpoise)
+- Undersökt 2026-11-25, inget byggt. Stationär akustisk övervakning, loggrar som registrerar tumlarnas klick (Naturhistoriska riksmuseet för HaV och Länsstyrelsen Skåne). Parametrar: minuter med detektion per dygn och andel dygn med detektion per månad. Inte beroende av hur många som tittar, till skillnad från Artportalen.
+- 21 333 rader i hela Sverige 2015 till 2023 (leverans version 2024-03-04). Ingen station i Öresund. Närmast är NVSK5 i Kattegatt utanför Kullen (56,28 N 12,30 E, 2019 till 2023) och GDP129 i Hanöbukten (2022 till 2023).
+- Bedömning: mäter rätt sak men inte i sundet. Kan tas upp igen om någon börjar mäta i Öresund, fråga Naturhistoriska riksmuseet eller Länsstyrelsen Skåne.
+
 ## Avförda
 
 - **SMHI strömprognos, NEMO-Nordic 60 timmar** (2026-11-24): prognos var sjätte timme, skulle kunna säga åt vilket håll vattnet väntas rinna. Realtidsfilerna nås bara via en webbtjänst mot leveransavgift och beställs via kundtjanst@smhi.se (enligt datasetsidan, läst 2026-11-24). Avförd eftersom sidan bara använder fria källor. Kan tas upp igen om SMHI släpper prognosen fritt.
-- **HaV badvatten:** säsongsdata med en veckas fördröjning. Licensen för själva datat är dessutom oklar (API-avtalet hänvisar till villkor på HaV:s webbplats).
+- **HaV badvatten:** säsongsdata med en veckas fördröjning. Provresultaten finns i HaV:s Oracle-portal (havbipub.havochvatten.se, kräver JavaScript, export som data), per prov med E. coli, enterokocker, algblomning och vattentemperatur. Portalen innehåller inget om fisk (kontrollerat 2026-11-25). Licensen för själva datat är dessutom oklar (API-avtalet hänvisar till villkor på HaV:s webbplats).
