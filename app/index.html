@@ -1166,7 +1166,10 @@ footer { color: var(--note); font-size: 13px; padding: 0 4px; }
     setTimeout(() => { recheck(); scheduleCheck(); }, next - now);
   }
   scheduleCheck();
+  // Safari skickar inte alltid visibilitychange när fönstret byts eller datorn vaknar, och en sida ur bakåtcachen kör inga timers.
   document.addEventListener('visibilitychange', recheck);
+  window.addEventListener('focus', recheck);
+  window.addEventListener('pageshow', (e) => { if (e.persisted) recheck(); });
 
   let w = window.innerWidth;
   window.addEventListener('resize', () => { if (state && window.innerWidth !== w) { w = window.innerWidth; render(); } });
